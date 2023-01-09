@@ -1,5 +1,22 @@
 <template>
-	<div class="span">Страница авторизации</div>
+	
+	<div class="main_container">
+		
+		<div class="top_line">
+			<button class="the_button button_transparent ghost_wrap">Назад</button>
+			<h1 class="the_title">Вход</h1>
+			<button class="the_button button_transparent">Войти</button>
+		</div>
+
+		<div class="content_wrap">
+
+			<div class="title_line"></div>
+			<div class="form_wrap"></div>
+
+		</div>
+
+	</div>
+
 </template>
 
 <script>
