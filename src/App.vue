@@ -56,11 +56,8 @@ export default {
 
 <style lang="scss">
 
-body{
-	padding: 0;
-	margin: 0;
-}
 #app {
+	overflow: hidden;
 	padding: 0;
 	position: relative;
 	background: #FFEAEB;

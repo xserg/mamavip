@@ -30,11 +30,23 @@
 
 /* Template styles */
 
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	line-height: 150%;
+}
+
 
 body{
+	background: #FFEAEB;
+	color: #23292D;
+	padding: 0;
+	margin: 0;
 	font-family: Manrope, Arial, sans-serif;
 	font-weight: 400;
 }
+
 
 .fontFamilyB{
 	font-weight: 600;
@@ -44,6 +56,202 @@ body{
 }
 
 
+.fontSize12{
+	font-size: 12px;
+}
+.fontSize14{
+	font-size: 14px;
+}
+.fontSize20{
+	font-size: 20px;
+}
+.fontSize32{
+	font-size: 32px;
+}
+
+
+.mainContainer{
+	width: 100%;
+}
+
+.contentWrap{
+	max-width: 600px;
+	padding-left: 16px;
+	padding-right: 16px;
+	margin-left: auto;
+	margin-right: auto;
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+.topWrap{
+	border-radius: 0 0 12px 12px;
+}
+.midWrap{
+	border-radius: 12px;
+}
+.bottomWrap{
+	border-radius: 12px 12px 0 0;
+}
+
+
+
+.padding10{
+	padding: 10px;
+}
+
+.marginB12{
+	margin-bottom: 12px;
+}
+.marginB20{
+	margin-bottom: 20px;
+}
+
+
+
+.theButton{
+	border: none;
+	display: block;
+	background: transparent;
+	padding: 0;
+	margin: 0;
+	color: initial;
+	font-size: 16px;
+	cursor: pointer;
+	transition: all .14s ease;
+	border-radius: 8px;
+}
+
+
+.buttonTransparent{
+	color: #FD7C84;
+}
+.buttonTransparent:hover{
+	opacity: .8;
+}
+.buttonTransparent.disabled{
+	opacity: .4;
+	cursor: default;
+}
+
+
+.buttonPrimary{
+	background-color: #FD7C84;
+	color: #FFF;
+}
+.buttonPrimary:hover{
+	background-color: #DF6068;
+}
+.buttonPrimary.disabled{}
+
+
+
+.buttonSecondary{
+	color: #FD7C84;
+}
+.buttonSecondary:hover{
+	opacity: .8;
+}
+.buttonSecondary.disabled{}
+
+
+
+.buttonTertiary{
+	color: #FD7C84;
+}
+.buttonTertiary:hover{
+	opacity: .8;
+}
+.buttonTertiary.disabled{}
+
+
+
+.buttonWhite{
+	color: #FD7C84;
+	background-color: #FFF;
+}
+.buttonWhite:hover{
+	background-color: #FFF7F7;
+}
+.buttonWhite.disabled{
+	opacity: .4;
+}
+
+
+/* 
+.animate_click{
+	transform: scale(1.001);
+	transition: transform .27s cubic-bezier(0.15, 0.86, 0.45, 0.95);
+}
+.animate_click.clicked{
+	transform: scale(.96) !important;
+}
+.animate_click:hover{
+	transform: scale(1.001);
+}
+.animate_click.clicked{
+	transform: scale(.96) !important;
+}
+.animate_click.clicked:hover{
+	transform: scale(.96) !important;
+}
+
+
+.wave_click{
+	overflow: hidden;
+	position: relative;
+}
+
+.wave{
+  background: rgba(255, 255, 255, .4);
+  border-radius: 50%;
+  transform: scale(0);
+  animation: wave .32s linear;
+  pointer-events: none;
+  position: absolute;
+}
+@keyframes wave {
+	100%{
+  	transform: scale(2);
+  	opacity: 0;
+	}
+}
+  
+	
+.scale_hover{
+	transform: scale(1.001);
+	transition: transform .26s ease;
+}
+.scale_hover:hover{
+	transform: scale(0.985);
+}
+
+
+.the_button:hover{
+	color: #fff;
+	background-color: #000;
+}
+.the_button.clicked{
+	transform: scale(.985) !important
+}
+.the_button.clicked:hover{
+	transform: scale(1.001)
+}
+.the_button.clicked.clicked{
+	transform: scale(.856) !important
+}	
+.the_button.clicked.clicked:hover{
+	transform: scale(.985) !important
+} */
+
+
+
+
+
+
 
 .blockWrap{
 	display: block;
@@ -51,18 +259,15 @@ body{
 .flexWrap{
 	display: flex;
 }
+.gridWrap{
+	display: grid;
+}
 .ghostWrap{
 	opacity: 0;
 	visibility: hidden;
+	cursor: default;
 }
 .hiddenWrap{
 	display: none;
 }
-.padding10{
-	padding: 10px;
-}
-.marginB20{
-	margin-bottom: 20px;
-}
-
 
