@@ -1,17 +1,17 @@
 <template>
 	
-	<div class="main_container block_wrap">
+	<div class="mainContainer blockWrap">
 		
-		<div class="top_line">
-			<button class="the_button button_transparent ghost_wrap">Назад</button>
-			<h1 class="the_title">Вход</h1>
-			<button class="the_button button_transparent">Войти</button>
+		<div class="topLine">
+			<button class="theButton buttonTransparent ghostWrap">Назад</button>
+			<h1 class="theTitle">Вход</h1>
+			<button class="theButton buttonTransparent">Войти</button>
 		</div>
 
-		<div class="content_wrap">
+		<div class="contentWrap">
 
-			<div class="title_line"></div>
-			<div class="form_wrap"></div>
+			<div class="titleLine"></div>
+			<div class="formWrap"></div>
 
 		</div>
 

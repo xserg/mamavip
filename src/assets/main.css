@@ -11,7 +11,7 @@
 @font-face {
   font-family: "Manrope";
   font-weight: 600;
-  font-style: bold;
+  font-style: normal;
   font-display: auto;
   unicode-range: U+000-5FF;
   src: local("Manrope"), url("fonts/manrope/Manrope-Bold.woff2") format("woff2"), url("fonts/manrope/Manrope-Bold.woff") format("woff");
@@ -21,7 +21,7 @@
 @font-face {
   font-family: "Manrope";
   font-weight: 800;
-  font-style: bold;
+  font-style: normal;
   font-display: auto;
   unicode-range: U+000-5FF;
   src: local("Manrope"), url("fonts/manrope/Manrope-ExtraBold.woff2") format("woff2"), url("fonts/manrope/Manrope-ExtraBold.woff") format("woff");
@@ -33,24 +33,36 @@
 
 body{
 	font-family: Manrope, Arial, sans-serif;
+	font-weight: 400;
 }
 
-.block_wrap{
+.fontFamilyB{
+	font-weight: 600;
+}
+.fontFamilyEB{
+	font-weight: 800;
+}
+
+
+
+.blockWrap{
 	display: block;
 }
-.flex_wrap{
+.flexWrap{
 	display: flex;
 }
-.ghost_wrap{
+.ghostWrap{
 	opacity: 0;
 	visibility: hidden;
 }
-.hidden_wrap{
+.hiddenWrap{
 	display: none;
 }
-.padding_10{
+.padding10{
 	padding: 10px;
 }
-.margin_b_20{
+.marginB20{
 	margin-bottom: 20px;
 }
+
+

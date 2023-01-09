@@ -1,9 +1,9 @@
 <template>
-	<div v-if="!isAuth" class="auth_container">
+	<div v-if="!isAuth" class="authContainer">
 		<autoriz v-if="!newReg"></autoriz>
 		<registr v-if="newReg"></registr>
 	</div>
-	<div v-if="isAuth" class="app_container">
+	<div v-if="isAuth" class="appContainer">
 		<nav>
 			<router-link to="/">Home</router-link> |
 			<router-link to="/about">About</router-link>
@@ -96,7 +96,7 @@ body{
 		background: #FEABB0;
 		filter: blur(20vh);
 	}
-	.app_container{
+	.appContainer{
 		z-index: 10;
 		position: relative;
 	}
