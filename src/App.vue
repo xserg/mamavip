@@ -1,12 +1,58 @@
 <template>
-	<div class="app_container">
+	<div v-if="!isAuth" class="auth_container">
+		<autoriz v-if="!newReg"></autoriz>
+		<registr v-if="newReg"></registr>
+	</div>
+	<div v-if="isAuth" class="app_container">
 		<nav>
 			<router-link to="/">Home</router-link> |
 			<router-link to="/about">About</router-link>
 		</nav>
-		<router-view/>
+		<router-view></router-view>
 	</div>
 </template>
+
+
+<script>
+
+// Импортирование компонентов 
+import Autoriz from '@/components/Autoriz';
+import Registr from '@/components/Registr';
+
+import {mapState, mapMutations} from 'vuex';
+
+
+
+export default {
+	// Определяем компоненты
+	components: { Autoriz, Registr, },
+
+	data(){
+		return{
+		}
+	},
+
+	methods: {
+		...mapMutations({
+			// hiddenPopup: state => state.hiddenPopup,
+			// hiddenSelectDropdown: 'hiddenSelectDropdown',
+			// hiddenSelectDropdownMenu: 'hiddenSelectDropdownMenu',
+		}),
+	},
+
+
+	computed:{
+	...mapState({
+			// Определяем isAuth из хранилища, чтобы приложение смогло использовать его в работе на странице.
+			isAuth: state => state.isAuth,
+			newReg: state => state.newReg,
+			// thePopup: state => state.thePopup,
+		}),
+	}
+
+}
+
+</script>
 
 <style lang="scss">
 body{
