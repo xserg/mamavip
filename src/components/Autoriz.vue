@@ -1,6 +1,6 @@
 <template>
 	
-	<div class="main_container">
+	<div class="main_container block_wrap">
 		
 		<div class="top_line">
 			<button class="the_button button_transparent ghost_wrap">Назад</button>

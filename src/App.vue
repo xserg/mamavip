@@ -55,31 +55,7 @@ export default {
 </script>
 
 <style lang="scss">
-/* Template styles */
 
-.block_wrap{
-	display: block;
-}
-.flex_wrap{
-	display: flex;
-}
-.ghost_wrap{
-	opacity: 0;
-	visibility: hidden;
-}
-.hidden_wrap{
-	display: none;
-}
-.padding_10{
-	padding: 10px;
-}
-.margin_b_20{
-	margin-bottom: 20px;
-}
-
-
-
-/* Component */
 body{
 	padding: 0;
 	margin: 0;
@@ -90,7 +66,6 @@ body{
 	background: #FFEAEB;
 	height: 100%;
 	min-height: 100vh;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
