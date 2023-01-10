@@ -15,24 +15,24 @@
 					<h2 class="pageSubtitle fontSize32 fontFamilyEB">"Нежность"</h2>
 				</div>
 				<div class="formWrap">
-					<form action="">
+					<form @submit.prevent>
 						<label class="inputWrap">
 							<span class="label">Введите email</span>
 							<input type="text" placeholder="example@mail.com">
 						</label>
 						<label class="inputWrap">
 							<span class="label">Введите пароль</span>
-							<input type="password">
-							<button class="theButton actionShowPass"></button>
+							<input :type="inputPassType">
+							<button class="theButton buttonShowPass" :class="{ active: this.inputPassType == 'text' }" @click="showPass"></button>
 						</label>
 						<label class="inputWrap">
 							<span class="label">Повторите пароль</span>
-							<input type="password">
-							<button class="theButton actionShowPass"></button>
+							<input :type="inputPassType">
+							<button class="theButton buttonShowPass" :class="{ active: this.inputPassType == 'text' }" @click="showPass"></button>
 						</label>
 						<div class="infoWrap">
 							<span class="theTitle">Есть аккаунт?</span>
-							<button class="theButton buttonTransparent fontFamilyB">Войти</button>
+							<button class="theButton buttonTransparent fontFamilyB" @click="this.setLogPage()">Войти</button>
 						</div>
 					</form>
 				</div>
@@ -75,7 +75,8 @@
 			<div class="contentSubWrap">
 				<div class="infoWrap">
 					<h2>Регистрация прошла успешно!</h2>
-					<button class="theButton buttonPrimary" @click="confirmReg">Войти</button>
+					<button class="theButton buttonPrimary" @click="this.setLogPage()">Войти</button>
+					<!-- <button class="theButton buttonPrimary" @click="confirmReg">Войти</button> -->
 				</div>
 			</div>
 		</div>
@@ -95,6 +96,7 @@ export default {
 	data(){
 		return{
 			curStep: 1,
+			inputPassType: 'password',
 			// regForm: {
 			// 	email: '',
 			// 	firstName: '',
@@ -108,6 +110,7 @@ export default {
 
 	methods:{
 
+		// Мутации состояний из хранилища
 		...mapMutations({
 			setLogPage: 'setLogPage',
 			setAuthIn: 'setAuthIn',
@@ -116,6 +119,7 @@ export default {
 			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
 
+		// Шаги, для регистрации
 		nextStep(){
 			this.curStep += 1;
 		},
@@ -123,9 +127,19 @@ export default {
 			this.curStep -= 1;
 		},
 
-		confirmReg(){
-			this.curStep = 1;
-			this.setLogPage();
+		// Микс из мутации хранилища и локального метода
+		// confirmReg(){
+		// 	this.curStep = 1;
+		// 	this.setLogPage();
+		// },
+
+		// Локальный метод для показа пароля в форме
+		showPass(){
+			if( this.inputPassType == 'password' ){
+				this.inputPassType = 'text';
+			}else{
+				this.inputPassType = 'password';
+			}
 		},
 
 		
@@ -237,7 +251,7 @@ export default {
 			box-shadow: 0px 16px 20px -8px rgba(253, 124, 132, 0.2);
 			border-radius: 8px;
 			border: 2px solid #FFF;
-			transition: all .24s ease, letter-spacing .0 ease;
+			transition: all .24s ease, letter-spacing .0s ease;
 			outline: none;
 			letter-spacing: 1px;
 			&[type=text]{
@@ -251,10 +265,10 @@ export default {
 			}
 			&:focus, &:focus-within, &:active, &:focus-visible, &:target{
 				border: 2px solid #FEABB0;
-				transition: all .24s ease;
+				transition: all .24s ease, letter-spacing .0s ease;
 			}
 		}
-		.theButton.actionShowPass{
+		.theButton.buttonShowPass{
 			position: absolute;
 			bottom: 6px;
 			right: 8px;
