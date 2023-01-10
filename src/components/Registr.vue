@@ -75,7 +75,7 @@
 			<div class="contentSubWrap">
 				<div class="infoWrap">
 					<h2>Регистрация прошла успешно!</h2>
-					<button class="theButton buttonPrimary" @click="this.curStep = 1">Войти</button>
+					<button class="theButton buttonPrimary" @click="confirmReg">Войти</button>
 				</div>
 			</div>
 		</div>
@@ -86,7 +86,7 @@
 
 <script>
 
-import {mapState} from 'vuex';
+import {mapState, mapMutations} from 'vuex';
 
 export default {
 
@@ -94,7 +94,7 @@ export default {
 
 	data(){
 		return{
-			curStep: 2,
+			curStep: 1,
 			// regForm: {
 			// 	email: '',
 			// 	firstName: '',
@@ -108,12 +108,26 @@ export default {
 
 	methods:{
 
+		...mapMutations({
+			setLogPage: 'setLogPage',
+			setAuthIn: 'setAuthIn',
+			setAuthOut: 'setAuthOut',
+			setRegPage: 'setRegPage',
+			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
+		}),
+
 		nextStep(){
 			this.curStep += 1;
 		},
 		prevStep(){
 			this.curStep -= 1;
 		},
+
+		confirmReg(){
+			this.curStep = 1;
+			this.setLogPage();
+		},
+
 		
 	},
 
