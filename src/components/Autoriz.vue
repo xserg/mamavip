@@ -22,7 +22,7 @@
 					</label>
 					<label class="inputWrap">
 						<span class="label">Введите пароль</span>
-						<input type="password" >
+						<input type="password">
 					</label>
 					<div class="infoWrap">
 						<button class="theButton buttonWhite fontFamilyB">Забыли пароль?</button>
@@ -108,6 +108,7 @@ export default {
 .contentSubWrap{
 	position: relative;
 	z-index: 10;
+	width: 100%;
 	.titleLine{
 		margin-bottom: 32px;
 	}
@@ -116,7 +117,7 @@ export default {
 
 
 .formWrap{
-	max-width: 330px;
+	max-width: 598px;
 	margin: 0 auto;
 	width: 100%;
 	

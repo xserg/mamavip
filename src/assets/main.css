@@ -47,6 +47,10 @@ body{
 	font-weight: 400;
 }
 
+.theTitle, .pageTitle, .pageSubtitle{
+	cursor: default;
+}
+
 
 .fontFamilyB{
 	font-weight: 600;
