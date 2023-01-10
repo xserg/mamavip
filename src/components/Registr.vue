@@ -27,7 +27,7 @@
 							<span class="label">Введите пароль</span>
 							<div class="inputBox">
 								<!-- <input :type="inputPassType"> -->
-								<Field name="password" type="password" />
+								<Field name="password" :type="inputPassType" />
 								<button class="theButton buttonShowPass" :class="{ active: this.inputPassType == 'text' }" @click="showPass"></button>
 							</div>
 							<ErrorMessage class="errorTitle" name="password" />
