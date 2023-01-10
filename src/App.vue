@@ -56,6 +56,8 @@ export default {
 
 <style lang="scss">
 
+@import '@/assets/main.css';
+
 #app {
 	overflow: hidden;
 	padding: 0;
