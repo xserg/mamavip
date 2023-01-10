@@ -4,11 +4,11 @@
 		
 			<div class="topLine flexWrap">
 				<button class="theButton leftButton buttonTransparent ghostWrap">Назад</button>
-				<h1 class="theTitle">Регистрация</h1>
+				<h1 class="theTitle">Регистрация: Шаг {{ curStep }}</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB" @click="nextStep">Далее</button>
 			</div>
 
-			<div class="contentSubWrap">
+			<div class="contentSubWrap" show-if="curStep == 1">
 
 				<div class="titleLine">
 					<h2 class="pageTitle fontSize20 fontFamilyEB">Добро пожаловать в школу мам и пап</h2>
@@ -49,27 +49,27 @@ import {mapState} from 'vuex';
 
 export default {
 
-	name: 'registr',
+	name: 'Registr',
 
 	data(){
 		return{
 			curStep: 1,
-			regForm: {
-				email: '',
-				firstName: '',
-				password: '',
-				confirmPassword: '',
-				phone: '',
-			},
+			// regForm: {
+			// 	email: '',
+			// 	firstName: '',
+			// 	password: '',
+			// 	confirmPassword: '',
+			// 	phone: '',
+			// },
 			
 		}
 	},
 
 	methods:{
 
-		nextStep() {
-      this.curStep = this.curStep + 1;
-    },
+		nextStep(){
+			this.curStep += 1;
+		},
 		
 	},
 
@@ -174,12 +174,12 @@ export default {
 		}
 		.theButton.actionShowPass{
 			position: absolute;
-			bottom: 2px;
+			bottom: 6px;
 			right: 8px;
 			display: block;
 			border-radius: 50%;
-			width: 42px;
-			height: 42px;
+			width: 32px;
+			height: 32px;
 			z-index: 10;
 			&::before{
 				content: '';

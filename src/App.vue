@@ -8,6 +8,8 @@
 			<router-link to="/">Home</router-link> |
 			<router-link to="/about">About</router-link>
 		</nav>
+		<!-- {{ curStep }}
+		<button @click="nextStep">Добавить шаг</button> -->
 		<router-view></router-view>
 	</div>
 </template>
@@ -29,6 +31,7 @@ export default {
 
 	data(){
 		return{
+			// curStep: 1,
 		}
 	},
 
@@ -38,6 +41,9 @@ export default {
 			// hiddenSelectDropdown: 'hiddenSelectDropdown',
 			// hiddenSelectDropdownMenu: 'hiddenSelectDropdownMenu',
 		}),
+		// nextStep(){
+		// 	this.curStep += 1;
+		// }
 	},
 
 

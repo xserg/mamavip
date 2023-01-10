@@ -49,6 +49,7 @@ body{
 
 .theTitle, .pageTitle, .pageSubtitle{
 	cursor: default;
+	user-select: none;
 }
 
 
@@ -128,7 +129,9 @@ body{
 	transition: all .14s ease;
 	border-radius: 8px;
 }
-
+.theButton:hover{
+	
+}
 
 .buttonTransparent{
 	color: #FD7C84;
