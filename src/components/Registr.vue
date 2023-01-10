@@ -15,24 +15,26 @@
 					<h2 class="pageSubtitle fontSize32 fontFamilyEB">"Нежность"</h2>
 				</div>
 				<div class="formWrap">
-					<label class="inputWrap">
-						<span class="label">Введите email</span>
-						<input type="text" placeholder="example@mail.com">
-					</label>
-					<label class="inputWrap">
-						<span class="label">Введите пароль</span>
-						<input type="password">
-						<button class="theButton actionShowPass"></button>
-					</label>
-					<label class="inputWrap">
-						<span class="label">Повторите пароль</span>
-						<input type="password">
-						<button class="theButton actionShowPass"></button>
-					</label>
-					<div class="infoWrap">
-						<span class="theTitle">Есть аккаунт?</span>
-						<button class="theButton buttonTransparent fontFamilyB">Войти</button>
-					</div>
+					<form action="">
+						<label class="inputWrap">
+							<span class="label">Введите email</span>
+							<input type="text" placeholder="example@mail.com">
+						</label>
+						<label class="inputWrap">
+							<span class="label">Введите пароль</span>
+							<input type="password">
+							<button class="theButton actionShowPass"></button>
+						</label>
+						<label class="inputWrap">
+							<span class="label">Повторите пароль</span>
+							<input type="password">
+							<button class="theButton actionShowPass"></button>
+						</label>
+						<div class="infoWrap">
+							<span class="theTitle">Есть аккаунт?</span>
+							<button class="theButton buttonTransparent fontFamilyB">Войти</button>
+						</div>
+					</form>
 				</div>
 
 			</div>
