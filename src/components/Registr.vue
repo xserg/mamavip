@@ -15,26 +15,34 @@
 					<h2 class="pageSubtitle fontSize32 fontFamilyEB">"Нежность"</h2>
 				</div>
 				<div class="formWrap">
-					<form @submit.prevent>
+					<Form @submit="submit" :validation-schema="schema">
+					<!-- <form @submit.prevent> -->
 						<label class="inputWrap">
 							<span class="label">Введите email</span>
-							<input type="text" placeholder="example@mail.com">
+							<!-- <input type="text" placeholder="example@mail.com">  -->
+							<Field name="email" />
+   					 	<ErrorMessage class="errorTitle" name="email" />
 						</label>
 						<label class="inputWrap">
 							<span class="label">Введите пароль</span>
-							<input :type="inputPassType">
-							<button class="theButton buttonShowPass" :class="{ active: this.inputPassType == 'text' }" @click="showPass"></button>
+							<div class="inputBox">
+								<!-- <input :type="inputPassType"> -->
+								<Field name="password" type="password" />
+								<button class="theButton buttonShowPass" :class="{ active: this.inputPassType == 'text' }" @click="showPass"></button>
+							</div>
+							<ErrorMessage class="errorTitle" name="password" />
 						</label>
 						<label class="inputWrap">
 							<span class="label">Повторите пароль</span>
 							<input :type="inputPassType">
 							<button class="theButton buttonShowPass" :class="{ active: this.inputPassType == 'text' }" @click="showPass"></button>
 						</label>
+						<submit class="theButton buttonPrimary buttonConfirm marginAuto">Отправить</submit>
 						<div class="infoWrap">
 							<span class="theTitle">Есть аккаунт?</span>
 							<button class="theButton buttonTransparent fontFamilyB" @click="this.setLogPage()">Войти</button>
 						</div>
-					</form>
+					</Form>
 				</div>
 
 			</div>
@@ -88,11 +96,35 @@
 <script>
 
 import {mapState, mapMutations} from 'vuex';
+import { Form, Field, ErrorMessage, useField } from 'vee-validate';
+
+import { object, string } from 'yup';
+
 
 export default {
 
 	name: 'Registr',
 
+	components: {
+		// object,
+		// string,
+    Form,
+    Field,
+    ErrorMessage,
+  },
+
+	// Создаем переменные yup через setup, чтобы избежать ненужной реактивности
+	setup(){
+		const schema = object({
+      email: string().required('Поле обязательно на заполнение').email('Введен не корректный адрес электронной почты').typeError('Поле Email обязателен').label('Email'),
+			name: string().required('Поле обязательно на заполнение').label('Имя'),
+      password: string().required('Поле обязательно на заполнение').min(8, 'Поле пароля должно содержать не менее 8 символов').label('Пароль'),
+    });
+    return {
+      schema,
+    };
+
+	},
 	data(){
 		return{
 			curStep: 1,
@@ -241,6 +273,16 @@ export default {
 		.label{
 			font-size: 12px;
 			margin-bottom: 4px;
+		}
+		.inputBox{
+			position: relative;
+			width: 100%;
+		}
+		.errorTitle{
+			font-size: 12px;
+			margin-left: 16px;
+			margin-top: 4px;
+			color: #F74A4A;
 		}
 		input{
 			position: relative;
