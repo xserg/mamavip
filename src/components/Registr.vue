@@ -5,7 +5,7 @@
 			<div class="topLine flexWrap">
 				<button class="theButton leftButton buttonTransparent ghostWrap">Назад</button>
 				<h1 class="theTitle">Регистрация</h1>
-				<button class="theButton rightButton buttonTransparent fontFamilyB">Далее</button>
+				<button class="theButton rightButton buttonTransparent fontFamilyB" >Далее</button>
 			</div>
 
 			<div class="contentSubWrap">
@@ -65,7 +65,9 @@ export default {
 
 	methods:{
 
-		// nextStep{}
+		// nextStep() {
+    //   this.curStep =+ 1;
+    // },
 		
 	},
 
