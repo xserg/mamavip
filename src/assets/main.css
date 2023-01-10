@@ -128,6 +128,8 @@ body{
 	cursor: pointer;
 	transition: all .14s ease;
 	border-radius: 8px;
+	padding: 12px 16px;
+	font-weight: 800;
 }
 .theButton:hover{
 	
@@ -148,31 +150,45 @@ body{
 .buttonPrimary{
 	background-color: #FD7C84;
 	color: #FFF;
+	min-width: 330px;
+	max-width: 480px;
+	width: auto;
 }
 .buttonPrimary:hover{
 	background-color: #DF6068;
 }
-.buttonPrimary.disabled{}
+.buttonPrimary.disabled{
+	opacity: 0.4;
+	cursor: default;
+}
 
 
 
 .buttonSecondary{
+	background-color: #FFEAEB;
 	color: #FD7C84;
 }
 .buttonSecondary:hover{
-	opacity: .8;
+	background-color: #FEDADD;
 }
-.buttonSecondary.disabled{}
+.buttonSecondary.disabled{
+	opacity: 0.4;
+	cursor: default;
+}
 
 
 
 .buttonTertiary{
 	color: #FD7C84;
+	background-color: #F3F5F6;
 }
 .buttonTertiary:hover{
-	opacity: .8;
+	background-color: #E9EDEF;
 }
-.buttonTertiary.disabled{}
+.buttonTertiary.disabled{
+	opacity: 0.4;
+	cursor: default;
+}
 
 
 
@@ -181,13 +197,36 @@ body{
 	background-color: #FFF;
 }
 .buttonWhite:hover{
-	background-color: #FFF7F7;
+	background-color: #23292D0A;
 }
 .buttonWhite.disabled{
 	opacity: .4;
+	cursor: default;
 }
 
 
+
+.infoWrap h1{
+	font-size: 32px;
+	margin-bottom: 24px;
+	font-weight: 800;
+}
+.infoWrap h2{
+	font-size: 20px;
+	margin-bottom: 20px;
+	font-weight: 800;
+}
+.infoWrap h3, .infoWrap h4, .infoWrap h5, .infoWrap h6{
+	font-size: 16px;
+	margin-bottom: 8px;
+}
+.infoWrap p, .infoWrap li, .infoWrap ul, .infoWrap ol, .infoWrap h1, .infoWrap h2, .infoWrap h3, .infoWrap h4, .infoWrap h5, .infoWrap h6, .infoWrap span, .infoWrap a{
+ text-align: left;
+}
+
+.infoWrap p{
+	margin-bottom: 8px;
+ }
 /* 
 .animate_click{
 	transform: scale(1.001);

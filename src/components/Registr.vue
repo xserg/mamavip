@@ -1,14 +1,14 @@
 <template>
 	<div class="mainContainer blockWrap">
-		<div class="contentWrap">
+		<div class="contentWrap stepRegFirst" v-if="curStep == 1">
 		
 			<div class="topLine flexWrap">
 				<button class="theButton leftButton buttonTransparent ghostWrap">Назад</button>
-				<h1 class="theTitle">Регистрация: Шаг {{ curStep }}</h1>
+				<h1 class="theTitle">Регистрация</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB" @click="nextStep">Далее</button>
 			</div>
 
-			<div class="contentSubWrap" show-if="curStep == 1">
+			<div class="contentSubWrap">
 
 				<div class="titleLine">
 					<h2 class="pageTitle fontSize20 fontFamilyEB">Добро пожаловать в школу мам и пап</h2>
@@ -40,6 +40,47 @@
 			</div>
 
 		</div>
+
+		<div class="contentWrap stepRegSecond" v-if="curStep == 2">
+		
+			<div class="topLine flexWrap">
+				<button class="theButton leftButton buttonTransparent" @click="prevStep">Назад</button>
+				<h1 class="theTitle">Прочтите соглашение</h1>
+				<button class="theButton ghostWrap"></button>
+			</div>
+
+			<div class="contentSubWrap">
+				<div class="infoWrap">
+					<h2>Заголовок</h2>
+					<h3>Подзаголовок</h3>
+					<p>Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
+					<p>Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
+					<br>
+					<h3>Подзаголовок</h3>
+					<p>Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
+					<br>
+					<h3>Подзаголовок</h3>
+					<p>Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
+					<br>
+					<h3>Подзаголовок</h3>
+					<p>Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
+				</div>
+				<button class="theButton buttonPrimary buttonConfirm " @click="nextStep">Принять и продолжить</button>
+			</div>
+			
+		</div>
+
+
+		<div class="contentWrap stepRegFinal" v-if="curStep == 3">
+			<div class="contentSubWrap">
+				<div class="infoWrap">
+					<h2>Регистрация прошла успешно!</h2>
+					<button class="theButton buttonPrimary" @click="this.curStep = 1">Войти</button>
+				</div>
+			</div>
+		</div>
+
+
 	</div>
 </template>
 
@@ -53,7 +94,7 @@ export default {
 
 	data(){
 		return{
-			curStep: 1,
+			curStep: 2,
 			// regForm: {
 			// 	email: '',
 			// 	firstName: '',
@@ -70,6 +111,9 @@ export default {
 		nextStep(){
 			this.curStep += 1;
 		},
+		prevStep(){
+			this.curStep -= 1;
+		},
 		
 	},
 
@@ -84,6 +128,30 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.stepRegSecond{
+	margin-bottom: 80px;
+	background-color: #FFF;
+	.topLine{
+		background-color: #ffffffa8;
+  	backdrop-filter: blur(5px);
+		border-bottom: 1px solid rgba(35, 41, 45, 0.1);
+	}
+	.infoWrap{
+		margin-bottom: 20px;
+	}
+	.buttonConfirm{
+		margin: 0 auto;
+	}
+}
+
+.stepRegFinal{
+	& *{
+		text-align: center;
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
 
 .topLine{
 	background-color: #ffeaeba8;
@@ -237,6 +305,12 @@ export default {
 	
 }
 
+
+@media screen and (max-width: 600px) {
+	.stepRegSecond{
+		margin-bottom: 0px;
+	}
+}
 
 
 

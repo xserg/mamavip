@@ -101,6 +101,10 @@ export default {
 		background: #FEABB0;
 		filter: blur(20vh);
 	}
+	.authContainer{
+		z-index: 10;
+		position: relative;
+	}
 	.appContainer{
 		z-index: 10;
 		position: relative;
