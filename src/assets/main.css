@@ -40,10 +40,13 @@
 	line-height: 150%;
 }
 
-button{
+button, span.theButton{
 	user-select: none;
 	pointer-events: fill;
 	cursor: pointer;
+}
+span{
+	pointer-events: fill;
 }
 
 
@@ -71,20 +74,6 @@ body .marginAuto{
 }
 .fontFamilyEB{
 	font-weight: 800;
-}
-
-
-.fontSize12{
-	font-size: 12px;
-}
-.fontSize14{
-	font-size: 14px;
-}
-.fontSize20{
-	font-size: 20px;
-}
-.fontSize32{
-	font-size: 32px;
 }
 
 
@@ -223,14 +212,47 @@ body .marginAuto{
 
 
 .buttonConfirm, .buttonOptimal{
-	min-width: 330px;
-	max-width: 480px;
+	min-width: 288px;
+	max-width: 395px;
 	width: max-content;
 }
 
 
 
 /* -------- Стили блоков --------- */
+
+a{
+	color: #FD7C84;
+	text-decoration: none;
+	transition: opacity .14s ease;
+}
+a:hover{
+	opacity: .8;
+}
+
+.alignCenter{
+	text-align: center;
+}
+.alignLeft{
+	text-align: left;
+}
+
+.colorAccent{
+	color: #FD7C84;
+}
+
+.fontSize12{
+	font-size: 12px;
+}
+.fontSize14{
+	font-size: 14px;
+}
+.fontSize20{
+	font-size: 20px;
+}
+.fontSize32{
+	font-size: 32px;
+}
 
 .infoWrap h1{
 	font-size: 32px;
@@ -247,7 +269,7 @@ body .marginAuto{
 	margin-bottom: 8px;
 }
 .infoWrap p, .infoWrap li, .infoWrap ul, .infoWrap ol, .infoWrap h1, .infoWrap h2, .infoWrap h3, .infoWrap h4, .infoWrap h5, .infoWrap h6, .infoWrap a{
- text-align: left;
+ /* text-align: left; */
 }
 
 .infoWrap p{
@@ -268,7 +290,7 @@ body .marginAuto{
 }
 
 .formWrap .inputWrap{
-	margin-bottom: 24px;
+	padding-bottom: 26px;
 	width: 100%;
 	display: flex;
 	flex-direction: column;
@@ -278,16 +300,36 @@ body .marginAuto{
 .formWrap .inputWrap .label{
 	font-size: 12px;
 	margin-bottom: 4px;
+	margin-left: 16px;
 }
 .formWrap .inputWrap .inputBox{
 	position: relative;
 	width: 100%;
+}
+.formWrap .inputWrap .inputBox::before{
+	content: '';
+	position: absolute;
+	bottom: 6px;
+	right: 8px;
+	display: block;
+	border-radius: 50%;
+	width: 32px;
+	height: 32px;
+	background-image: url('../assets/icons/alert.svg');
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 60%;
+	opacity: 0;
+	transition: all .24s ease;
+	z-index: 10;
 }
 .formWrap .inputWrap .errorTitle{
 	font-size: 12px;
 	margin-left: 16px;
 	margin-top: 4px;
 	color: #F74A4A;
+	position: absolute;
+	bottom: 5px;
 }
 
 .formWrap .inputWrap input{
@@ -302,7 +344,19 @@ body .marginAuto{
 	transition: all .24s ease, letter-spacing .0s ease;
 	outline: none;
 	letter-spacing: .4px;
+	box-shadow: 0px 16px 20px -8px rgba(253, 124, 132, 0.2);
 }
+.formWrap .inputWrap.notValid input{
+	border: 2px solid #F74A4A;
+}
+.formWrap .inputWrap.notValid .inputBox::before{
+	opacity: 1;
+}
+.formWrap .inputWrap.notValid .theButton.buttonShowPass{
+	right: 40px;
+}
+
+
 .formWrap .inputWrap input[type=text]{
 	letter-spacing: 0.6px;
 }
@@ -335,11 +389,11 @@ body .marginAuto{
 	left: 0;
 	position: absolute;
 	background-image: url('../assets/icons/eye-on.svg');
-	background-size: 60%;
+	background-size: 66%;
 	background-repeat: no-repeat;
 	background-position: center;
 	opacity: 0;
-	transition: all .24s ease;
+	transition: all .24s ease right .0s ease;
 }
 .formWrap .inputWrap .theButton.buttonShowPass::after{
 	content: '';
@@ -349,11 +403,11 @@ body .marginAuto{
 	left: 0;
 	position: absolute;
 	background-image: url('../assets/icons/eye-off.svg');
-	background-size: 60%;
+	background-size: 66%;
 	background-repeat: no-repeat;
 	background-position: center;
 	opacity: 1;
-	transition: all .24s ease;
+	transition: all .24s ease right .0s ease;
 }
 .formWrap .inputWrap .theButton.buttonShowPass.active::before{
 	opacity: 1;
@@ -440,7 +494,7 @@ body .marginAuto{
 
 
 
-
+/* --------- Типы блоков ---------- */
 
 .blockWrap{
 	display: block;

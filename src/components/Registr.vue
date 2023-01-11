@@ -9,20 +9,22 @@
 		
 			<div class="topLine flexWrap">
 				<span class="theButton leftButton buttonTransparent ghostWrap">Назад</span>
-				<h1 class="theTitle">Регистрация</h1>
+				<h1 class="theTitle alignCenter">Регистрация</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB">Далее</button>
 			</div>
 
 			<div class="contentSubWrap">
 
 				<div class="titleLine">
-					<h2 class="pageTitle fontSize20 fontFamilyEB">Добро пожаловать в школу мам и пап</h2>
-					<h2 class="pageSubtitle fontSize32 fontFamilyEB">"Нежность"</h2>
+					<h2 class="pageTitle alignCenter fontSize20 fontFamilyEB">Добро пожаловать в школу мам и пап</h2>
+					<h2 class="pageSubtitle alignCenter fontSize32 fontFamilyEB">"Нежность"</h2>
 				</div>
 				<div class="formWrap">
 						<label class="inputWrap">
 							<span class="label">Введите email</span>
-							<Field name="email" />
+							<div class="inputBox">
+								<Field name="email" />
+							</div>
    					 	<ErrorMessage class="errorTitle" name="email" />
 						</label>
 						<label class="inputWrap">
@@ -43,7 +45,8 @@
 						</label>
 						<div class="infoWrap">
 							<span class="theTitle">Есть аккаунт?</span>
-							<span class="theButton buttonTransparent fontFamilyB" @click="this.setLogPage()">Войти</span>
+							<span class="theButton buttonTransparent fontFamilyB marginB30 fontSize14" @click="this.setLogPage()">Войти</span>
+							<p class="policy_text alignCenter fontSize12">Регистрируясь в приложении вы соглашаетесь с <a href="#" @click="nextStep">политикой обработки персональных данных</a></p>
 						</div>
 					<!-- </Form> -->
 					<!-- <button class="theButton buttonPrimary buttonConfirm marginAuto" @click="onSubmit" >Отправить</button> -->
@@ -60,7 +63,7 @@
 		
 			<div class="topLine flexWrap">
 				<span class="theButton leftButton buttonTransparent" @click="prevStep">Назад</span>
-				<h1 class="theTitle">Прочтите соглашение</h1>
+				<h1 class="theTitle alignCenter">Прочтите соглашение</h1>
 				<span class="theButton ghostWrap"></span>
 			</div>
 
@@ -80,7 +83,8 @@
 					<h3>Подзаголовок</h3>
 					<p>Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
 				</div>
-				<span class="theButton buttonPrimary buttonConfirm" @click="confirmRegistr">Принять и продолжить</span>
+				<span class="theButton buttonPrimary buttonConfirm" :class="{hiddenWrap: !this.formValues || Object.keys(this.formValues).length === 0 || !this.finishReg }" @click="confirmRegistr">Принять и продолжить</span>
+				<span class="theButton buttonPrimary buttonConfirm" :class="{hiddenWrap: this.formValues && Object.keys(this.formValues).length !== 0 && this.finishReg }" @click="prevStep">Зарегистрироваться</span>
 			</div>
 			
 		</div>
@@ -126,10 +130,10 @@ export default {
 	// Создаем переменные yup через setup, чтобы избежать ненужной реактивности
 	setup(){
 		const schema = object({
-      email: string().required('Поле обязательно на заполнение').email('Введен не корректный адрес электронной почты').typeError('Поле Email обязателен').label('Email'),
+      email: string().required('Пожалуйста, заполните это поле').email('Пожалуйста, введите корректный email').typeError('Поле Email обязателен').label('Email'),
 			// name: string().required('Поле обязательно на заполнение').label('Имя'),
-      password: string().required('Поле обязательно на заполнение').min(8, 'Поле пароля должно содержать не менее 8 символов').label('Пароль'),
-			confirm_password: string().label('Подтверждение пароля').required('Поле обязательно на заполнение').oneOf([ref('password'), null], 'Пароли должны совпадать'),
+      password: string().required('Пожалуйста, заполните это поле').min(8, 'Поле пароля должно содержать не менее 8 символов').label('Пароль'),
+			confirm_password: string().label('Подтверждение пароля').required('Пожалуйста, заполните это поле').oneOf([ref('password'), null], 'Пароли должны совпадать'),
 		});
     return {
       schema,
@@ -138,6 +142,7 @@ export default {
 	data(){
 		return{
 			curStep: 1,
+			finishReg: false,
 			inputPassType: 'password',
 			formValues: {},
 			// regForm: {
@@ -165,9 +170,11 @@ export default {
 		// Шаги, для регистрации
 		nextStep(){
 			this.curStep += 1;
+			this.finishReg = false;
 		},
 		prevStep(){
 			this.curStep -= 1;
+			this.finishReg = false;
 		},
 
 		// Микс из мутации хранилища и локального метода
@@ -186,6 +193,7 @@ export default {
 		},
 
 		onSubmit(values){
+			this.finishReg = true;
 			this.formValues = values;
 			this.curStep += 1;
 		},
@@ -193,6 +201,7 @@ export default {
 		confirmRegistr(){
 			console.log(JSON.stringify(this.formValues, null, 2));
 			this.curStep += 1;
+			this.finishReg = false;
 		},
 
 
@@ -211,107 +220,115 @@ export default {
 
 <style lang="scss" scoped>
 
-.stepRegSecond{
-	margin-bottom: 80px;
-	background-color: #FFF;
-	.topLine{
-		background-color: #ffffffa8;
-  	backdrop-filter: blur(5px);
-		border-bottom: 1px solid rgba(35, 41, 45, 0.1);
-	}
-	.infoWrap{
-		margin-bottom: 20px;
-	}
-	.buttonConfirm{
-		margin: 0 auto;
-	}
-}
+.mainContainer{
+	.contentWrap{
 
-.stepRegFinal{
-	& *{
-		text-align: center;
-		margin-left: auto;
-		margin-right: auto;
-	}
-	.infoWrap .confirmMessage{
-		margin-bottom: 30px;
-	}
-}
+		.topLine{
+			background-color: #ffeaeba8;
+			backdrop-filter: blur(5px);
+			position: fixed;
+			width: 100%;
+			top: 0;
+			left: 0;
+			right: 0;
+			padding: 0 16px;
+			justify-content: space-between;
+			z-index: 100;
+			.theButton{
+				width: 100%;
+				max-width: max-content;
+				min-width: 20%;
+				&.rightButton{
+					text-align: right;
+				}
+			}
+			.theTitle{
+				cursor: default;
+				width: 100%;
+				max-width: max-content;
+				min-width: 60%;
+				margin-top: 12px;
+				margin-bottom: 12px;
+				font-size: 16px;
+			}
+		}
 
-.topLine{
-	background-color: #ffeaeba8;
-  backdrop-filter: blur(5px);
-	position: fixed;
-	width: 100%;
-	top: 0;
-	left: 0;
-	right: 0;
-	padding: 0 16px;
-	justify-content: space-between;
-	z-index: 100;
-	.theButton{
-		width: 100%;
-		max-width: max-content;
-		min-width: 20%;
-		&.rightButton{
-			text-align: right;
+		.contentSubWrap{
+			position: relative;
+			z-index: 10;
+			width: 100%;
+			padding-top: 80px;
+			padding-bottom: 40px;
+			.titleLine{
+				margin-bottom: 32px;
+			}
+		}
+
+		.formWrap{
+			.submitWrap{
+				margin-bottom: 0;
+			}
+			.infoWrap{
+				margin-top: 52px;
+				display: flex;
+				flex-direction: column;
+				.theButton{
+					padding: 12px 16px;
+					margin-bottom: 32px;
+				}
+				.theTitle{
+					text-align: center;
+					margin-bottom: 4px;
+				}
+			}
+		}
+
+		&.stepRegSecond{
+			margin-bottom: 80px;
+			background-color: #FFF;
+			.topLine{
+				background-color: #ffffffa8;
+				backdrop-filter: blur(5px);
+				border-bottom: 1px solid rgba(35, 41, 45, 0.1);
+			}
+			.infoWrap{
+				margin-bottom: 20px;
+			}
+			.buttonConfirm{
+				margin: 0 auto;
+			}
+		}
+
+		&.stepRegFinal{
+			& *{
+				text-align: center;
+				margin-left: auto;
+				margin-right: auto;
+			}
+			.infoWrap .confirmMessage{
+				margin-bottom: 30px;
+			}
+		}
+
+		.infoWrap{
+			.policy_text{}
 		}
 	}
-	.theTitle{
-		cursor: default;
-		width: 100%;
-		max-width: max-content;
-		min-width: 60%;
-		margin-top: 12px;
-		margin-bottom: 12px;
-		font-size: 16px;
-
-	}
 }
 
 
-.contentSubWrap{
-	position: relative;
-	z-index: 10;
-	width: 100%;
-	padding-top: 80px;
-	padding-bottom: 40px;
-	.titleLine{
-		margin-bottom: 32px;
-	}
-}
-
-
-
-.formWrap{
-	max-width: 568px;
-	margin: 0 auto;
-	width: 100%;
-
-	.submitWrap{
-		margin-bottom: 0;
-	}
-	.infoWrap{
-		margin-top: 52px;
-		display: flex;
-		flex-direction: column;
-		.theButton{
-			padding: 12px 16px;
-			margin-bottom: 32px;
-		}
-		.theTitle{
-			text-align: center;
-			margin-bottom: 4px;
-		}
-	}
-	
-}
-
+/* -------- @media ----------- */
 
 @media screen and (max-width: 600px) {
-	.stepRegSecond{
-		margin-bottom: 0px;
+
+	.mainContainer{
+		.contentWrap{
+			&.stepRegSecond{
+				margin-bottom: 0px;
+			}
+		}
 	}
+
 }
 
 
