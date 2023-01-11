@@ -1,11 +1,16 @@
 <template>
 	<div class="mainContainer blockWrap">
-		<div class="contentWrap stepRegFirst" v-if="curStep == 1">
+
+		<Form @submit="onSubmit" :validation-schema="schema">
+		
+		<div class="contentWrap stepRegFirst" v-show="curStep == 1">
+
+			
 		
 			<div class="topLine flexWrap">
-				<button class="theButton leftButton buttonTransparent ghostWrap">Назад</button>
+				<span class="theButton leftButton buttonTransparent ghostWrap">Назад</span>
 				<h1 class="theTitle">Регистрация</h1>
-				<button class="theButton rightButton buttonTransparent fontFamilyB" @click="nextStep">Далее</button>
+				<button class="theButton rightButton buttonTransparent fontFamilyB">Далее</button>
 			</div>
 
 			<div class="contentSubWrap">
@@ -15,46 +20,49 @@
 					<h2 class="pageSubtitle fontSize32 fontFamilyEB">"Нежность"</h2>
 				</div>
 				<div class="formWrap">
-					<Form @submit="submit" :validation-schema="schema">
-					<!-- <form @submit.prevent> -->
 						<label class="inputWrap">
 							<span class="label">Введите email</span>
-							<!-- <input type="text" placeholder="example@mail.com">  -->
 							<Field name="email" />
    					 	<ErrorMessage class="errorTitle" name="email" />
 						</label>
 						<label class="inputWrap">
 							<span class="label">Введите пароль</span>
 							<div class="inputBox">
-								<!-- <input :type="inputPassType"> -->
 								<Field name="password" :type="inputPassType" />
-								<button class="theButton buttonShowPass" :class="{ active: this.inputPassType == 'text' }" @click="showPass"></button>
+								<span class="theButton buttonShowPass" :class="{ active: this.inputPassType == 'text' }" @click="showPass"></span>
 							</div>
 							<ErrorMessage class="errorTitle" name="password" />
 						</label>
 						<label class="inputWrap">
 							<span class="label">Повторите пароль</span>
-							<input :type="inputPassType">
-							<button class="theButton buttonShowPass" :class="{ active: this.inputPassType == 'text' }" @click="showPass"></button>
+							<div class="inputBox">
+								<Field name="confirm_password" :type="inputPassType" />
+								<span class="theButton buttonShowPass" :class="{ active: this.inputPassType == 'text' }" @click="showPass"></span>
+							</div>
+							<ErrorMessage class="errorTitle" name="confirm_password" />
 						</label>
-						<submit class="theButton buttonPrimary buttonConfirm marginAuto">Отправить</submit>
+						<span class="theButton buttonPrimary buttonConfirm marginAuto" @click="nextStep">Отправить</span>
 						<div class="infoWrap">
 							<span class="theTitle">Есть аккаунт?</span>
-							<button class="theButton buttonTransparent fontFamilyB" @click="this.setLogPage()">Войти</button>
+							<span class="theButton buttonTransparent fontFamilyB" @click="this.setLogPage()">Войти</span>
 						</div>
-					</Form>
+					<!-- </Form> -->
+					<!-- <button class="theButton buttonPrimary buttonConfirm marginAuto" @click="onSubmit" >Отправить</button> -->
 				</div>
 
 			</div>
 
+
 		</div>
 
-		<div class="contentWrap stepRegSecond" v-if="curStep == 2">
+
+
+		<div class="contentWrap stepRegSecond" v-show="curStep == 2">
 		
 			<div class="topLine flexWrap">
-				<button class="theButton leftButton buttonTransparent" @click="prevStep">Назад</button>
+				<span class="theButton leftButton buttonTransparent" @click="prevStep">Назад</span>
 				<h1 class="theTitle">Прочтите соглашение</h1>
-				<button class="theButton ghostWrap"></button>
+				<span class="theButton ghostWrap"></span>
 			</div>
 
 			<div class="contentSubWrap">
@@ -73,23 +81,25 @@
 					<h3>Подзаголовок</h3>
 					<p>Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
 				</div>
-				<button class="theButton buttonPrimary buttonConfirm " @click="nextStep">Принять и продолжить</button>
+				<span class="theButton buttonPrimary buttonConfirm" @click="confirmRegistr">Принять и продолжить</span>
 			</div>
 			
 		</div>
 
 
-		<div class="contentWrap stepRegFinal" v-if="curStep == 3">
+
+
+		<div class="contentWrap stepRegFinal" v-show="curStep == 3">
 			<div class="contentSubWrap">
 				<div class="infoWrap">
 					<h2>Регистрация прошла успешно!</h2>
-					<button class="theButton buttonPrimary" @click="this.setLogPage()">Войти</button>
+					<span class="theButton buttonPrimary" @click="this.setLogPage()">Войти</span>
 					<!-- <button class="theButton buttonPrimary" @click="confirmReg">Войти</button> -->
 				</div>
 			</div>
 		</div>
 
-
+	</Form>
 	</div>
 </template>
 
@@ -98,7 +108,7 @@
 import {mapState, mapMutations} from 'vuex';
 import { Form, Field, ErrorMessage, useField } from 'vee-validate';
 
-import { object, string } from 'yup';
+import { object, string, ref } from 'yup';
 
 
 export default {
@@ -117,18 +127,19 @@ export default {
 	setup(){
 		const schema = object({
       email: string().required('Поле обязательно на заполнение').email('Введен не корректный адрес электронной почты').typeError('Поле Email обязателен').label('Email'),
-			name: string().required('Поле обязательно на заполнение').label('Имя'),
+			// name: string().required('Поле обязательно на заполнение').label('Имя'),
       password: string().required('Поле обязательно на заполнение').min(8, 'Поле пароля должно содержать не менее 8 символов').label('Пароль'),
-    });
+			confirm_password: string().label('Подтверждение пароля').required('Поле обязательно на заполнение').oneOf([ref('password'), null], 'Пароли должны совпадать'),
+		});
     return {
       schema,
     };
-
 	},
 	data(){
 		return{
 			curStep: 1,
 			inputPassType: 'password',
+			formValues: {},
 			// regForm: {
 			// 	email: '',
 			// 	firstName: '',
@@ -173,6 +184,17 @@ export default {
 				this.inputPassType = 'password';
 			}
 		},
+
+		onSubmit(values){
+			this.formValues = values;
+			this.curStep += 1;
+		},
+
+		confirmRegistr(){
+			console.log(JSON.stringify(this.formValues, null, 2));
+			this.curStep += 1;
+		},
+
 
 		
 	},
@@ -295,7 +317,7 @@ export default {
 			border: 2px solid #FFF;
 			transition: all .24s ease, letter-spacing .0s ease;
 			outline: none;
-			letter-spacing: 1px;
+			letter-spacing: .4px;
 			&[type=text]{
 				letter-spacing: 0.6px;
 			}

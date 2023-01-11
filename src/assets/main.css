@@ -146,6 +146,9 @@ body .marginAuto{
 	border-radius: 8px;
 	padding: 12px 16px;
 	font-weight: 800;
+	user-select: none;
+	pointer-events: fill;
+	text-align: center;
 }
 .theButton:hover{}
 

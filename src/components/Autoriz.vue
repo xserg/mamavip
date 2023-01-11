@@ -23,7 +23,7 @@
 					<label class="inputWrap">
 						<span class="label">Введите пароль</span>
 						<input :type="inputPassType">
-						<button class="theButton buttonShowPass" :class="{ active: this.inputPassType == 'text' }" @click="showPass"></button>
+						<span class="theButton buttonShowPass" :class="{ active: this.inputPassType == 'text' }" @click="showPass"></span>
 					</label>
 					<div class="infoWrap">
 						<button class="theButton buttonWhite fontFamilyB">Забыли пароль?</button>
