@@ -1,40 +1,47 @@
 <template>
 	
 	<div class="mainContainer blockWrap">
-		<div class="contentWrap">
-		
-			<div class="topLine flexWrap">
-				<button class="theButton leftButton buttonTransparent ghostWrap">Назад</button>
-				<h1 class="theTitle">Вход</h1>
-				<button class="theButton rightButton buttonTransparent fontFamilyB">Войти</button>
-			</div>
-
-			<div class="contentSubWrap">
-
-				<div class="titleLine">
-					<h2 class="pageTitle fontSize20 fontFamilyEB">Добро пожаловать в школу мам и пап</h2>
-					<h2 class="pageSubtitle fontSize32 fontFamilyEB">"Нежность"</h2>
+		<Form @submit="onSubmit" :validation-schema="schema">
+			<div class="contentWrap">
+			
+				<div class="topLine flexWrap">
+					<span class="theButton leftButton buttonTransparent ghostWrap">Назад</span>
+					<h1 class="theTitle">Вход</h1>
+					<button class="theButton rightButton buttonTransparent fontFamilyB">Войти</button>
 				</div>
-				<div class="formWrap">
-					<label class="inputWrap">
-						<span class="label">Введите email</span>
-						<input type="text" placeholder="example@mail.com">
-					</label>
-					<label class="inputWrap">
-						<span class="label">Введите пароль</span>
-						<input :type="inputPassType">
-						<span class="theButton buttonShowPass" :class="{ active: this.inputPassType == 'text' }" @click="showPass"></span>
-					</label>
-					<div class="infoWrap">
-						<button class="theButton buttonWhite fontFamilyB">Забыли пароль?</button>
-						<span class="theTitle">Нет аккаунта?</span>
-						<button class="theButton buttonTransparent fontFamilyB" @click="this.setRegPage()">Зарегистрироваться</button>
+
+				<div class="contentSubWrap">
+
+					<div class="titleLine">
+						<h2 class="pageTitle fontSize20 fontFamilyEB">Добро пожаловать в школу мам и пап</h2>
+						<h2 class="pageSubtitle fontSize32 fontFamilyEB">"Нежность"</h2>
 					</div>
+					<div class="formWrap">
+						<label class="inputWrap">
+							<span class="label">Введите email</span>
+							<Field name="email" />
+   					 	<ErrorMessage class="errorTitle" name="email" />
+						</label>
+						<label class="inputWrap">
+							<span class="label">Введите пароль</span>
+							<div class="inputBox">
+								<Field name="password" :type="inputPassType" />
+								<span class="theButton buttonShowPass" :class="{ active: this.inputPassType == 'text' }" @click="showPass"></span>
+							</div>
+							<ErrorMessage class="errorTitle" name="password" />
+						</label>
+
+						<div class="infoWrap">
+							<span class="theButton buttonOptimal marginAuto buttonWhite fontFamilyB">Забыли пароль?</span>
+							<span class="theTitle">Нет аккаунта?</span>
+							<span class="theButton buttonOptimal marginAuto buttonTransparent fontFamilyB" @click="this.setRegPage()">Зарегистрироваться</span>
+						</div>
+					</div>
+
 				</div>
 
 			</div>
-
-		</div>
+		</Form>
 	</div>
 
 </template>
@@ -42,16 +49,36 @@
 <script>
 
 import {mapState, mapMutations} from 'vuex';
+import { Form, Field, ErrorMessage, useField } from 'vee-validate';
+
+import { object, string, ref } from 'yup';
 
 export default {
 	name: 'autoriz',
 
-	components: {},
+	components: {
+		Form,
+    Field,
+    ErrorMessage,
+	},
+
+	setup(){
+		const schema = object({
+      email: string().required('Поле обязательно на заполнение').email('Введен не корректный адрес электронной почты').typeError('Поле Email обязателен').label('Email'),
+			// name: string().required('Поле обязательно на заполнение').label('Имя'),
+      password: string().required('Поле обязательно на заполнение').min(8, 'Поле пароля должно содержать не менее 8 символов').label('Пароль'),
+			confirm_password: string().label('Подтверждение пароля').required('Поле обязательно на заполнение').oneOf([ref('password'), null], 'Пароли должны совпадать'),
+		});
+    return {
+      schema,
+    };
+	},
 
 	data(){
 		return{
 			curStep: 1,
 			inputPassType: 'password',
+			formValues: {},
 			// loginForm: {
 			// 	email: '',
 			// 	password: '',
@@ -82,6 +109,10 @@ export default {
 			}else{
 				this.inputPassType = 'password';
 			}
+		},
+
+		onSubmit(values){
+			console.log(JSON.stringify(this.formValues, null, 2));
 		},
 
 	},
@@ -147,92 +178,6 @@ export default {
 
 
 .formWrap{
-	max-width: 568px;
-	margin: 0 auto;
-	width: 100%;
-	
-	.inputWrap{
-		margin-bottom: 24px;
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		position: relative;
-		.label{
-			font-size: 12px;
-			margin-bottom: 4px;
-		}
-		input{
-			position: relative;
-			z-index: 5;
-			width: 100%;
-			border: none;
-			padding: 12px 16px;
-			box-shadow: 0px 16px 20px -8px rgba(253, 124, 132, 0.2);
-			border-radius: 8px;
-			border: 2px solid #FFF;
-			transition: all .24s ease, letter-spacing .0s ease;
-			outline: none;
-			letter-spacing: 1px;
-			&[type=text]{
-				letter-spacing: 0.6px;
-			}
-			&[type=password]{
-				letter-spacing: 5px;
-			}
-			&::placeholder{
-				color: #23292D4D;
-			}
-			&:focus, &:focus-within, &:active, &:focus-visible, &:target{
-				border: 2px solid #FEABB0;
-				transition: all .24s ease, letter-spacing .0s ease;
-			}
-		}
-		.theButton.buttonShowPass{
-			position: absolute;
-			bottom: 6px;
-			right: 8px;
-			display: block;
-			border-radius: 50%;
-			width: 32px;
-			height: 32px;
-			z-index: 10;
-			&::before{
-				content: '';
-				width: 100%;
-				height: 100%;
-				top: 0;
-				left: 0;
-				position: absolute;
-				background-image: url('../assets/icons/eye-on.svg');
-				background-size: 60%;
-				background-repeat: no-repeat;
-				background-position: center;
-				opacity: 0;
-				transition: all .24s ease;
-			}
-			&::after{
-				content: '';
-				width: 100%;
-				height: 100%;
-				top: 0;
-				left: 0;
-				position: absolute;
-				background-image: url('../assets/icons/eye-off.svg');
-				background-size: 60%;
-				background-repeat: no-repeat;
-				background-position: center;
-				opacity: 1;
-				transition: all .24s ease;
-			}
-			&.active::before{
-				opacity: 1;
-			}
-			&.active::after{
-				opacity: 0;
-			}
-		}
-	}
 
 	.submitWrap{
 		margin-bottom: 0;

@@ -222,12 +222,15 @@ body .marginAuto{
 
 
 
-.buttonConfirm{
+.buttonConfirm, .buttonOptimal{
 	min-width: 330px;
 	max-width: 480px;
 	width: max-content;
 }
 
+
+
+/* -------- Стили блоков --------- */
 
 .infoWrap h1{
 	font-size: 32px;
@@ -243,14 +246,131 @@ body .marginAuto{
 	font-size: 16px;
 	margin-bottom: 8px;
 }
-.infoWrap p, .infoWrap li, .infoWrap ul, .infoWrap ol, .infoWrap h1, .infoWrap h2, .infoWrap h3, .infoWrap h4, .infoWrap h5, .infoWrap h6, .infoWrap span, .infoWrap a{
+.infoWrap p, .infoWrap li, .infoWrap ul, .infoWrap ol, .infoWrap h1, .infoWrap h2, .infoWrap h3, .infoWrap h4, .infoWrap h5, .infoWrap h6, .infoWrap a{
  text-align: left;
 }
 
 .infoWrap p{
 	margin-bottom: 8px;
  }
-/* 
+
+
+
+
+ /* --------- Формы --------- */
+
+
+
+.formWrap{
+	max-width: 568px;
+	margin: 0 auto;
+	width: 100%;
+}
+
+.formWrap .inputWrap{
+	margin-bottom: 24px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	position: relative;
+}
+.formWrap .inputWrap .label{
+	font-size: 12px;
+	margin-bottom: 4px;
+}
+.formWrap .inputWrap .inputBox{
+	position: relative;
+	width: 100%;
+}
+.formWrap .inputWrap .errorTitle{
+	font-size: 12px;
+	margin-left: 16px;
+	margin-top: 4px;
+	color: #F74A4A;
+}
+
+.formWrap .inputWrap input{
+	position: relative;
+	z-index: 5;
+	width: 100%;
+	border: none;
+	padding: 12px 16px;
+	box-shadow: 0px 16px 20px -8px rgba(253, 124, 132, 0.2);
+	border-radius: 8px;
+	border: 2px solid #FFF;
+	transition: all .24s ease, letter-spacing .0s ease;
+	outline: none;
+	letter-spacing: .4px;
+}
+.formWrap .inputWrap input[type=text]{
+	letter-spacing: 0.6px;
+}
+.formWrap .inputWrap input[type=password]{
+	letter-spacing: 5px;
+}
+.formWrap .inputWrap input::placeholder{
+	color: #23292D4D;
+}
+.formWrap .inputWrap input:focus, .formWrap .inputWrap input:focus-within, .formWrap .inputWrap input:active, .formWrap .inputWrap input:focus-visible, .formWrap .inputWrap input:target{
+	border: 2px solid #FEABB0;
+	transition: all .24s ease, letter-spacing .0s ease;
+}
+
+.formWrap .inputWrap .theButton.buttonShowPass{
+	position: absolute;
+	bottom: 6px;
+	right: 8px;
+	display: block;
+	border-radius: 50%;
+	width: 32px;
+	height: 32px;
+	z-index: 10;
+}
+.formWrap .inputWrap .theButton.buttonShowPass::before{
+	content: '';
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	position: absolute;
+	background-image: url('../assets/icons/eye-on.svg');
+	background-size: 60%;
+	background-repeat: no-repeat;
+	background-position: center;
+	opacity: 0;
+	transition: all .24s ease;
+}
+.formWrap .inputWrap .theButton.buttonShowPass::after{
+	content: '';
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	position: absolute;
+	background-image: url('../assets/icons/eye-off.svg');
+	background-size: 60%;
+	background-repeat: no-repeat;
+	background-position: center;
+	opacity: 1;
+	transition: all .24s ease;
+}
+.formWrap .inputWrap .theButton.buttonShowPass.active::before{
+	opacity: 1;
+}
+.formWrap .inputWrap .theButton.buttonShowPass.active::after{
+	opacity: 0;
+}
+
+
+
+
+
+
+
+/* ------- Анимации -------- */
+
+ /* 
 .animate_click{
 	transform: scale(1.001);
 	transition: transform .27s cubic-bezier(0.15, 0.86, 0.45, 0.95);
