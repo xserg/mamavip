@@ -2,7 +2,17 @@
 	
 	<div class="mainContainer blockWrap">
 		<Form @submit="onSubmit" v-slot="{ errors }" :validation-schema="schema">
+
 			<div class="contentWrap">
+
+				<div class="errorWrap flexWrap fontSize14" :class="{ ghostWrap: !this.showErrors }">
+					<p>Неправильный логин/пароль. <br>Повторите попытку.</p>
+					<div class="button_wrap">
+						<span class="separate"></span>
+						<span class="theButton close_button" @click="hiddenErrors"></span>
+					</div>
+				</div>
+
 				<div class="topLine flexWrap">
 					<span class="theButton leftButton buttonTransparent ghostWrap">Назад</span>
 					<h1 class="theTitle alignCenter">Вход</h1>
@@ -19,7 +29,7 @@
 						<label class="inputWrap" :class="{notValid: errors.email }">
 							<span class="label">Введите email</span>
 							<div class="inputBox">
-								<Field name="email" />
+								<Field name="email" placeholder="example@mail.com" />
 							</div>
    					 	<ErrorMessage class="errorTitle" name="email" />
 						</label>
@@ -77,6 +87,7 @@ export default {
 		return{
 			curStep: 1,
 			inputPassType: 'password',
+			showErrors: true,
 			// loginForm: {
 			// 	email: '',
 			// 	password: '',
@@ -111,7 +122,12 @@ export default {
 
 		onSubmit(values){
 			console.log(JSON.stringify(values, null, 2));
-			this.setAuthIn();
+			this.showErrors = true;
+			// this.setAuthIn();
+		},
+
+		hiddenErrors(){
+			this.showErrors = false;
 		},
 
 	},

@@ -33,20 +33,23 @@
 	user-select: none;
 }
 
+::selection{
+	background-color: #FD7C84;
+  color: #fff;
+}
+
 *{
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
 	line-height: 150%;
+	outline: none !important;
 }
 
 button, span.theButton{
 	user-select: none;
-	pointer-events: fill;
+	-webkit-tap-highlight-color: transparent;
 	cursor: pointer;
-}
-span{
-	pointer-events: fill;
 }
 
 
@@ -57,6 +60,11 @@ body{
 	margin: 0;
 	font-family: Manrope, Arial, sans-serif;
 	font-weight: 400;
+}
+
+form{
+	height: 100%;
+	width: 100%;
 }
 
 .theTitle, .pageTitle, .pageSubtitle{
@@ -79,9 +87,11 @@ body .marginAuto{
 
 .mainContainer{
 	width: 100%;
+	height: 100%;
 }
 
 .contentWrap{
+	height: 100%;
 	max-width: 600px;
 	padding-left: 16px;
 	padding-right: 16px;
@@ -136,7 +146,7 @@ body .marginAuto{
 	padding: 12px 16px;
 	font-weight: 800;
 	user-select: none;
-	pointer-events: fill;
+	/* pointer-events: fill; */
 	text-align: center;
 }
 .theButton:hover{}
@@ -278,6 +288,50 @@ a:hover{
 
 
 
+ .errorWrap{
+	position: fixed;
+	bottom:  20px;
+	left: 50%;
+	background-color: #F74A4A;
+	border-radius: 8px;
+	padding: 10px;
+	color: #FFF;
+	max-width: 480px;
+	width: calc(100vw - 32px);
+	transform: translate(-50%, 0px);
+	transition: all .45s ease;
+	justify-content: space-between;
+	z-index: 20;
+ }
+.errorWrap.ghostWrap{
+	transform: translate(-50%, 30px);
+}
+.errorWrap .button_wrap{
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+}
+.errorWrap .separate{
+	height: calc(100% - 4px);
+	width: 1.2px;
+	background-color: #FFF;
+	margin-right: 10px;
+}
+.errorWrap .close_button{
+	padding: 5px;
+	width: 24px;
+	min-width: 24px;
+	height: 24px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: calc(100% - 10px);
+	background-image: url('../assets/icons/close.svg');
+	margin-right: 7px;
+}
+
+ 
+
+
 
  /* --------- Формы --------- */
 
@@ -343,8 +397,11 @@ a:hover{
 	border: 2px solid #FFF;
 	transition: all .24s ease, letter-spacing .0s ease;
 	outline: none;
-	letter-spacing: .4px;
-	box-shadow: 0px 16px 20px -8px rgba(253, 124, 132, 0.2);
+	letter-spacing: .86px;
+	box-shadow: 0px 16px 20px -8px rgba(253, 124, 132, 0.4);
+	appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
 }
 .formWrap .inputWrap.notValid input{
 	border: 2px solid #F74A4A;
@@ -358,7 +415,7 @@ a:hover{
 
 
 .formWrap .inputWrap input[type=text]{
-	letter-spacing: 0.6px;
+	letter-spacing: .68px;
 }
 .formWrap .inputWrap input[type=password]{
 	letter-spacing: 5px;

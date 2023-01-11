@@ -74,6 +74,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+	height: 100vh;
 	&::before{
 		z-index: 5;
 		content: '';
@@ -101,6 +102,7 @@ export default {
 		filter: blur(20vh);
 	}
 	.authContainer{
+		height: 100vh;
 		z-index: 10;
 		position: relative;
 	}
