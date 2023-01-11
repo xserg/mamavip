@@ -41,7 +41,6 @@
 							</div>
 							<ErrorMessage class="errorTitle" name="confirm_password" />
 						</label>
-						<span class="theButton buttonPrimary buttonConfirm marginAuto" @click="nextStep">Отправить</span>
 						<div class="infoWrap">
 							<span class="theTitle">Есть аккаунт?</span>
 							<span class="theButton buttonTransparent fontFamilyB" @click="this.setLogPage()">Войти</span>
@@ -93,7 +92,8 @@
 			<div class="contentSubWrap">
 				<div class="infoWrap">
 					<h2>Регистрация прошла успешно!</h2>
-					<span class="theButton buttonPrimary" @click="this.setLogPage()">Войти</span>
+					<p class="confirmMessage">Для входа перейдите на страницу авторизации.</p>
+					<span class="theButton buttonConfirm buttonPrimary" @click="this.setLogPage()">Войти</span>
 					<!-- <button class="theButton buttonPrimary" @click="confirmReg">Войти</button> -->
 				</div>
 			</div>
@@ -232,6 +232,9 @@ export default {
 		text-align: center;
 		margin-left: auto;
 		margin-right: auto;
+	}
+	.infoWrap .confirmMessage{
+		margin-bottom: 30px;
 	}
 }
 
