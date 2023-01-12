@@ -8,7 +8,7 @@
 					<p>Неправильный логин/пароль. <br>Повторите попытку.</p>
 					<div class="button_wrap">
 						<span class="separate"></span>
-						<span class="theButton close_button" @click="hideErrors"></span>
+						<span class="theButton close_button" @click="hideMessages"></span>
 					</div>
 				</div>
 
@@ -62,7 +62,7 @@
 					<p>Текущий email <br>не зарегистрирован в системе</p>
 					<div class="button_wrap">
 						<span class="separate"></span>
-						<span class="theButton close_button" @click="hideErrors"></span>
+						<span class="theButton close_button" @click="hideMessages"></span>
 					</div>
 				</div>
 				
@@ -100,7 +100,15 @@
 					<p>Введен не корректный код</p>
 					<div class="button_wrap">
 						<span class="separate"></span>
-						<span class="theButton close_button" @click="hideErrors"></span>
+						<span class="theButton close_button" @click="hideMessages"></span>
+					</div>
+				</div>
+
+				<div class="notificationWrap flexWrap fontSize14" :class="{ ghostWrap: !this.showNotification }">
+					<p>Код подтверждения отправлен</p>
+					<div class="button_wrap">
+						<span class="separate"></span>
+						<span class="theButton close_button" @click="hideMessages"></span>
 					</div>
 				</div>
 				
@@ -125,19 +133,35 @@
 					</div>
 
 					<div class="infoWrap">
-						<span class="theButton buttonWhite">Запросить код повторно 0:49</span>
+						<span class="theButton buttonWhite" :class="{disabled: !this.resendCode }" @click="onResendCode">Запросить код повторно <b :class="{hiddenWrap: this.resendCode }">{{timer.minutes}}:{{timer.seconds}}</b></span>
 						<p class="fontSize12 alignCenter">Проверьте папку «Спам», если не видите письма</p>
 					</div>
+
+				<div class="infoWrap testingWrap">
+
+					<!-- {{ this.displayTimerValues.seconds }} -->
+
+					<!-- {{ this.displayTimerSeconds }} -->
+					<!-- <span>{{time.hours}}</span>:<span>{{time.minutes}}</span>:<span>{{time.seconds}}</span><span>{{time.ampm}}</span> -->
+					<!-- <p>{{timer.isRunning ? 'Running' : 'Not running'}}</p> -->
+					<!-- <button @click="timer.start()">Start</button>
+					<button @click="timer.pause()">Pause</button>
+					<button @click="timer.resume()">Resume</button>
+					<button @click="restartOne()">Restart</button> -->
+				</div> 
 
 				</div>
 			
 			</Form>
+
+			
+
 		</div>
 
 
 
 		<div class="mainContainer authstep_newpass" v-show=" this.curStep == 'auth_newpass' ">
-			<Form class="contentWrap" @submit="onSubmit" v-slot="{ errors }" :validation-schema="schema">
+			<Form class="contentWrap" @submit="onSavePass" v-slot="{ errors }" :validation-schema="schema_newpass">
 
 				<div class="topLine flexWrap">
 					<span class="theButton leftButton buttonGhost"></span>
@@ -153,18 +177,18 @@
 						<label class="inputWrap">
 							<span class="label">Введите пароль</span>
 							<div class="inputBox">
-								<Field name="password" :class="{notValid: errors.password }" :type="inputPassType" />
+								<Field name="newpass" :class="{notValid: errors.newpass }" :type="inputPassType" />
 								<span class="theButton buttonShowPass" :class="{ active: this.inputPassType == 'text' }" @click="showPass"></span>
 							</div>
-							<ErrorMessage class="errorTitle" name="password" />
+							<ErrorMessage class="errorTitle" name="newpass" />
 						</label>
 						<label class="inputWrap">
 							<span class="label">Повторите пароль</span>
 							<div class="inputBox">
-								<Field name="password" :class="{notValid: errors.password }" :type="inputPassType" />
+								<Field name="confirm_newpass" :class="{notValid: errors.confirm_newpass }" :type="inputPassType" />
 								<span class="theButton buttonShowPass" :class="{ active: this.inputPassType == 'text' }" @click="showPass"></span>
 							</div>
-							<ErrorMessage class="errorTitle" name="password" />
+							<ErrorMessage class="errorTitle" name="confirm_newpass" />
 						</label>
 					</div>
 				</div>
@@ -177,13 +201,18 @@
 </template>
 
 <script>
+// 1. Подключаем defineComponent, watchEffect, onMounted как просит того модуль vue-timer-hook
+// 2. Подключаем ref как в примерах для корректной работы обновления данных в setup
+import { defineComponent, ref, watchEffect, onMounted } from "vue";
 
 import {mapState, mapMutations} from 'vuex';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 
-import { object, string, number } from 'yup';
+import { object, string } from 'yup';
+// Все три функции что есть в модуля
+import { useTimer, useStopwatch, useTime } from 'vue-timer-hook';
 
-export default {
+export default defineComponent({
 	name: 'autoriz',
 
 	components: {
@@ -193,6 +222,50 @@ export default {
 	},
 
 	setup(){
+
+		const resendCode = ref(true);
+		const time = new Date();
+		// const format = '12-hour'
+    // const time = useTime(format);
+    // time.setSeconds(time.getSeconds() + 1); // 600 = 10 minutes timer
+    const timer = useTimer(time);
+		const displayTimerDays = timer.days < 10 ? "0" + timer.days : timer.days;
+		const displayTimerHours = timer.hours < 10 ? "0" + timer.hours : timer.hours;
+		const displayTimerMinutes = timer.minutes < 10 ? "0" + String(timer.minutes) : timer.minutes;
+		const displayTimerSeconds = timer.hours < 10 ? "0" + String(timer.seconds) : timer.seconds;
+
+		const displayTimerValues = {
+			days: displayTimerDays,
+			hours: displayTimerHours,
+			minutes: displayTimerMinutes,
+			seconds: displayTimerSeconds,
+		}
+
+		// Рестарт таймера под отправку нового кода
+    const restartOne = () => {
+			const time = new Date();
+			time.setSeconds(time.getSeconds() + 10);
+			timer.restart(time);
+    }
+
+    onMounted(() => {
+      watchEffect(async () => {
+        if(timer.isExpired.value) {
+					// console.log('Timer is expired');
+					try {
+						// Примеры на будущее потестировать
+						// const res = await fetch('https://www.greetingsapi.com/random')
+						// const response = await res.json()
+						resendCode.value = true;
+					} catch (error) {
+						console.log('Error! Could not reach the API. ' + error);
+					}
+        }
+      });
+    });
+
+		
+
 		const schema = object({
       email: string().required('Пожалуйста, заполните это поле').email('Пожалуйста, введите корректный email').typeError('Поле Email обязателен').label('Email'),
       password: string().required('Пожалуйста, заполните это поле').label('Пароль'),
@@ -201,19 +274,33 @@ export default {
       email: string().required('Пожалуйста, заполните это поле').email('Пожалуйста, введите корректный email').typeError('Поле Email обязателен').label('Email'),
 		});
 		const schema_code = object({
-      code: string().required('').min(6, 'Код должен состоять из 6 символов').max(6, 'Код должен состоять из 6 символов').typeError().label('Код из письма'),
+      code: string().required('Введите код подтверждения').min(6, 'Код должен состоять из 6 символов').max(6, 'Код должен состоять из 6 символов').typeError().label('Код из письма'),
+		});
+		const schema_newpass = object({
+      newpass: string().required('Пожалуйста, заполните это поле').min(8, 'Поле пароля должно содержать не менее 8 символов').label('Пароль'),
+			confirm_newpass: string().label('Подтверждение пароля').required('Пожалуйста, заполните это поле').oneOf([ref('newpass'), null], 'Пароли должны совпадать'),
 		});
     return {
-      schema, schema_forgot, schema_code,
+      schema, schema_forgot, schema_code, schema_newpass,
+			resendCode, timer, restartOne,
+			// displayTimerDays, displayTimerHours, displayTimerMinutes, displayTimerSeconds,
+			displayTimerValues,
     };
+
+
+		
+
+
 	},
 
 	data(){
 		return{
-			curStep: 'auth_code',
+			curStep: 'auth_login',
 			inputPassType: 'password',
 			showErrors: false,
-			timer: 0,
+			showNotification: false,
+			resendCode: true,
+			curResetValues: '',
 			// resendCode: false,
 			// loginForm: {
 			// 	email: '',
@@ -224,6 +311,7 @@ export default {
 
 	
 	methods:{
+
 		...mapMutations({
 			setLogPage: 'setLogPage',
 			setAuthIn: 'setAuthIn',
@@ -257,21 +345,41 @@ export default {
 		},
 
 		onSendCode(values){
-			console.log(JSON.stringify(values, null, 2));
+			this.curResetValues = values;
+			console.log(JSON.stringify(this.curResetValues, null, 2));
+			setTimeout(() => {
+        this.showNotification = true;
+      }, 400);
 			// this.showErrors = true;
 			this.curStep = 'auth_code';
+			this.resendCode = false;
+			this.restartOne();
 		},
+		onResendCode(){
+			console.log(JSON.stringify(this.curResetValues, null, 2));
+			setTimeout(() => {
+        this.showNotification = true;
+      }, 400);
+			// this.showErrors = true;
+			this.curStep = 'auth_code';
+			this.resendCode = false;
+			this.restartOne();
+		},
+
 
 		onResetPass(values){
 			console.log(JSON.stringify(values, null, 2));
-			this.showErrors = true;
-			// this.curStep = 'auth_newpass';
+			// this.showErrors = true;
+			this.curStep = 'auth_newpass';
 		},
 
+		onSavePass(){
+			this.curStep = 'auth_login';
+		},
 
-
-		hideErrors(){
+		hideMessages(){
 			this.showErrors = false;
+			this.showNotification = false;
 		},
 
 	},
@@ -280,11 +388,25 @@ export default {
 		...mapState({
 			isAuth: state => state.isAuth,
 			newReg: state => state.newReg,
-		})
+		}),
 	},
 
+	// mounted(){
+	// 	this.setTimes();
+	// },
+
+
+	// watch:{
+	// 	clientStatus: {
+	// 		handler(newVal){
+	// 			this.addThisTable(newVal);
+	// 		},
+	// 		deep: true
+	// 	}
+	// },
 	
-}
+
+});
 
 
 </script>

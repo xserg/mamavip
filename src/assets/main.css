@@ -46,6 +46,10 @@
 	outline: none !important;
 }
 
+b{
+	font-weight: inherit;
+}
+
 button, span.theButton{
 	user-select: none;
 	-webkit-tap-highlight-color: transparent;
@@ -283,7 +287,7 @@ a:hover{
 
 
 
- .errorWrap{
+ .errorWrap, .notificationWrap{
 	position: fixed;
 	bottom:  20px;
 	left: 50%;
@@ -298,21 +302,24 @@ a:hover{
 	justify-content: space-between;
 	z-index: 20;
  }
-.errorWrap.ghostWrap{
+ .notificationWrap{
+	background-color: #FD7C84;
+ }
+.errorWrap.ghostWrap, .notificationWrap.ghostWrap{
 	transform: translate(-50%, 30px);
 }
-.errorWrap .button_wrap{
+.errorWrap .button_wrap, .notificationWrap .button_wrap{
 	display: flex;
 	justify-content: flex-end;
 	align-items: center;
 }
-.errorWrap .separate{
+.errorWrap .separate, .notificationWrap .separate{
 	height: calc(100% - 4px);
 	width: 1.2px;
 	background-color: #FFF;
 	margin-right: 10px;
 }
-.errorWrap .close_button{
+.errorWrap .close_button, .notificationWrap .close_button{
 	padding: 5px;
 	width: 24px;
 	min-width: 24px;
