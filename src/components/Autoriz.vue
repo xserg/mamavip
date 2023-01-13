@@ -4,6 +4,14 @@
 		<div class="contentWrap authstep_login" v-show=" this.curStep == 'auth_login' ">
 			<Form @submit="onSubmit" v-slot="{ errors }" :validation-schema="schema">
 
+				<div class="notificationWrap flexWrap fontSize14" :class="{ ghostWrap: !this.showNotification }">
+					<p>Пароль был успешно обновлен</p>
+					<div class="button_wrap">
+						<span class="separate"></span>
+						<span class="theButton close_button" @click="hideMessages"></span>
+					</div>
+				</div>
+
 				<div class="errorWrap flexWrap fontSize14" :class="{ ghostWrap: !this.showErrors }">
 					<p>Неправильный логин/пароль. <br>Повторите попытку.</p>
 					<div class="button_wrap">
@@ -81,7 +89,7 @@
 						<label class="inputWrap" :class="{notValid: errors.email || showErrors }">
 							<span class="label">Email</span>
 							<div class="inputBox">
-								<Field name="email" placeholder="example@mail.com" />
+								<Field ref="forgotEmailInput" name="email" placeholder="example@mail.com" />
 							</div>
 								<ErrorMessage class="errorTitle" name="email" />
 						</label>
@@ -126,23 +134,23 @@
 						<label class="inputWrap" :class="{notValid: errors.code }">
 							<span class="label">Код</span>
 							<div class="inputBox">
-								<Field name="code" type="number" onkeypress="this.value=this.value.substring(0,5)" placeholder="123456" />
+								<Field ref="forgotCodeInput" name="code" type="number" onkeypress="this.value=this.value.substring(0,5)" placeholder="123456" />
 							</div>
 								<ErrorMessage class="errorTitle" name="code" />
 						</label>
 					</div>
 
 					<div class="infoWrap">
-						<span class="theButton buttonWhite" :class="{disabled: !this.resendCode }" @click="onResendCode">Запросить код повторно <b :class="{hiddenWrap: this.resendCode }">{{timer.minutes}}:{{timer.seconds}}</b></span>
+						<span class="theButton buttonWhite" :class="{disabled: !this.resendCode }" @click="onResendCode">Запросить код повторно <b :class="{hiddenWrap: this.resendCode }">{{this.timer.minutes}}:{{this.timer.seconds.value < 10 ? '0' + this.timer.seconds.value : this.timer.seconds}}</b></span>
 						<p class="fontSize12 alignCenter">Проверьте папку «Спам», если не видите письма</p>
 					</div>
 
 				<div class="infoWrap testingWrap">
 
-					<!-- {{ this.displayTimerValues.seconds }} -->
-
 					<!-- {{ this.displayTimerSeconds }} -->
-					<!-- <span>{{time.hours}}</span>:<span>{{time.minutes}}</span>:<span>{{time.seconds}}</span><span>{{time.ampm}}</span> -->
+					<!-- <span>{{this.time.hours}}</span>:<span>{{this.time.minutes}}</span>:<span>{{this.time.seconds}}</span><span>{{this.time.ampm}}</span> -->
+					<!-- <span>{{this.timer.days}}</span>:<span>{{this.timer.hours}}</span>:<span>{{this.timer.minutes}}</span>:<span>{{this.timer.seconds.value < 10 ? '0' + this.timer.seconds.value : this.timer.seconds}}</span> <span>{{this.time.ampm}}</span> -->
+					<!-- {{ this.displayTimerSeconds }} -->
 					<!-- <p>{{timer.isRunning ? 'Running' : 'Not running'}}</p> -->
 					<!-- <button @click="timer.start()">Start</button>
 					<button @click="timer.pause()">Pause</button>
@@ -203,12 +211,12 @@
 <script>
 // 1. Подключаем defineComponent, watchEffect, onMounted как просит того модуль vue-timer-hook
 // 2. Подключаем ref как в примерах для корректной работы обновления данных в setup
-import { defineComponent, ref, watchEffect, onMounted } from "vue";
+import { defineComponent, watchEffect, onMounted, ref } from "vue";
 
 import {mapState, mapMutations} from 'vuex';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 
-import { object, string } from 'yup';
+import * as yup from 'yup';
 // Все три функции что есть в модуля
 import { useTimer, useStopwatch, useTime } from 'vue-timer-hook';
 
@@ -216,6 +224,7 @@ export default defineComponent({
 	name: 'autoriz',
 
 	components: {
+		// object, string, ref, 
 		Form,
     Field,
     ErrorMessage,
@@ -229,29 +238,27 @@ export default defineComponent({
     // const time = useTime(format);
     // time.setSeconds(time.getSeconds() + 1); // 600 = 10 minutes timer
     const timer = useTimer(time);
-		const displayTimerDays = timer.days < 10 ? "0" + timer.days : timer.days;
-		const displayTimerHours = timer.hours < 10 ? "0" + timer.hours : timer.hours;
-		const displayTimerMinutes = timer.minutes < 10 ? "0" + String(timer.minutes) : timer.minutes;
-		const displayTimerSeconds = timer.hours < 10 ? "0" + String(timer.seconds) : timer.seconds;
 
-		const displayTimerValues = {
-			days: displayTimerDays,
-			hours: displayTimerHours,
-			minutes: displayTimerMinutes,
-			seconds: displayTimerSeconds,
-		}
+		// Тесты: пытался вывести кастомизацию таймера за пределы компонента
+		// const displayTimerSeconds = ref(timer.seconds.value < 10 ? "0" + timer.seconds.value : timer.seconds);
+		// const displayTimerValues = ref({
+		// 	days: timer.days,
+		// 	hours: timer.hours,
+		// 	minutes: timer.minutes.value < 10 ? "0" + timer.minutes.value : timer.minutes,
+		// 	seconds: timer.seconds.value < 10 ? "0" + timer.seconds.value : timer.seconds,
+		// });
 
 		// Рестарт таймера под отправку нового кода
     const restartOne = () => {
 			const time = new Date();
-			time.setSeconds(time.getSeconds() + 10);
+			time.setSeconds(time.getSeconds() + 59);
 			timer.restart(time);
     }
 
     onMounted(() => {
       watchEffect(async () => {
         if(timer.isExpired.value) {
-					// console.log('Timer is expired');
+					// Timer is expired 
 					try {
 						// Примеры на будущее потестировать
 						// const res = await fetch('https://www.greetingsapi.com/random')
@@ -261,30 +268,49 @@ export default defineComponent({
 						console.log('Error! Could not reach the API. ' + error);
 					}
         }
+				// Тесты: пытался вывести кастомизацию таймера за пределы компонента
+				// if(timer.seconds.value){
+				// 	try {
+				// 		console.log('timer seconds try');
+				// 		displayTimerSeconds = timer.seconds.value < 10 ? "0" + timer.seconds.value : timer.seconds;
+				// 		// Примеры на будущее потестировать
+				// 		// const res = await fetch('https://www.greetingsapi.com/random')
+				// 		// const response = await res.json()
+				// 		// resendCode.value = true;
+				// 		// displayTimerValues.seconds = timer.seconds.value < 10 ? "0" + timer.seconds.value : timer.seconds;
+				// 		// displayTimerValues = {
+				// 		// 	days: timer.days,
+				// 		// 	hours: timer.hours,
+				// 		// 	minutes: timer.minutes.value < 10 ? "0" + timer.minutes.value : timer.minutes,
+				// 		// 	seconds: timer.seconds.value < 10 ? "0" + timer.seconds.value : timer.seconds,
+				// 		// };
+				// 	} catch (error) {
+				// 		console.log('Error! Could not reach the API. ' + error);
+				// 	}
+				// }
       });
     });
 
 		
 
-		const schema = object({
-      email: string().required('Пожалуйста, заполните это поле').email('Пожалуйста, введите корректный email').typeError('Поле Email обязателен').label('Email'),
-      password: string().required('Пожалуйста, заполните это поле').label('Пароль'),
+		const schema = yup.object({
+      email: yup.string().required('Пожалуйста, заполните это поле').email('Пожалуйста, введите корректный email').typeError('Поле Email обязателен').label('Email'),
+      password: yup.string().required('Пожалуйста, заполните это поле').label('Пароль'),
 		});
-		const schema_forgot = object({
-      email: string().required('Пожалуйста, заполните это поле').email('Пожалуйста, введите корректный email').typeError('Поле Email обязателен').label('Email'),
+		const schema_forgot = yup.object({
+      email: yup.string().required('Пожалуйста, заполните это поле').email('Пожалуйста, введите корректный email').typeError('Поле Email обязателен').label('Email'),
 		});
-		const schema_code = object({
-      code: string().required('Введите код подтверждения').min(6, 'Код должен состоять из 6 символов').max(6, 'Код должен состоять из 6 символов').typeError().label('Код из письма'),
+		const schema_code = yup.object({
+      code: yup.string().required('Введите код подтверждения').min(6, 'Код должен состоять из 6 символов').max(6, 'Код должен состоять из 6 символов').typeError().label('Код из письма'),
 		});
-		const schema_newpass = object({
-      newpass: string().required('Пожалуйста, заполните это поле').min(8, 'Поле пароля должно содержать не менее 8 символов').label('Пароль'),
-			confirm_newpass: string().label('Подтверждение пароля').required('Пожалуйста, заполните это поле').oneOf([ref('newpass'), null], 'Пароли должны совпадать'),
+		const schema_newpass = yup.object({
+      newpass: yup.string().required('Пожалуйста, заполните это поле').min(8, 'Поле пароля должно содержать не менее 8 символов').label('Пароль'),
+			confirm_newpass: yup.string().label('Подтверждение пароля').required('Пожалуйста, заполните это поле').oneOf([yup.ref('newpass'), null], 'Пароли должны совпадать'),
 		});
     return {
       schema, schema_forgot, schema_code, schema_newpass,
-			resendCode, timer, restartOne,
-			// displayTimerDays, displayTimerHours, displayTimerMinutes, displayTimerSeconds,
-			displayTimerValues,
+			resendCode, time, timer, restartOne,
+			// displayTimerDays, displayTimerHours, displayTimerMinutes, displayTimerSeconds, displayTimerValues,
     };
 
 
@@ -325,6 +351,7 @@ export default defineComponent({
 		},
 		forgotStep(){
 			this.curStep = 'auth_forgot';
+			this.$refs.forgotCodeInput.reset();
 		},
 		newpassStep(){
 			this.curStep = 'auth_newpass';
@@ -350,16 +377,23 @@ export default defineComponent({
 			setTimeout(() => {
         this.showNotification = true;
       }, 400);
+			setTimeout(() => {
+        this.showNotification = false;
+      }, 5000);
 			// this.showErrors = true;
+			// this.$refs.forgotEmailInput.reset();
 			this.curStep = 'auth_code';
 			this.resendCode = false;
 			this.restartOne();
 		},
 		onResendCode(){
-			console.log(JSON.stringify(this.curResetValues, null, 2));
+			this.$refs.forgotCodeInput.reset();
 			setTimeout(() => {
         this.showNotification = true;
       }, 400);
+			setTimeout(() => {
+        this.showNotification = false;
+      }, 5000);
 			// this.showErrors = true;
 			this.curStep = 'auth_code';
 			this.resendCode = false;
@@ -369,12 +403,20 @@ export default defineComponent({
 
 		onResetPass(values){
 			console.log(JSON.stringify(values, null, 2));
+			this.$refs.forgotCodeInput.reset();
 			// this.showErrors = true;
 			this.curStep = 'auth_newpass';
 		},
 
-		onSavePass(){
+		onSavePass(values){
+			console.log(JSON.stringify(values, null, 2));
 			this.curStep = 'auth_login';
+			setTimeout(() => {
+        this.showNotification = true;
+      }, 400);
+			setTimeout(() => {
+        this.showNotification = false;
+      }, 5000);
 		},
 
 		hideMessages(){

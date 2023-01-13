@@ -112,7 +112,7 @@
 import {mapState, mapMutations} from 'vuex';
 import { Form, Field, ErrorMessage, useField } from 'vee-validate';
 
-import { object, string, ref } from 'yup';
+import { object, string, ref} from 'yup';
 
 
 export default {
