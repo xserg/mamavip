@@ -4,10 +4,10 @@
 		<registr v-if="newReg"></registr>
 	</div>
 	<div v-if="isAuth" class="appContainer">
-		<nav>
+		<!-- <nav>
 			<router-link to="/">Home</router-link> |
 			<router-link to="/about">About</router-link>
-		</nav>
+		</nav> -->
 		<!-- {{ curStep }}
 		<button @click="nextStep">Добавить шаг</button> -->
 		<router-view></router-view>
@@ -18,8 +18,8 @@
 <script>
 
 // Импортирование компонентов 
-import Autoriz from '@/components/Autoriz';
-import Registr from '@/components/Registr';
+import Autoriz from '@/pages/Autoriz';
+import Registr from '@/pages/Registr';
 
 import {mapState, mapMutations} from 'vuex';
 

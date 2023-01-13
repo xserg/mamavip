@@ -75,7 +75,7 @@
 				</div>
 				
 				<div class="topLine flexWrap">
-					<span class="theButton leftButton buttonBack"></span>
+					<span class="theButton leftButton buttonBack" @click="loginStep"></span>
 					<h1 class="theTitle alignCenter">Восстановить пароль</h1>
 					<button class="theButton rightButton buttonTransparent fontFamilyB">Далее</button>
 				</div>
