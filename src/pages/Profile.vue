@@ -17,10 +17,21 @@
 						<p class="the_info blockWrap fontSize14 alignCenter">Это необходимо, чтобы пользоваться сервисом</p>
 						<button class="theButton buttonTransparent fontFamilyB">Заполнить</button>
 					</div>
-					<div class="userinfo_box" v-else>Молодец</div>
+					<div class="userinfo_box" v-else>
+						<div class="userinfo_card">
+							<!-- <span class="card_photo_wrap"  style="background-image:url('../assets/images/profile.jpg')"></span> -->
+							<span class="card_photo_wrap"></span>
+							<div class="card_info_wrap">
+								<span class="card_name">Екатерина</span>
+								<span class="card_status">Ваш срок — примерно 29 недель</span>
+							</div>
+							<router-link class="card_button theButton buttonTransparent buttonOptimal" to="/edit"></router-link>
+						</div>
+						<button class="user_info_button theButton buttonPrimary">Отметить рождение малыша</button>
+					</div>
 				</div>
 
-				<div class="tabsinfo_wrap midWrap marginB12">
+				<div class="tabsinfo_wrap midWrap marginB12 fontSize16">
 					<button class="link_button">
 						<div class="left_wrap">
 							<span class="the_icon save_icon"></span>
@@ -61,22 +72,15 @@
 					</button>
 				</div>
 
+			</div>
+
+			<div class="contentSubWrap">
 				<div class="logutinfo_wrap bottomWrap">
-					<button class="theButton buttonTertiary fontFamilyB marginAuto buttonOptimal">Выйти из аккаунта</button>
+					<button class="theButton buttonTertiary fontFamilyB marginAuto buttonOptimal" @click="this.setAuthOut(), this.setLogPage()">Выйти из аккаунта</button>
 				</div>
-
 			</div>
 
-			<div class="bottomLine flexWrap">
-				<button class="theButton leftButton buttonTransparent fontFamilyB left_button">
-					<span class="the_icon home_icon"></span>
-					<span class="the_title">Главное</span>
-				</button>
-				<button class="theButton rightButton buttonTransparent fontFamilyB right_button active">
-					<span class="the_icon profile_icon"></span>
-					<span class="the_title">Профиль</span>
-				</button>
-			</div>
+			<bottom-line></bottom-line>
 			
 		</div>
 	</div>
@@ -86,18 +90,36 @@
 // @ is an alias to /src
 // import DefaultLikes from '@/components/DefaultLikes.vue'
 
+import {mapState, mapMutations} from 'vuex';
+
 export default {
   name: 'Profile',
 
 	data(){
 		return{
-			profileIsFill: false,
+			profileIsFill: true,
 		}
+	},
+
+	methods:{
+
+		...mapMutations({
+			setLogPage: 'setLogPage',
+			setAuthOut: 'setAuthOut',
+			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
+		}),
 	},
 
   components: {
     // DefaultLikes,
-  }
+  },
+
+
+	// computed:{
+	// 	...mapState({
+	// 		isAuth: state => state.isAuth,
+	// 	}),
+	// },
 }
 </script>
 
@@ -105,96 +127,19 @@ export default {
 <style lang="scss" scoped>
 
 .mainContainer{
+	height: 100vh;
 	.contentWrap{
 		padding: 0;
-		margin-bottom: 80px;
-		background-color: #F3F5F6;
-		.bottomLine{
-			background-color: #ffffffa8;
-			backdrop-filter: blur(5px);
-			border-bottom: 1px solid rgba(35, 41, 45, 0.1);
-			position: fixed;
-			width: 100%;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			padding: 4px;
-			justify-content: space-around;
-			z-index: 100;
-			.theButton{
-				color: rgba(35, 41, 45, 0.5);
-				font-size: 12px;
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				padding: 0;
-				width: 100%;
-				.the_icon{
-					display: block;
-					min-width: 24px;
-					width: 24px;
-					height: 24px;
-					background-size: contain;
-					background-position: center;
-					background-repeat: no-repeat;
-					margin-bottom: 0px;
-					&.home_icon{
-						background-image: url('../assets/icons/icon-home-g.svg');
-					}
-					&.profile_icon{
-						background-image: url('../assets/icons/icon-profile-g.svg');
-					}
-				}
-				.the_title{}
-				&.active{
-					color: #FD7C84;
-					.the_icon{
-						&.home_icon{
-						background-image: url('../assets/icons/icon-home-a.svg');
-						}
-						&.profile_icon{
-							background-image: url('../assets/icons/icon-profile-a.svg');
-						}
-					}
-				}
-			}
-			.left_button{}
-			.right_button{}
-		}
-		.topLine{
-			background-color: #ffffffa8;
-			backdrop-filter: blur(5px);
-			border-bottom: 1px solid rgba(35, 41, 45, 0.1);
-			position: fixed;
-			width: 100%;
-			top: 0;
-			left: 0;
-			right: 0;
-			padding: 0 16px;
-			justify-content: space-between;
-			z-index: 100;
-			.theButton{
-				width: 100%;
-				max-width: max-content;
-				min-width: 20%;
-				&.rightButton{
-					text-align: right;
-				}
-			}
-			.theTitle{
-				cursor: default;
-				width: 100%;
-				max-width: max-content;
-				min-width: 60%;
-				margin-top: 12px;
-				margin-bottom: 12px;
-				font-size: 16px;
-			}
-		}
+		padding-top: 45px;
+		padding-bottom: 48px;
+		background-color: #FFF;
+		overflow: scroll;
+		justify-content: flex-start;
 
 		.contentSubWrap{
 			width: 100%;
 			padding: 16px 0;
+			padding: 0;
 			background-color: #F3F5F6;
 			.link_button{
 				border: none;
@@ -204,7 +149,6 @@ export default {
 				background-color: transparent;
 				width: 100%;
 				position: relative;
-				font-size: 16px;
 				padding: 8px 16px;
 				padding-right: calc(24px + 26px); 
 				&::after{
@@ -253,6 +197,11 @@ export default {
 						background-image: url('../assets/icons/profile-info.svg');
 					}
 				}
+				.the_title{
+					text-align: left;
+					padding-right: 10px;
+					color: #23292D;
+				}
 			}
 			
 			.userinfo_wrap{
@@ -285,6 +234,64 @@ export default {
 					}
 					.theButton{}
 				}
+
+				.userinfo_box{
+					.userinfo_card{
+						margin-bottom: 12px;
+						display: flex;
+						align-items: center;
+						position: relative;
+						.card_photo_wrap{
+							min-width: 60px;
+							width: 60px;
+							height: 60px;
+							display: block;
+							background-position: center;
+							background-repeat: no-repeat;
+							background-color: #FFEAEB;
+							border-radius: 50%;
+							margin-right: 12px;
+							background-image: url('../assets/icons/nophoto.svg');
+							background-size: 35%;
+
+							background-image: url('../assets/images/profile.jpg');
+							background-size: cover;
+						}
+						.card_info_wrap{
+							display: flex;
+							flex-direction: column;
+							.card_name{
+								font-weight: 800;
+								margin-bottom: 4px;
+								user-select: none;
+							}
+							.card_status{
+								padding-right: 40px;
+							}
+						}
+						.card_button{
+							position: absolute;
+							right: 0;
+							top: 50%;
+							transform: translateY(-50%);
+							display: block;
+							background-position: center;
+							background-repeat: no-repeat;
+							background-size: 20px;
+							background-image: url('../assets/icons/edit.svg');
+							min-width: 30px;
+							width: 30px;
+							height: 30px;
+							border: none;
+							padding: 5px;
+							background-color: transparent;
+						}
+					}
+					.user_info_button{
+						width: 100%;
+						max-width: 328px;
+					}
+				}
 			}
 			.tabsinfo_wrap{
 				background-color: #FFF;
@@ -297,7 +304,9 @@ export default {
 			.logutinfo_wrap{
 				background-color: #FFF;
 				padding: 16px 0;
+				padding-bottom: 24px;
 			}
+			
 		}
 
 	}

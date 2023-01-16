@@ -4,6 +4,7 @@ export default createStore({
   state: {
 		isAuth: true,
 		newReg: false,
+		curTab: 'home',
   },
   getters: {
   },
@@ -20,6 +21,13 @@ export default createStore({
 		},
 		setAuthIn(state){
 			state.isAuth = true;
+		},
+
+		setHomeTab(state){
+			state.curTab = 'home';
+		},
+		setProfileTab(state){
+			state.curTab = 'profile';
 		},
 		
   },

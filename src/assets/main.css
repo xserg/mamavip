@@ -44,6 +44,11 @@
 	box-sizing: border-box;
 	line-height: 125%;
 	outline: none !important;
+	user-select: none;
+}
+
+input, .userSelect{
+	user-select: text;
 }
 
 b{
@@ -54,6 +59,7 @@ button, span.theButton{
 	user-select: none;
 	-webkit-tap-highlight-color: transparent;
 	cursor: pointer;
+	font-size: inherit;
 }
 
 
@@ -64,6 +70,9 @@ body{
 	margin: 0;
 	font-family: Manrope, Arial, sans-serif;
 	font-weight: 400;
+}
+a:visited{
+	color: #23292D;
 }
 
 form{
@@ -256,6 +265,9 @@ a:hover{
 }
 .fontSize14{
 	font-size: 14px;
+}
+.fontSize16{
+	font-size: 16px;
 }
 .fontSize20{
 	font-size: 20px;
@@ -481,6 +493,42 @@ a:hover{
 
 
 
+.mainContainer .contentWrap .topLine{
+
+	position: fixed;
+	background-color: #ffffffa8;
+	backdrop-filter: blur(5px);
+	border-bottom: 1px solid rgba(35, 41, 45, 0.1);
+	width: 100%;
+	top: 0;
+	left: 0;
+	right: 0;
+	padding: 0 16px;
+	justify-content: space-between;
+	z-index: 100;
+	align-items: center;
+}
+.mainContainer .contentWrap .topLine .theButton{
+	width: 100%;
+	max-width: max-content;
+	min-width: 20%;
+}
+.mainContainer .contentWrap .topLine .theButton.rightButton{
+	text-align: right;
+	padding-right: 4px;
+}
+
+.mainContainer .contentWrap .topLine .theTitle{
+	cursor: default;
+	width: 100%;
+	max-width: max-content;
+	min-width: 60%;
+	margin-top: 12px;
+	margin-bottom: 12px;
+	font-size: 16px;
+}
+
+
 
 
 /* ------- Анимации -------- */
@@ -596,3 +644,31 @@ a:hover{
 	margin-bottom: 50px;
 }
 
+
+/* ------ @Media ------- */
+
+@media screen and (max-width: 375px) {
+
+body{
+	font-size: 14px;
+}
+
+.fontSize12{
+	font-size: 11px;
+}
+.fontSize14{
+	font-size: 12px;
+}
+.fontSize16{
+	font-size: 14px;
+}
+.fontSize20{
+	font-size: 18px;
+}
+.fontSize32{
+	font-size: 26px;
+}
+
+
+
+}

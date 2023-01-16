@@ -2,17 +2,23 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/pages/Home.vue'
 import About from '@/pages/About.vue'
 import Profile from '@/pages/Profile.vue'
+import ProfileEdit from '@/pages/ProfileEdit.vue'
 
 const routes = [
   {
-    path: '/home',
+    path: '/',
     name: 'home',
     component: Home
   },
 	{
-    path: '/',
+    path: '/profile',
     name: 'profile',
     component: Profile
+  },
+	{
+    path: '/edit',
+    name: 'edit',
+    component: ProfileEdit
   },
   {
     path: '/about',

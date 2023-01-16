@@ -225,32 +225,7 @@ export default {
 
 		.topLine{
 			background-color: #ffeaeba8;
-			backdrop-filter: blur(5px);
-			position: fixed;
-			width: 100%;
-			top: 0;
-			left: 0;
-			right: 0;
-			padding: 0 16px;
-			justify-content: space-between;
-			z-index: 100;
-			.theButton{
-				width: 100%;
-				max-width: max-content;
-				min-width: 20%;
-				&.rightButton{
-					text-align: right;
-				}
-			}
-			.theTitle{
-				cursor: default;
-				width: 100%;
-				max-width: max-content;
-				min-width: 60%;
-				margin-top: 12px;
-				margin-bottom: 12px;
-				font-size: 16px;
-			}
+			border-bottom: none;
 		}
 
 		.contentSubWrap{
