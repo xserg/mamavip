@@ -117,7 +117,7 @@ export default {
 		onSubmit(values){
 			console.log(JSON.stringify(values, null, 2));
 			// this.showErrors = true;
-			router.push('profile');
+			// router.push('profile');
 		},
 	}
 
