@@ -108,6 +108,7 @@ export default {
 			setAuthOut: 'setAuthOut',
 			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
+
 	},
 
   components: {
