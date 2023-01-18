@@ -32,44 +32,44 @@
 				</div>
 
 				<div class="tabsinfo_wrap midWrap marginB12 fontSize16">
-					<button class="link_button">
+					<router-link class="link_button" to="/profile/saved">
 						<div class="left_wrap">
 							<span class="the_icon save_icon"></span>
 							<span class="the_title">Сохранённые лекции</span>
 						</div>
 						<span class="the_count">12</span>
-					</button>
-					<button class="link_button">
+					</router-link>
+					<router-link class="link_button" to="/profile/bought">
 						<div class="left_wrap">
 							<span class="the_icon buy_icon"></span>
 							<span class="the_title">Купленные лекции</span>
 						</div>
 						<span class="the_count">7</span>
-					</button>
-					<button class="link_button">
+					</router-link>
+					<router-link class="link_button" to="/profile/viewed">
 						<div class="left_wrap">
 							<span class="the_icon see_icon"></span>
 							<span class="the_title">Просмотренные лекции</span>
 						</div>
 						<span class="the_count">18</span>
-					</button>
+					</router-link>
 				</div>
 
 				<div class="moreinfo_wrap midWrap marginB12">
-					<button class="link_button">
+					<router-link class="link_button" to="/profile/help">
 						<div class="left_wrap">
 							<span class="the_icon help_icon"></span>
 							<span class="the_title">Помощь</span>
 						</div>
 						<span class="the_count"></span>
-					</button>
-					<button class="link_button">
+					</router-link>
+					<router-link class="link_button" to="/profile/about">
 						<div class="left_wrap">
 							<span class="the_icon info_icon"></span>
 							<span class="the_title">О приложении</span>
 						</div>
 						<span class="the_count"></span>
-					</button>
+					</router-link>
 				</div>
 
 			</div>
@@ -139,7 +139,7 @@ export default {
 
 		.contentSubWrap{
 			width: 100%;
-			padding: 16px 0;
+			padding: 16px 0px;
 			padding: 0;
 			background-color: #F3F5F6;
 			.link_button{
@@ -150,8 +150,10 @@ export default {
 				background-color: transparent;
 				width: 100%;
 				position: relative;
-				padding: 8px 16px;
+				padding: 6px 12px;
 				padding-right: calc(24px + 26px); 
+				border-radius: 16px;
+				margin-bottom: 4px;
 				&::after{
 					content: '';
 					position: absolute;
@@ -296,11 +298,11 @@ export default {
 			}
 			.tabsinfo_wrap{
 				background-color: #FFF;
-				padding: 16px 0;
+				padding: 16px 4px;
 			}
 			.moreinfo_wrap{
 				background-color: #FFF;
-				padding: 16px 0;
+				padding: 16px 4px;
 			}
 			.logutinfo_wrap{
 				background-color: #FFF;
