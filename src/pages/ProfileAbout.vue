@@ -8,21 +8,29 @@
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			<div class="contentSubWrap elements_wrap">
-				<div class="the_element_wrap">
-					<div class="info_line">
-						<div class="left_wrap">
-							<span class="viewed"></span>
-							<span class="premium"></span>
-						</div>
-						<span class="play_wrap"></span>
+			<div class="contentSubWrap">
+				<div class="title_wrap topWrap marginB12 flexWrap">
+					<span class="the_title fontSize20 fontFamilyEB">Школа мам и пап</span>
+					<span class="the_subtitle fontSize32 fontFamilyEB">«Нежность»</span>
+				</div>
+				<div class="info_wrap marginB12 midWrap">
+					<p>(Описание приложения идёт сюда) Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
+				</div>
+				<div class="author_wrap marginB12 midWrap">
+					<span class="the_title fontSize14">Автор</span>
+					<span class="the_value fontFamilyEB">Сергей Тарасов</span>
+				</div>
+				<div class="links_wrap bottomWrap">
+					<div class="link_wrap" @click="copyLink">
+						<span class="the_title fontSize14">Поделиться ссылкой</span>
+						<span class="the_value fontFamilyEB">www.google.com</span>
+					</div>
+					<div class="link_wrap the_qr" @click="copyLink">
+						<span class="the_title fontSize14">Показать QR-код</span>
+						<span class="the_value fontFamilyEB">www.google.com</span>
 					</div>
 				</div>
 			</div>
-
-			<div class="contentSubWrap">
-			</div>
-
 
 			<bottom-line></bottom-line>
 			
@@ -52,6 +60,10 @@ export default {
 			setAuthOut: 'setAuthOut',
 			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
+
+		copyLink(){
+			console.log('Скопировано');
+		},
 
 	},
 
@@ -85,12 +97,76 @@ export default {
 			width: 100%;
 			padding: 16px 0px;
 			padding: 0;
-			// background-color: #F3F5F6;
-			.elements_wrap{
-				.the_element_wrap{
-
+			background-color: #F3F5F6;
+			.title_wrap{
+				background-color: #FFF;
+				padding: 16px;
+				padding-top: 8px;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				.the_title, .the_subtitle{
+					color: #23292D;
 				}
 			}
+			.info_wrap{
+				font-size: 14px;
+				background-color: #FFF;
+				padding: 16px;
+				color: #23292DB2;
+			}
+			.author_wrap{
+				background-color: #FFF;
+				padding: 16px;
+				.the_title{
+					color: #23292DB2;
+					display: block;
+					margin-bottom: 4px;
+				}
+				.the_value{
+					display: block;
+				}
+			}
+			.links_wrap{
+				background-color: #FFF;
+				padding: 16px;
+				.link_wrap{
+					margin-bottom: 16px;
+					position: relative;
+					cursor: pointer;
+					transition: all .24s ease;
+					&:hover{
+						opacity: .85;
+					}
+					&::before{
+						content: '';
+						width: 24px;
+						height: 24px;
+						position: absolute;
+						right: 0;
+						top: 50%;
+						transform: translate(-50%);
+						background-repeat: no-repeat;
+						background-size: contain;
+						background-image: url('./../assets/icons/share-icon.svg');
+					}
+					&.the_qr::before{
+						background-image: url('./../assets/icons/qr-icon.svg');
+					}
+				}
+				.link_wrap:last-of-type{
+					margin-bottom: 0;
+				}
+				.the_title{
+					color: #23292DB2;
+					display: block;
+					margin-bottom: 4px;
+				}
+				.the_value{
+					display: block;
+				}
+			}
+
 		}
 
 	}

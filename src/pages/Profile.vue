@@ -1,6 +1,6 @@
 <template>
   <div class="mainContainer">
-		<div class="contentWrap">
+		<div class="contentWrap" :class="{hiddenWrap: celebrateWrap}">
 
 			<div class="topLine flexWrap">
 				<span class="theButton leftButton buttonTransparent ghostWrap">Назад</span>
@@ -27,7 +27,7 @@
 							</div>
 							<router-link class="card_button theButton buttonTransparent buttonOptimal" to="/edit"></router-link>
 						</div>
-						<button class="user_info_button theButton buttonPrimary">Отметить рождение малыша</button>
+						<button class="user_info_button theButton buttonPrimary" @click="celebrateBirthday">Отметить рождение малыша</button>
 					</div>
 				</div>
 
@@ -83,6 +83,30 @@
 			<bottom-line></bottom-line>
 			
 		</div>
+
+
+
+		<div class="contentWrap" :class="{hiddenWrap: !celebrateWrap}">
+
+			<div class="topLine flexWrap">
+				<span class="theButton leftButton buttonBack"></span>
+				<h1 class="theTitle alignCenter"></h1>
+				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
+			</div>
+
+			<div class="contentSubWrap">
+				<div class="celebrate_wrap topWrap marginB12">
+					Картинка поздарвляю
+				</div>
+				<div class="moreelements_wrap bottomWrap">
+					Элементы
+				</div>
+			</div>
+
+			</div>
+
+
+
 	</div>
 </template>
 
@@ -98,8 +122,14 @@ export default {
 	data(){
 		return{
 			profileIsFill: true,
+			yesBaby: false,
+			celebrateWrap: false,
 		}
 	},
+
+	components: {
+    // DefaultLikes,
+  },
 
 	methods:{
 
@@ -109,11 +139,14 @@ export default {
 			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
 
+		celebrateBirthday(){
+			this.yesBaby = true;
+			this.celebrateWrap = true;
+		},
+
 	},
 
-  components: {
-    // DefaultLikes,
-  },
+
 
 
 	// computed:{
@@ -308,6 +341,16 @@ export default {
 				background-color: #FFF;
 				padding: 16px 0;
 				padding-bottom: 24px;
+			}
+
+
+			.celebrate_wrap{
+				background-color: #FFF;
+				padding: 16px 0px;
+			}
+			.moreelements_wrap{
+				background-color: #FFF;
+				padding: 16px 0px;
 			}
 			
 		}
