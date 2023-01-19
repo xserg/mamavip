@@ -96,10 +96,15 @@
 
 			<div class="contentSubWrap">
 				<div class="celebrate_wrap topWrap marginB12">
-					Картинка поздарвляю
+					<img class="the_img" src="./../assets/images/baby.png" alt="baby">
+					<span class="the_title fontFamilyEB alignCenter">Поздравляем с рождением малыша!</span>
 				</div>
 				<div class="moreelements_wrap bottomWrap">
-					Элементы
+					<div class="videoSlider">
+						<span class="the_title">Посмотрите лекции из подборки</span>
+						<span class="the_subtitle marginB12">Уход за новорждённым</span>
+						<div class="theSlider"></div>
+					</div>
 				</div>
 			</div>
 
@@ -347,10 +352,28 @@ export default {
 			.celebrate_wrap{
 				background-color: #FFF;
 				padding: 16px 0px;
+				width: 100%;
+				.the_img{
+					width: 56%;
+					max-width: 480px;
+					margin: 0 auto;
+					display: block;
+				}
+				.the_title{
+					text-align: center;
+					color: #23292DB2;
+					width: 100%;
+					display: block;
+				}
 			}
 			.moreelements_wrap{
 				background-color: #FFF;
 				padding: 16px 0px;
+				.videoSlider{
+					.the_title{}
+					.the_subtitle{}
+					.theSlider{}
+				}
 			}
 			
 		}
