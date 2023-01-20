@@ -1,3 +1,5 @@
+import { contentModule } from '@/store/contentModule'
+
 import { createStore } from 'vuex'
 
 export default createStore({
@@ -34,5 +36,6 @@ export default createStore({
   actions: {
   },
   modules: {
+		content: contentModule,
   }
 })

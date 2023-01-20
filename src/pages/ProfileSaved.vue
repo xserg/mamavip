@@ -1,7 +1,7 @@
 <template>
   <div class="mainContainer">
 
-		<div class="contentWrap" :class="{hiddenWrap: !this.hasElements}">
+		<div class="contentWrap" v-if="posts.length > 0">
 
 			<div class="topLine flexWrap">
 				<router-link class="theButton leftButton buttonTransparent buttonBack" to="/profile"></router-link>
@@ -9,94 +9,16 @@
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			<div class="contentSubWrap elements_wrap flexWrap">
-				
-				<div class="the_element marginB12">
-					<div class="info_line flexWrap">
-						<div class="icons flexWrap">
-							<span class="viewed blockWrap"></span>
-							<span class="premium blockWrap"></span>
-						</div>
-						<span class="play"></span>
-					</div>
-					<div class="the_element_box">
-						<img src="./../assets/images/element.jpg" alt="element">
-					</div>
-					<span class="the_title fontSize14 fontFamilyEB">Название лекции какое-нибудь длинное, чтобы занимало целых две строки или даже...</span>
-				</div>
-				<div class="the_element marginB12">
-					<div class="info_line flexWrap">
-						<div class="icons flexWrap">
-							<span class="viewed blockWrap"></span>
-							<span class="premium blockWrap"></span>
-						</div>
-						<span class="play"></span>
-					</div>
-					<div class="the_element_box">
-						<img src="./../assets/images/element.jpg" alt="element">
-					</div>
-					<span class="the_title fontSize14 fontFamilyEB">Название лекции какое-нибудь длинное, чтобы занимало целых две строки или даже...</span>
-				</div>
-				<div class="the_element marginB12">
-					<div class="info_line flexWrap">
-						<div class="icons flexWrap">
-							<span class="viewed blockWrap"></span>
-							<span class="premium blockWrap"></span>
-						</div>
-						<span class="play"></span>
-					</div>
-					<div class="the_element_box">
-						<img src="./../assets/images/element.jpg" alt="element">
-					</div>
-					<span class="the_title fontSize14 fontFamilyEB">Название лекции какое-нибудь длинное, чтобы занимало целых две строки или даже...</span>
-				</div>
-				<div class="the_element marginB12">
-					<div class="info_line flexWrap">
-						<div class="icons flexWrap">
-							<span class="viewed blockWrap"></span>
-							<span class="premium blockWrap"></span>
-						</div>
-						<span class="play"></span>
-					</div>
-					<div class="the_element_box">
-						<img src="./../assets/images/element.jpg" alt="element">
-					</div>
-					<span class="the_title fontSize14 fontFamilyEB">Название лекции какое-нибудь длинное, чтобы занимало целых две строки или даже...</span>
-				</div>
-				<div class="the_element marginB12">
-					<div class="info_line flexWrap">
-						<div class="icons flexWrap">
-							<span class="viewed blockWrap"></span>
-							<span class="premium blockWrap"></span>
-						</div>
-						<span class="play"></span>
-					</div>
-					<div class="the_element_box">
-						<img src="./../assets/images/element.jpg" alt="element">
-					</div>
-					<span class="the_title fontSize14 fontFamilyEB">Название лекции какое-нибудь длинное, чтобы занимало целых две строки или даже...</span>
-				</div>
-				<div class="the_element marginB12">
-					<div class="info_line flexWrap">
-						<div class="icons flexWrap">
-							<span class="viewed blockWrap"></span>
-							<span class="premium blockWrap"></span>
-						</div>
-						<span class="play"></span>
-					</div>
-					<div class="the_element_box">
-						<img src="./../assets/images/element.jpg" alt="element">
-					</div>
-					<span class="the_title fontSize14 fontFamilyEB">Название лекции какое-нибудь длинное, чтобы занимало целых две строки или даже...</span>
-				</div>
-
-			</div>
-
-			<div class="contentSubWrap empty_wrap flexWrap" :class="{hiddenWrap: this.hasElements}">
+			<elements-list 
+				class="contentSubWrap"
+				:posts="posts"
+			></elements-list>
+<!-- 
+			<div class="contentSubWrap empty_wrap flexWrap" >
 				<img class="the_img" src="./../assets/images/emptyState.png" alt="img">
 				<span class="the_title fontFamilyEB">Нет просмотренных лекций</span>
 				<span class="theButton buttonPrimary buttonOptimal">Искать лекции</span>
-			</div>
+			</div> -->
 
 			<bottom-line></bottom-line>
 			
@@ -105,7 +27,7 @@
 
 
 
-		<div class="contentWrap centered" :class="{hiddenWrap: this.hasElements}">
+		<div class="contentWrap centered" v-else>
 
 			<div class="topLine flexWrap">
 				<router-link class="theButton leftButton buttonTransparent buttonBack" to="/profile"></router-link>
@@ -113,7 +35,7 @@
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			<div class="contentSubWrap empty_wrap flexWrap" :class="{hiddenWrap: this.hasElements}">
+			<div class="contentSubWrap empty_wrap flexWrap">
 				<img class="the_img" src="./../assets/images/emptyState.png" alt="img">
 				<span class="the_title fontFamilyEB">Нет сохранённых лекций</span>
 				<p class="the_desc fontSize14">Сохраняйте лекции, чтобы вернуться к ним в любой момент</p>
@@ -132,15 +54,32 @@
 <script>
 // @ is an alias to /src
 // import DefaultLikes from '@/components/DefaultLikes.vue'
+import ElementsList from '@/components/ElementsList';
 
-import {mapState, mapMutations} from 'vuex';
+import {mapState, mapMutations, mapGetters} from 'vuex';
 
 export default {
   name: 'ProfileSaved',
+	components: {
+		ElementsList,
+  },
 
 	data(){
 		return{
-			hasElements: false,
+			hasElements: true,
+			posts: [
+			// {
+			// 	id: '1',
+			// 	title: 'Компонент',
+			// 	preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
+			// },
+			// {
+			// 	id: '2',
+			// 	title: 'Компонент',
+			// 	preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
+			// }
+		],
+
 		}
 	},
 
@@ -153,11 +92,34 @@ export default {
 			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
 
+		methods: {
+			deleteElement(post){
+				console.log('Имитация удаления элемента: ID ' + post.id)
+				// this.posts = this.posts.filter(p => p.id !== post.id)
+			},
+		},
+
+
+		computed:{
+		...mapState({
+			// curFilter: state => state.content.curFilter,
+		// 	posts: state => state.post.posts,
+		// 	isPostsLoading: state => state.post.isPostsLoading,
+		// 	selectedSort: state => state.post.selectedSort,
+		// 	searchQuery: state => state.post.searchQuery,
+		// 	page: state => state.post.page,
+		// 	limit: state => state.post.limit,
+		// 	totalPages: state => state.post.totalPages,
+		// 	sortOptions: state => state.post.sortOptions,
+		}),
+		...mapGetters({
+			// sortedPosts: 'post/sortedPosts',
+			sortedElementsSaved: 'content/sortedElementsSaved',
+		}),
 	},
 
-  components: {
-    // DefaultLikes,
-  },
+	},
+
 
 
 	// computed:{
@@ -188,112 +150,10 @@ export default {
 
 		.contentSubWrap{
 			width: 100%;
-			padding: 16px 0px;
-			padding: 0;
+			// padding: 16px 0px;
+			// padding: 0;
 			// background-color: #F3F5F6;
 			&.elements_wrap{
-				width: calc(100% + 16px);
-				padding: 8px 16px 16px;
-				flex-wrap: wrap;
-				margin-left: -8px;
-				margin-right: -8px;
-				.the_element{
-					width: calc(50% - 16px);
-					position: relative;
-					margin-left: 8px;
-					margin-right: 8px;
-					cursor: pointer;
-					transition: all .24s ease;
-					&:hover{
-						opacity: .86;
-					}
-					.info_line{
-						padding: 8px 12px;
-						width: 100%;
-						position: absolute;
-						top: 0;
-						left: 0;
-						width: 100%;
-						justify-content: space-between;
-						display: flex;
-
-						.icons{
-							height: max-content;
-							.viewed{
-								width: 28px;
-								height: 16px;
-								border-radius: 8px;
-								background: rgba(255, 255, 255, 0.7);
-								backdrop-filter: blur(10px);
-								margin-right: 4px;
-								padding: 2px 8px;
-								&::before{
-									display: block;
-									content: '';
-									width: 12px;
-									height: 12px;
-									background-image: url('../assets/icons/viewed.svg');
-									background-size: contain;
-									background-repeat: no-repeat;
-									background-position: center;
-								}
-							}
-							.premium{
-								padding: 2px 8px;
-								width: 28px;
-								height: 16px;
-								border-radius: 8px;
-								background: #FD7C84;
-								box-shadow: 0px 2px 4px rgba(253, 124, 132, 0.5);
-								&::before{
-									display: block;
-									content: '';
-									width: 12px;
-									height: 12px;
-									background-image: url('../assets/icons/premium.svg');
-									background-size: contain;
-									background-repeat: no-repeat;
-									background-position: center;
-								}
-							}
-
-						}
-						.play{
-							width: 40px;
-							height: 40px;
-							border-radius: 50%;
-							background: rgba(255, 255, 255, 0.7);
-							backdrop-filter: blur(10px);
-							padding: 8px;
-							&::before{
-								content: '';
-								width: 100%;
-								height: 100%;
-								display: block;
-								background-image: url('../assets/icons/play.png');
-								background-size: contain;
-								background-position: center;
-								background-repeat: no-repeat;
-							}
-						}
-					}
-					.the_element_box{
-						border: 1px solid rgba(35, 41, 45, 0.1);
-						border-radius: 8px;
-						overflow: hidden;
-						margin-bottom: 4px;
-						img{
-							width: 100%;
-							height: 100%;
-							object-fit: cover;
-							display: block;
-						}
-					}
-					.the_title{
-						display: block;
-						color: #23292D;
-					}
-				}
 			}
 
 			&.empty_wrap{
@@ -334,20 +194,6 @@ export default {
 
 	.mainContainer{
 		.contentWrap{
-
-			.contentSubWrap{
-				&.elements_wrap{
-					width: 100%;
-					padding: 8px 16px 16px;
-					margin-left: 0px;
-					margin-right: 0px;
-					.the_element{
-						width: 100%;
-						margin-left: 0px;
-						margin-right: 0px;
-					}
-				}
-			}
 		}
 	}
 

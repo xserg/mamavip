@@ -23,11 +23,12 @@
 							<span class="card_photo_wrap"></span>
 							<div class="card_info_wrap">
 								<span class="card_name">Екатерина</span>
-								<span class="card_status">Ваш срок — примерно 29 недель</span>
+								<span class="card_status" v-if="!this.yesBaby">Ваш срок — примерно 29 недель</span>
+								<span class="card_status" v-else>Малыш родился</span>
 							</div>
 							<router-link class="card_button theButton buttonTransparent buttonOptimal" to="/edit"></router-link>
 						</div>
-						<button class="user_info_button theButton buttonPrimary" @click="celebrateBirthday">Отметить рождение малыша</button>
+						<button class="user_info_button theButton buttonPrimary" v-if="!this.yesBaby" @click="celebrateBirthday">Отметить рождение малыша</button>
 					</div>
 				</div>
 
@@ -86,10 +87,10 @@
 
 
 
-		<div class="contentWrap" :class="{hiddenWrap: !celebrateWrap}">
+		<div class="contentWrap" :class="{ghostWrap: !celebrateWrap}">
 
 			<div class="topLine flexWrap">
-				<span class="theButton leftButton buttonBack"></span>
+				<span class="theButton leftButton buttonBack" @click="finishSelebrate"></span>
 				<h1 class="theTitle alignCenter"></h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
@@ -100,10 +101,38 @@
 					<span class="the_title fontFamilyEB alignCenter">Поздравляем с рождением малыша!</span>
 				</div>
 				<div class="moreelements_wrap bottomWrap">
-					<div class="videoSlider">
+					<div class="videoSliderWrap">
+
 						<span class="the_title">Посмотрите лекции из подборки</span>
 						<span class="the_subtitle marginB12">Уход за новорждённым</span>
-						<div class="theSlider"></div>
+
+						<agile :options="sliderOptions" class="theSlider">
+							
+							<!-- <div class="slide">
+								<h3>slide 1</h3>
+							</div>
+							<div class="slide">
+								<h3>slide 2</h3>
+							</div>
+							<div class="slide">
+								<h3>slide 3</h3>
+							</div>
+							<div class="slide">
+								<h3>slide 4</h3>
+							</div>
+							<div class="slide">
+								<h3>slide 5</h3>
+							</div> -->
+						</agile>
+
+						<element 
+							v-for="post in posts"
+							:post="post"
+							:key="post.id"
+						></element>
+
+						<pre>{{ posts }}</pre>
+
 					</div>
 				</div>
 			</div>
@@ -118,22 +147,65 @@
 <script>
 // @ is an alias to /src
 // import DefaultLikes from '@/components/DefaultLikes.vue'
+import Element from '@/components/Element';
 
 import {mapState, mapMutations} from 'vuex';
 
+import { VueAgile } from 'vue-agile'
+
 export default {
   name: 'Profile',
+
+	component: {
+		Element,
+	},
 
 	data(){
 		return{
 			profileIsFill: true,
 			yesBaby: false,
-			celebrateWrap: false,
+			celebrateWrap: true,
+			
+			sliderOptions: {
+				dots: false,
+				navButtons: false,
+				slidesToShow: 1.5,
+				responsive: [
+					{
+						breakpoint: 600,
+						settings: {
+								slidesToShow: 2.5
+						}
+					},
+					{
+						breakpoint: 1000,
+						settings: {
+								// navButtons: true
+						}
+					}
+				]
+			},
+
+			posts: [
+				{
+					id: '1',
+					title: 'Компонент',
+					preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
+				},
+				{
+					id: '2',
+					title: 'Компонент',
+					preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
+				}
+			],
+
+
 		}
 	},
 
 	components: {
     // DefaultLikes,
+		agile: VueAgile,
   },
 
 	methods:{
@@ -144,9 +216,14 @@ export default {
 			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
 
+		// Показать экран поздравлений и поменять статус ребенка
 		celebrateBirthday(){
 			this.yesBaby = true;
 			this.celebrateWrap = true;
+		},
+		// Закрыть экран поздравления
+		finishSelebrate(){
+			this.celebrateWrap = false;
 		},
 
 	},
@@ -308,6 +385,7 @@ export default {
 							}
 							.card_status{
 								padding-right: 40px;
+								color: #23292DB2;
 							}
 						}
 						.card_button{
