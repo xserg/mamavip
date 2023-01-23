@@ -1,7 +1,7 @@
 <template>
   <div class="mainContainer">
 
-		<div class="contentWrap" v-if="posts.length > 0">
+		<div class="contentWrap" v-if="sortedElementsSaved.length > 0">
 
 			<div class="topLine flexWrap">
 				<router-link class="theButton leftButton buttonTransparent buttonBack" to="/profile"></router-link>
@@ -11,20 +11,12 @@
 
 			<elements-list 
 				class="contentSubWrap"
-				:posts="posts"
+				:posts="sortedElementsSaved"
 			></elements-list>
-<!-- 
-			<div class="contentSubWrap empty_wrap flexWrap" >
-				<img class="the_img" src="./../assets/images/emptyState.png" alt="img">
-				<span class="the_title fontFamilyEB">Нет просмотренных лекций</span>
-				<span class="theButton buttonPrimary buttonOptimal">Искать лекции</span>
-			</div> -->
 
 			<bottom-line></bottom-line>
 			
 		</div>
-
-
 
 
 		<div class="contentWrap centered" v-else>
@@ -66,20 +58,7 @@ export default {
 
 	data(){
 		return{
-			hasElements: true,
-			posts: [
-			// {
-			// 	id: '1',
-			// 	title: 'Компонент',
-			// 	preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
-			// },
-			// {
-			// 	id: '2',
-			// 	title: 'Компонент',
-			// 	preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
-			// }
-		],
-
+			// hasElements: false,
 		}
 	},
 
@@ -97,20 +76,26 @@ export default {
 				console.log('Имитация удаления элемента: ID ' + post.id)
 				// this.posts = this.posts.filter(p => p.id !== post.id)
 			},
+			// setElements(){
+			// 	if(sortedElementsSaved && sortedElementsSaved.length > 0){
+			// 		this.hasElements = true;
+			// 	}else{
+			// 		this.hasElements = false;
+			// 	}
+			// },
 		},
 
 
-		computed:{
+		// mounted(){
+		// 	this.setElements();
+		// },
+
+	},
+
+
+	computed:{
 		...mapState({
 			// curFilter: state => state.content.curFilter,
-		// 	posts: state => state.post.posts,
-		// 	isPostsLoading: state => state.post.isPostsLoading,
-		// 	selectedSort: state => state.post.selectedSort,
-		// 	searchQuery: state => state.post.searchQuery,
-		// 	page: state => state.post.page,
-		// 	limit: state => state.post.limit,
-		// 	totalPages: state => state.post.totalPages,
-		// 	sortOptions: state => state.post.sortOptions,
 		}),
 		...mapGetters({
 			// sortedPosts: 'post/sortedPosts',
@@ -118,15 +103,6 @@ export default {
 		}),
 	},
 
-	},
-
-
-
-	// computed:{
-	// 	...mapState({
-	// 		isAuth: state => state.isAuth,
-	// 	}),
-	// },
 }
 </script>
 

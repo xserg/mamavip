@@ -1,7 +1,7 @@
 <template>
   <div class="mainContainer">
 
-		<div class="contentWrap" :class="{hiddenWrap: !this.hasElements}">
+		<div class="contentWrap" v-if="sortedElementsBought.length > 0">
 
 			<div class="topLine flexWrap">
 				<router-link class="theButton leftButton buttonTransparent buttonBack" to="/profile"></router-link>
@@ -9,94 +9,19 @@
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			<div class="contentSubWrap elements_wrap flexWrap">
-				
-				<div class="the_element marginB12">
-					<div class="info_line flexWrap">
-						<div class="icons flexWrap">
-							<span class="viewed blockWrap"></span>
-							<span class="premium blockWrap"></span>
-						</div>
-						<span class="play"></span>
-					</div>
-					<div class="the_element_box">
-						<img src="./../assets/images/element.jpg" alt="element">
-					</div>
-					<span class="the_title fontSize14 fontFamilyEB">Название лекции какое-нибудь длинное, чтобы занимало целых две строки или даже...</span>
-				</div>
-				<div class="the_element marginB12">
-					<div class="info_line flexWrap">
-						<div class="icons flexWrap">
-							<span class="viewed blockWrap"></span>
-							<span class="premium blockWrap"></span>
-						</div>
-						<span class="play"></span>
-					</div>
-					<div class="the_element_box">
-						<img src="./../assets/images/element.jpg" alt="element">
-					</div>
-					<span class="the_title fontSize14 fontFamilyEB">Название лекции какое-нибудь длинное, чтобы занимало целых две строки или даже...</span>
-				</div>
-				<div class="the_element marginB12">
-					<div class="info_line flexWrap">
-						<div class="icons flexWrap">
-							<span class="viewed blockWrap"></span>
-							<span class="premium blockWrap"></span>
-						</div>
-						<span class="play"></span>
-					</div>
-					<div class="the_element_box">
-						<img src="./../assets/images/element.jpg" alt="element">
-					</div>
-					<span class="the_title fontSize14 fontFamilyEB">Название лекции какое-нибудь длинное, чтобы занимало целых две строки или даже...</span>
-				</div>
-				<div class="the_element marginB12">
-					<div class="info_line flexWrap">
-						<div class="icons flexWrap">
-							<span class="viewed blockWrap"></span>
-							<span class="premium blockWrap"></span>
-						</div>
-						<span class="play"></span>
-					</div>
-					<div class="the_element_box">
-						<img src="./../assets/images/element.jpg" alt="element">
-					</div>
-					<span class="the_title fontSize14 fontFamilyEB">Название лекции какое-нибудь длинное, чтобы занимало целых две строки или даже...</span>
-				</div>
-				<div class="the_element marginB12">
-					<div class="info_line flexWrap">
-						<div class="icons flexWrap">
-							<span class="viewed blockWrap"></span>
-							<span class="premium blockWrap"></span>
-						</div>
-						<span class="play"></span>
-					</div>
-					<div class="the_element_box">
-						<img src="./../assets/images/element.jpg" alt="element">
-					</div>
-					<span class="the_title fontSize14 fontFamilyEB">Название лекции какое-нибудь длинное, чтобы занимало целых две строки или даже...</span>
-				</div>
-				<div class="the_element marginB12">
-					<div class="info_line flexWrap">
-						<div class="icons flexWrap">
-							<span class="viewed blockWrap"></span>
-							<span class="premium blockWrap"></span>
-						</div>
-						<span class="play"></span>
-					</div>
-					<div class="the_element_box">
-						<img src="./../assets/images/element.jpg" alt="element">
-					</div>
-					<span class="the_title fontSize14 fontFamilyEB">Название лекции какое-нибудь длинное, чтобы занимало целых две строки или даже...</span>
-				</div>
+			<!-- <div class="contentSubWrap elements_wrap flexWrap">
+			</div> -->
 
-			</div>
+			<elements-list 
+					class="contentSubWrap"
+					:posts="sortedElementsBought"
+				></elements-list>
 
-			<div class="contentSubWrap empty_wrap flexWrap" :class="{hiddenWrap: this.hasElements}">
+			<!-- <div class="contentSubWrap empty_wrap flexWrap" :class="{hiddenWrap: this.hasElements}">
 				<img class="the_img" src="./../assets/images/emptyState.png" alt="img">
 				<span class="the_title fontFamilyEB">Нет просмотренных лекций</span>
 				<span class="theButton buttonPrimary buttonOptimal">Искать лекции</span>
-			</div>
+			</div> -->
 
 			<bottom-line></bottom-line>
 			
@@ -105,7 +30,7 @@
 
 
 
-		<div class="contentWrap centered" :class="{hiddenWrap: this.hasElements}">
+		<div class="contentWrap centered" v-else>
 
 			<div class="topLine flexWrap">
 				<router-link class="theButton leftButton buttonTransparent buttonBack" to="/profile"></router-link>
@@ -133,14 +58,16 @@
 // @ is an alias to /src
 // import DefaultLikes from '@/components/DefaultLikes.vue'
 
-import {mapState, mapMutations} from 'vuex';
+import {mapState, mapMutations, mapGetters} from 'vuex';
+
+import ElementsList from '@/components/ElementsList';
 
 export default {
   name: 'ProfileBought',
 
 	data(){
 		return{
-			hasElements: false,
+			// hasElements: false,
 		}
 	},
 
@@ -156,15 +83,22 @@ export default {
 	},
 
   components: {
+		ElementsList,
     // DefaultLikes,
   },
 
 
-	// computed:{
-	// 	...mapState({
-	// 		isAuth: state => state.isAuth,
-	// 	}),
-	// },
+	computed:{
+		...mapState({
+			// curFilter: state => state.content.curFilter,
+		}),
+		...mapGetters({
+			// sortedPosts: 'post/sortedPosts',
+			sortedElementsBought: 'content/sortedElementsBought',
+		}),
+	},
+
+
 }
 </script>
 

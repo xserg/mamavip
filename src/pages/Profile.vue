@@ -23,8 +23,8 @@
 							<span class="card_photo_wrap"></span>
 							<div class="card_info_wrap">
 								<span class="card_name">Екатерина</span>
-								<span class="card_status" v-if="!this.yesBaby">Ваш срок — примерно 29 недель</span>
-								<span class="card_status" v-else>Малыш родился</span>
+								<span class="card_status fontSize14" v-if="!this.yesBaby">Ваш срок — примерно 29 недель</span>
+								<span class="card_status fontSize14" v-else>Малыш родился</span>
 							</div>
 							<router-link class="card_button theButton buttonTransparent buttonOptimal" to="/edit"></router-link>
 						</div>
@@ -104,34 +104,11 @@
 					<div class="videoSliderWrap">
 
 						<span class="the_title">Посмотрите лекции из подборки</span>
-						<span class="the_subtitle marginB12">Уход за новорждённым</span>
+						<span class="the_subtitle marginB12 fontFamilyEB">Уход за новорждённым</span>
 
-						<agile :options="sliderOptions" class="theSlider">
-							
-							<!-- <div class="slide">
-								<h3>slide 1</h3>
-							</div>
-							<div class="slide">
-								<h3>slide 2</h3>
-							</div>
-							<div class="slide">
-								<h3>slide 3</h3>
-							</div>
-							<div class="slide">
-								<h3>slide 4</h3>
-							</div>
-							<div class="slide">
-								<h3>slide 5</h3>
-							</div> -->
-						</agile>
+						<elements-slider :posts="sortedElementsBegin"/>
 
-						<element 
-							v-for="post in posts"
-							:post="post"
-							:key="post.id"
-						></element>
-
-						<pre>{{ posts }}</pre>
+						<span class="theButton buttonTertiary buttonOptimal" @click="finishSelebrate">Позже</span>
 
 					</div>
 				</div>
@@ -146,67 +123,28 @@
 
 <script>
 // @ is an alias to /src
-// import DefaultLikes from '@/components/DefaultLikes.vue'
-import Element from '@/components/Element';
+// import Element from '@/components/Element';
 
-import {mapState, mapMutations} from 'vuex';
-
-import { VueAgile } from 'vue-agile'
+import ElementsSlider from '@/components/ElementsSlider';
+import {mapState, mapMutations, mapGetters} from 'vuex';
 
 export default {
   name: 'Profile',
 
-	component: {
-		Element,
-	},
 
 	data(){
 		return{
 			profileIsFill: true,
 			yesBaby: false,
-			celebrateWrap: true,
-			
-			sliderOptions: {
-				dots: false,
-				navButtons: false,
-				slidesToShow: 1.5,
-				responsive: [
-					{
-						breakpoint: 600,
-						settings: {
-								slidesToShow: 2.5
-						}
-					},
-					{
-						breakpoint: 1000,
-						settings: {
-								// navButtons: true
-						}
-					}
-				]
-			},
-
-			posts: [
-				{
-					id: '1',
-					title: 'Компонент',
-					preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
-				},
-				{
-					id: '2',
-					title: 'Компонент',
-					preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
-				}
-			],
-
-
+			celebrateWrap: false,
 		}
 	},
 
+
 	components: {
-    // DefaultLikes,
-		agile: VueAgile,
+		ElementsSlider,
   },
+
 
 	methods:{
 
@@ -229,13 +167,16 @@ export default {
 	},
 
 
+	computed:{
+		...mapState({
+			// isAuth: state => state.isAuth,
+		}),
+		...mapGetters({
+			sortedElementsBegin: 'content/sortedElementsBegin',
+		})
+	},
 
-
-	// computed:{
-	// 	...mapState({
-	// 		isAuth: state => state.isAuth,
-	// 	}),
-	// },
+	
 }
 </script>
 
@@ -244,6 +185,14 @@ export default {
 
 .mainContainer{
 	height: 100vh;
+	position: relative;
+	.contentWrap.ghostWrap{
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 0;
+	}
 	.contentWrap{
 		padding: 0;
 		padding-top: 45px;
@@ -447,10 +396,43 @@ export default {
 			.moreelements_wrap{
 				background-color: #FFF;
 				padding: 16px 0px;
-				.videoSlider{
-					.the_title{}
-					.the_subtitle{}
-					.theSlider{}
+				.videoSliderWrap{
+					.the_title{
+						display: block;
+						color: #23292DB2;
+						padding: 0 16px;
+						margin-bottom: 4px;
+						font-size: 14px;
+					}
+					.the_subtitle{
+						display: block;
+						margin-bottom: 12px;
+						color: #23292D;
+						padding: 0 16px;
+						padding-right: calc(24px + 26px); 
+						position: relative;
+						line-height: 24px;
+						&::after{
+							content: '';
+							position: absolute;
+							right: 16px;
+							top: 50%;
+							transform: translateY(-50%);
+							width: 24px;
+							height: 24px;
+							display: block;
+							background-size: contain;
+							background-position: center;
+							background-repeat: no-repeat;
+							background-image: url('../assets/icons/arrow-right.svg');
+						}
+					}
+
+					.theButton{
+						margin-left: auto;
+						margin-right: auto;
+					}
+
 				}
 			}
 			

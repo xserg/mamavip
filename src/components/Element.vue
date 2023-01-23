@@ -48,9 +48,9 @@ export default({
 	position: relative;
 	cursor: pointer;
 	transition: all .24s ease;
-	&:hover{
-		opacity: .86;
-	}
+	// &:hover{
+	// 	opacity: .86;
+	// }
 	.info_line{
 		padding: 8px 12px;
 		width: 100%;
