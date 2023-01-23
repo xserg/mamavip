@@ -9,19 +9,10 @@
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			<!-- <div class="contentSubWrap elements_wrap flexWrap">
-			</div> -->
-
 			<elements-list 
-					class="contentSubWrap"
-					:posts="sortedElementsBought"
-				></elements-list>
-
-			<!-- <div class="contentSubWrap empty_wrap flexWrap" :class="{hiddenWrap: this.hasElements}">
-				<img class="the_img" src="./../assets/images/emptyState.png" alt="img">
-				<span class="the_title fontFamilyEB">Нет просмотренных лекций</span>
-				<span class="theButton buttonPrimary buttonOptimal">Искать лекции</span>
-			</div> -->
+				class="contentSubWrap"
+				:posts="sortedElementsBought"
+			></elements-list>
 
 			<bottom-line></bottom-line>
 			
@@ -38,7 +29,7 @@
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			<div class="contentSubWrap empty_wrap flexWrap" :class="{hiddenWrap: this.hasElements}">
+			<div class="contentSubWrap empty_wrap flexWrap">
 				<img class="the_img" src="./../assets/images/emptyState.png" alt="img">
 				<span class="the_title fontFamilyEB">Нет купленных лекций</span>
 				<!-- <p class="the_desc fontSize14">Сохраняйте лекции, чтобы вернуться к ним в любой момент</p> -->
@@ -122,113 +113,116 @@ export default {
 
 		.contentSubWrap{
 			width: 100%;
-			padding: 16px 0px;
-			padding: 0;
-			// background-color: #F3F5F6;
+			// padding: 16px 0px;
+			// padding: 0;
 			&.elements_wrap{
-				width: calc(100% + 16px);
-				padding: 8px 16px 16px;
-				flex-wrap: wrap;
-				margin-left: -8px;
-				margin-right: -8px;
-				.the_element{
-					width: calc(50% - 16px);
-					position: relative;
-					margin-left: 8px;
-					margin-right: 8px;
-					cursor: pointer;
-					transition: all .24s ease;
-					&:hover{
-						opacity: .86;
-					}
-					.info_line{
-						padding: 8px 12px;
-						width: 100%;
-						position: absolute;
-						top: 0;
-						left: 0;
-						width: 100%;
-						justify-content: space-between;
-						display: flex;
-
-						.icons{
-							height: max-content;
-							.viewed{
-								width: 28px;
-								height: 16px;
-								border-radius: 8px;
-								background: rgba(255, 255, 255, 0.7);
-								backdrop-filter: blur(10px);
-								margin-right: 4px;
-								padding: 2px 8px;
-								&::before{
-									display: block;
-									content: '';
-									width: 12px;
-									height: 12px;
-									background-image: url('../assets/icons/viewed.svg');
-									background-size: contain;
-									background-repeat: no-repeat;
-									background-position: center;
-								}
-							}
-							.premium{
-								padding: 2px 8px;
-								width: 28px;
-								height: 16px;
-								border-radius: 8px;
-								background: #FD7C84;
-								box-shadow: 0px 2px 4px rgba(253, 124, 132, 0.5);
-								&::before{
-									display: block;
-									content: '';
-									width: 12px;
-									height: 12px;
-									background-image: url('../assets/icons/premium.svg');
-									background-size: contain;
-									background-repeat: no-repeat;
-									background-position: center;
-								}
-							}
-
-						}
-						.play{
-							width: 40px;
-							height: 40px;
-							border-radius: 50%;
-							background: rgba(255, 255, 255, 0.7);
-							backdrop-filter: blur(10px);
-							padding: 8px;
-							&::before{
-								content: '';
-								width: 100%;
-								height: 100%;
-								display: block;
-								background-image: url('../assets/icons/play.png');
-								background-size: contain;
-								background-position: center;
-								background-repeat: no-repeat;
-							}
-						}
-					}
-					.the_element_box{
-						border: 1px solid rgba(35, 41, 45, 0.1);
-						border-radius: 8px;
-						overflow: hidden;
-						margin-bottom: 4px;
-						img{
-							width: 100%;
-							height: 100%;
-							object-fit: cover;
-							display: block;
-						}
-					}
-					.the_title{
-						display: block;
-						color: #23292D;
-					}
-				}
+				padding-top: 8px;
 			}
+			// background-color: #F3F5F6;
+			// &.elements_wrap{
+			// 	width: calc(100% + 16px);
+			// 	padding: 8px 16px 16px;
+			// 	flex-wrap: wrap;
+			// 	margin-left: -8px;
+			// 	margin-right: -8px;
+			// 	.the_element{
+			// 		width: calc(50% - 16px);
+			// 		position: relative;
+			// 		margin-left: 8px;
+			// 		margin-right: 8px;
+			// 		cursor: pointer;
+			// 		transition: all .24s ease;
+			// 		&:hover{
+			// 			opacity: .86;
+			// 		}
+			// 		.info_line{
+			// 			padding: 8px 12px;
+			// 			width: 100%;
+			// 			position: absolute;
+			// 			top: 0;
+			// 			left: 0;
+			// 			width: 100%;
+			// 			justify-content: space-between;
+			// 			display: flex;
+
+			// 			.icons{
+			// 				height: max-content;
+			// 				.viewed{
+			// 					width: 28px;
+			// 					height: 16px;
+			// 					border-radius: 8px;
+			// 					background: rgba(255, 255, 255, 0.7);
+			// 					backdrop-filter: blur(10px);
+			// 					margin-right: 4px;
+			// 					padding: 2px 8px;
+			// 					&::before{
+			// 						display: block;
+			// 						content: '';
+			// 						width: 12px;
+			// 						height: 12px;
+			// 						background-image: url('../assets/icons/viewed.svg');
+			// 						background-size: contain;
+			// 						background-repeat: no-repeat;
+			// 						background-position: center;
+			// 					}
+			// 				}
+			// 				.premium{
+			// 					padding: 2px 8px;
+			// 					width: 28px;
+			// 					height: 16px;
+			// 					border-radius: 8px;
+			// 					background: #FD7C84;
+			// 					box-shadow: 0px 2px 4px rgba(253, 124, 132, 0.5);
+			// 					&::before{
+			// 						display: block;
+			// 						content: '';
+			// 						width: 12px;
+			// 						height: 12px;
+			// 						background-image: url('../assets/icons/premium.svg');
+			// 						background-size: contain;
+			// 						background-repeat: no-repeat;
+			// 						background-position: center;
+			// 					}
+			// 				}
+
+			// 			}
+			// 			.play{
+			// 				width: 40px;
+			// 				height: 40px;
+			// 				border-radius: 50%;
+			// 				background: rgba(255, 255, 255, 0.7);
+			// 				backdrop-filter: blur(10px);
+			// 				padding: 8px;
+			// 				&::before{
+			// 					content: '';
+			// 					width: 100%;
+			// 					height: 100%;
+			// 					display: block;
+			// 					background-image: url('../assets/icons/play.png');
+			// 					background-size: contain;
+			// 					background-position: center;
+			// 					background-repeat: no-repeat;
+			// 				}
+			// 			}
+			// 		}
+			// 		.the_element_box{
+			// 			border: 1px solid rgba(35, 41, 45, 0.1);
+			// 			border-radius: 8px;
+			// 			overflow: hidden;
+			// 			margin-bottom: 4px;
+			// 			img{
+			// 				width: 100%;
+			// 				height: 100%;
+			// 				object-fit: cover;
+			// 				display: block;
+			// 			}
+			// 		}
+			// 		.the_title{
+			// 			display: block;
+			// 			color: #23292D;
+			// 		}
+			// 	}
+			// }
 
 			&.empty_wrap{
 				padding-top: 45px;

@@ -130,6 +130,7 @@ export default {
 			// padding: 0;
 			// background-color: #F3F5F6;
 			&.elements_wrap{
+				padding-top: 8px;
 			}
 
 			&.empty_wrap{

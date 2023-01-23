@@ -34,7 +34,10 @@ export default({
 		}
 	},
 
-	data() {
+	data(){
+		return{
+			// post: {},
+		}
 	},
 
 });

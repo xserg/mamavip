@@ -41,7 +41,7 @@ export default({
 
 .elements_wrap{
 	width: calc(100% + 16px);
-	padding: 16px 16px 16px;
+	padding: 16px 8px 16px;
 	flex-wrap: wrap;
 	margin-left: -8px;
 	margin-right: -8px;

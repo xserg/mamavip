@@ -25,7 +25,6 @@
 				</div>
 
 				<div class="recommended_box midWrap marginB12">
-
 					<span class="the_title fontFamilyEB fontSize20 blockWrap">Рекомендуем</span>
 					<span class="the_subtitle marginB12 fontSize14 blockWrap">Не пропустите новые лекции!</span>
 					<div class="element_box">
@@ -34,7 +33,28 @@
 						:key="recommendationElement.id"
 						/>
 					</div>
+				</div>
 
+				<div class="catalog_box midWrap marginB12">
+					<span class="the_title fontFamilyEB fontSize20 blockWrap">Каталог лекций</span>
+					<span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span>
+					<div class="element_box">
+						<calalog-slider 
+							:posts="catalogList"
+						/>
+					</div>
+				</div>
+
+				<div class="teachers_box midWrap marginB12">
+					<span class="the_title fontFamilyEB fontSize20 blockWrap">Наши лекторы</span>
+					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
+					<div class="element_box">
+						<!-- <element 
+						:post="recommendationElement"
+						:key="recommendationElement.id"
+						/> -->
+						<teacher-slider :teachers="teachersList"/>
+					</div>
 				</div>
 
 
@@ -49,6 +69,8 @@
 // @ is an alias to /src
 // import DefaultLikes from '@/components/DefaultLikes.vue'
 import Element from '@/components/Element';
+import CalalogSlider from '@/components/CatalogSlider';
+import TeacherSlider from '@/components/TeacherSlider';
 
 import {mapState, mapGetters, mapMutations, mapActions} from 'vuex';
 
@@ -56,6 +78,8 @@ export default {
   name: 'Home',
   components: {
 		Element,
+		CalalogSlider,
+		TeacherSlider,
     // DefaultLikes,
   },
 
@@ -64,6 +88,8 @@ export default {
 		}),
 		...mapGetters({
 			recommendationElement: 'content/recommendationElement',
+			catalogList: 'content/catalogList',
+			teachersList: 'content/teachersList',
 		}),
 	},
 
@@ -164,6 +190,25 @@ export default {
 				padding: 16px;
 				.the_title{
 					margin-bottom: 2px;
+				}
+			}
+			.catalog_box{
+				background-color: #FFF;
+				padding: 16px 0;
+				.the_title{
+					padding: 0 16px;
+				}
+				.the_subtitle{
+					padding: 0 16px;
+				}
+			}
+
+			.teachers_box{
+				background-color: #FFF;
+				padding: 16px 0;
+				.the_title{
+					padding: 0 16px;
+					margin-bottom: 12px;
 				}
 			}
 

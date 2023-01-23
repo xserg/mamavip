@@ -38,21 +38,21 @@
 							<span class="the_icon save_icon"></span>
 							<span class="the_title">Сохранённые лекции</span>
 						</div>
-						<span class="the_count">12</span>
+						<span class="the_count">{{ sortedElementsSaved.length }}</span>
 					</router-link>
 					<router-link class="link_button" to="/profile/bought">
 						<div class="left_wrap">
 							<span class="the_icon buy_icon"></span>
 							<span class="the_title">Купленные лекции</span>
 						</div>
-						<span class="the_count">7</span>
+						<span class="the_count">{{ sortedElementsBought.length }}</span>
 					</router-link>
 					<router-link class="link_button" to="/profile/viewed">
 						<div class="left_wrap">
 							<span class="the_icon see_icon"></span>
 							<span class="the_title">Просмотренные лекции</span>
 						</div>
-						<span class="the_count">18</span>
+						<span class="the_count">{{ sortedElementsViewed.length }}</span>
 					</router-link>
 				</div>
 
@@ -173,10 +173,14 @@ export default {
 		}),
 		...mapGetters({
 			sortedElementsBegin: 'content/sortedElementsBegin',
+			sortedElementsSaved: 'content/sortedElementsSaved',
+			sortedElementsBought: 'content/sortedElementsBought',
+			sortedElementsViewed: 'content/sortedElementsViewed',
+
 		})
 	},
 
-	
+
 }
 </script>
 

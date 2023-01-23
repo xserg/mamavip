@@ -1,7 +1,7 @@
 <template>
 
-	<agile :options="sliderOptions" class="theSlider">
-		<element 
+	<agile :options="sliderOptions" :speed="400" :throttleDelay="100" :swipeDistance="10" :timing="'ease-in-out'" class="theSlider">
+		<catalog-element 
 			v-for="post in posts"
 			:post="post"
 			:key="post.id"
@@ -14,17 +14,17 @@
 <script>
 import { VueAgile } from 'vue-agile'
 
-import Element from '@/components/Element';
+import CatalogElement from '@/components/CatalogElement';
 
 
 export default({
 
-	name: 'Slider',
+	name: 'CatalogSlider',
 	components: {
-		Element,
+		CatalogElement,
 		agile: VueAgile,
 	},
-
+	
 	props: {
 		posts: {
 			type: Array,
@@ -36,14 +36,23 @@ export default({
 		return{
 
 			sliderOptions: {
+				// swipeDistance: 20,
+				// timing: 'ease-out',
+				// infinite: false,
 				dots: false,
 				navButtons: false,
-				slidesToShow: 1.5,
+				slidesToShow: 1.6,
 				responsive: [
-					{
-						breakpoint: 600,
+				{
+						breakpoint: 350,
 						settings: {
-								slidesToShow: 2.2
+								slidesToShow: 2.25
+						}
+					},
+					{
+						breakpoint: 550,
+						settings: {
+								slidesToShow: 3.2
 						}
 					},
 					{

@@ -1,10 +1,10 @@
 <template>
 
-	<agile :options="sliderOptions" class="theSlider">
-		<element 
-			v-for="post in posts"
-			:post="post"
-			:key="post.id"
+	<agile :options="sliderOptions" :speed="400" :throttleDelay="100" :swipeDistance="10" :timing="'ease-in-out'" class="theSlider">
+		<teacher-element 
+			v-for="teacher in teachers"
+			:teacher="teacher"
+			:key="teacher.id"
 		/>
 	</agile>
 	
@@ -14,19 +14,19 @@
 <script>
 import { VueAgile } from 'vue-agile'
 
-import Element from '@/components/Element';
+import TeacherElement from '@/components/TeacherElement';
 
 
 export default({
 
-	name: 'Slider',
+	name: 'TeacherSlider',
 	components: {
-		Element,
+		TeacherElement,
 		agile: VueAgile,
 	},
-
+	
 	props: {
-		posts: {
+		teachers: {
 			type: Array,
 			required: true,
 		}
@@ -36,14 +36,23 @@ export default({
 		return{
 
 			sliderOptions: {
+				// swipeDistance: 20,
+				// timing: 'ease-out',
+				// infinite: false,
 				dots: false,
 				navButtons: false,
-				slidesToShow: 1.5,
+				slidesToShow: 2.2,
 				responsive: [
-					{
-						breakpoint: 600,
+				{
+						breakpoint: 350,
 						settings: {
-								slidesToShow: 2.2
+								slidesToShow: 3.2
+						}
+					},
+					{
+						breakpoint: 550,
+						settings: {
+								slidesToShow: 3.4
 						}
 					},
 					{
@@ -68,7 +77,6 @@ export default({
 .theSlider{
 	margin-bottom: 12px;
 	.the_element{
-		padding: 0 6px;
 		.top_line{
 			padding: 8px 16px;
 		}
