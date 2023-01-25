@@ -160,6 +160,10 @@ body .marginAuto{
 	background-image: url('../assets/icons/back.svg');
 }
 
+.buttonBack.theWhite{
+	background-image: url('../assets/icons/arrow-left-w.svg');
+}
+
 
 .buttonClose{
 	padding: 5px;
@@ -547,11 +551,15 @@ a:hover{
 
 /* Elements */
 
-
+/* ------- Другое -------- */
 
 .agile__track{
 	padding: 0 6px;
 }
+.teachers_box .agile__slides{
+	align-items: flex-start;
+}
+
 
 
 

@@ -13,11 +13,14 @@
 				<div class="userinfo_wrap topWrap marginB12">
 					<div class="userinfo_box">
 						<div class="userinfo_card">
-							<!-- <span class="card_photo_wrap"  style="background-image:url('../assets/images/profile.jpg')"></span> -->
 							<span class="card_photo_wrap"></span>
+							<!-- <span class="card_photo_wrap filled" style=""></span> -->
 							<div class="card_info_wrap">
 								<span class="card_name">Заполните профиль</span>
+								<!-- <span class="card_name">Привет, Екатерина!</span> -->
 								<span class="card_status fontSize14">Это необходимо, чтобы пользоваться сервисом</span>
+								<!-- <span class="card_status fontSize14">Ваш срок — примерно 29 недель</span> -->
+								<!-- <span class="card_status fontSize14">Вас уже можно поздравить?</span> -->
 							</div>
 							<router-link class="card_button theButton buttonTransparent buttonOptimal" to="/edit"></router-link>
 						</div>
@@ -35,8 +38,20 @@
 					</div>
 				</div>
 
+				<div class="notavailable_box midWrap marginB12">
+					<span class="the_title fontFamilyEB fontSize20 blockWrap">Рекомендуем</span>
+					<span class="the_subtitle marginB12 fontSize14 blockWrap">Не пропустите новые лекции!</span>
+					<div class="message_wrap">
+						<span class="mess_icon"></span>
+						<span class="mess_title fontFamilyEB">График просмотра</span>
+						<span class="mess_desc">Следующая лекция доступна через <br>18 ч. 59 мин. 32 сек.</span>
+					</div>
+				</div>
+
+
+
 				<div class="catalog_box midWrap marginB12">
-					<span class="the_title fontFamilyEB fontSize20 blockWrap">Каталог лекций</span>
+					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/catalog">Каталог лекций</router-link>
 					<span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span>
 					<div class="element_box">
 						<calalog-slider 
@@ -45,8 +60,19 @@
 					</div>
 				</div>
 
+				<div class="error_box midWrap marginB12">
+					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/catalog">Каталог лекций</router-link>
+					<span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span>
+					
+					<img class="the_img" src="./../assets/images/noResponse.png">
+
+					<span class="info_title fontFamilyB">Данные не загрузились</span>
+					<span class="info_subtitle fontSize14">Попробуйте обновить страницу</span>
+					<span class="theButton buttonTertiary buttonOptimal">Обновить</span>
+				</div>
+
 				<div class="teachers_box midWrap marginB12">
-					<span class="the_title fontFamilyEB fontSize20 blockWrap">Наши лекторы</span>
+					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/speakers">Наши лекторы</router-link>
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
 					<div class="element_box">
 						<!-- <element 
@@ -54,6 +80,19 @@
 						:key="recommendationElement.id"
 						/> -->
 						<teacher-slider :teachers="teachersList"/>
+					</div>
+				</div>
+
+
+				<div class="videos_box bottomWrap marginB12">
+					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/forview">Вы ещё не смотрели</router-link>
+					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
+					<div class="element_box">
+						<!-- <element 
+						:post="recommendationElement"
+						:key="recommendationElement.id"
+						/> -->
+						<elements-slider :posts="sortedElementsNotview"/>
 					</div>
 				</div>
 
@@ -69,6 +108,7 @@
 // @ is an alias to /src
 // import DefaultLikes from '@/components/DefaultLikes.vue'
 import Element from '@/components/Element';
+import ElementsSlider from '@/components/ElementsSlider';
 import CalalogSlider from '@/components/CatalogSlider';
 import TeacherSlider from '@/components/TeacherSlider';
 
@@ -78,6 +118,7 @@ export default {
   name: 'Home',
   components: {
 		Element,
+		ElementsSlider,
 		CalalogSlider,
 		TeacherSlider,
     // DefaultLikes,
@@ -90,6 +131,7 @@ export default {
 			recommendationElement: 'content/recommendationElement',
 			catalogList: 'content/catalogList',
 			teachersList: 'content/teachersList',
+			sortedElementsNotview: 'content/sortedElementsNotview',
 		}),
 	},
 
@@ -147,9 +189,10 @@ export default {
 							margin-right: 12px;
 							background-image: url('../assets/icons/nophoto.svg');
 							background-size: 35%;
-
-							// background-image: url('../assets/images/profile.jpg');
-							// background-size: cover;
+							&.filled{
+								background-image: url('../assets/images/profile.jpg');
+								background-size: cover;
+							}
 						}
 						.card_info_wrap{
 							display: flex;
@@ -189,7 +232,7 @@ export default {
 				background-color: #FFF;
 				padding: 16px;
 				.the_title{
-					margin-bottom: 2px;
+					margin-bottom: 4px;
 				}
 			}
 			.catalog_box{
@@ -197,6 +240,25 @@ export default {
 				padding: 16px 0;
 				.the_title{
 					padding: 0 16px;
+					position: relative;
+					color: #2c3e50;
+					&::before{
+						content: '';
+						position: absolute;
+						right: 19px;
+						top: 50%;
+						transform: translateY(-50%);
+						display: block;
+						background-position: center;
+						background-repeat: no-repeat;
+						background-size: 20px;
+						background-image: url('../assets/icons/arrow-right-a.svg');
+						min-width: 24px;
+						width: 24px;
+						height: 24px;
+						border: none;
+						background-color: transparent;
+					}
 				}
 				.the_subtitle{
 					padding: 0 16px;
@@ -207,8 +269,156 @@ export default {
 				background-color: #FFF;
 				padding: 16px 0;
 				.the_title{
+					color: #2c3e50;
 					padding: 0 16px;
 					margin-bottom: 12px;
+					position: relative;
+					&::before{
+						content: '';
+						position: absolute;
+						right: 19px;
+						top: 50%;
+						transform: translateY(-50%);
+						display: block;
+						background-position: center;
+						background-repeat: no-repeat;
+						background-size: 20px;
+						background-image: url('../assets/icons/arrow-right-a.svg');
+						min-width: 24px;
+						width: 24px;
+						height: 24px;
+						border: none;
+						background-color: transparent;
+					}
+				}
+			}
+
+			.videos_box{
+				background-color: #FFF;
+				padding: 16px 0;
+				.the_title{
+					padding: 0 16px;
+					margin-bottom: 12px;
+					position: relative;
+					color: #2c3e50;
+					&::before{
+						content: '';
+						position: absolute;
+						right: 19px;
+						top: 50%;
+						transform: translateY(-50%);
+						display: block;
+						background-position: center;
+						background-repeat: no-repeat;
+						background-size: 20px;
+						background-image: url('../assets/icons/arrow-right-a.svg');
+						min-width: 24px;
+						width: 24px;
+						height: 24px;
+						border: none;
+						background-color: transparent;
+					}
+				}
+			}
+
+
+			.error_box{
+				background-color: #FFF;
+				padding: 16px 0;
+				.the_title{
+					padding: 0 16px;
+					position: relative;
+					color: #2c3e50;
+					&::before{
+						content: '';
+						position: absolute;
+						right: 19px;
+						top: 50%;
+						transform: translateY(-50%);
+						display: block;
+						background-position: center;
+						background-repeat: no-repeat;
+						background-size: 20px;
+						background-image: url('../assets/icons/arrow-right-a.svg');
+						min-width: 24px;
+						width: 24px;
+						height: 24px;
+						border: none;
+						background-color: transparent;
+					}
+				}
+				.the_subtitle{
+					padding: 0 16px;
+				}
+
+				.the_img{
+					width: 55.6%;
+					margin: 0 auto;
+					margin-bottom: 24px;
+					display: block;
+				}
+
+				.info_title{
+					color: #23292DB2;
+					margin-bottom: 4px;
+					text-align: center;
+					width: 100%;
+					display: block;
+				}
+				.info_subtitle{
+					color: #23292DB2;
+					margin-bottom: 24px;
+					text-align: center;
+					width: 100%;
+					display: block;
+				}
+				.theButton{
+					margin: 0 auto;
+					width: calc(100% - 32px);
+
+				}
+			}
+
+
+			.notavailable_box{
+				background-color: #FFF;
+				padding: 16px;
+				.the_title{
+					margin-bottom: 4px;
+				}
+				.the_subtitle{}
+				.message_wrap{
+					background-color: #FFEAEB;
+					border-radius: 8px;
+					padding: 12px;
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					.mess_icon{
+						display: block;
+						background-color: #FD7C84;
+						background-image: url('./../assets/icons/calendar.svg');
+						background-position: center;
+						background-repeat: no-repeat;
+						background-size: 50%;
+						border-radius: 50%;
+						width: 32px;
+						height: 32px;
+						margin-bottom: 8px;
+					}
+					.mess_title{
+						display: block;
+						color: #23292D;
+						margin-bottom: 4px;
+						text-align: center;
+					}
+					.mess_desc{
+						line-height: 24px;
+						display: block;
+						color: #23292DB2;
+						text-align: center;
+					}
 				}
 			}
 

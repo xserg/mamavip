@@ -10,11 +10,26 @@ import ProfileAbout from '@/pages/ProfileAbout.vue'
 
 import ProfileEdit from '@/pages/ProfileEdit.vue'
 
+import Teachers from '@/pages/Teachers.vue'
+import ForView from '@/pages/ForView.vue'
+import Catalog from '@/pages/Catalog.vue'
+import Category from '@/pages/Category.vue'
+
 const routes = [
   {
     path: '/',
     name: 'home',
     component: Home
+  },
+	{
+    path: '/catalog',
+    name: 'catalog',
+    component: Catalog
+  },
+	{
+    path: '/catalog/category',
+    name: 'category',
+    component: Category
   },
 	{
     path: '/profile',
@@ -51,6 +66,19 @@ const routes = [
     name: 'edit',
     component: ProfileEdit
   },
+
+	{
+    path: '/speakers',
+    name: 'speakers',
+    component: Teachers
+  },
+	{
+    path: '/forview',
+    name: 'forview',
+    component: ForView
+  },
+
+	
 ]
 
 const router = createRouter({

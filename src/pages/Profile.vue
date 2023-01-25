@@ -19,8 +19,8 @@
 					</div>
 					<div class="userinfo_box" v-else>
 						<div class="userinfo_card">
-							<!-- <span class="card_photo_wrap"  style="background-image:url('../assets/images/profile.jpg')"></span> -->
-							<span class="card_photo_wrap"></span>
+							<!-- <span class="card_photo_wrap"></span> -->
+							<span class="card_photo_wrap filled" style=""></span>
 							<div class="card_info_wrap">
 								<span class="card_name">Екатерина</span>
 								<span class="card_status fontSize14" v-if="!this.yesBaby">Ваш срок — примерно 29 недель</span>
@@ -324,9 +324,10 @@ export default {
 							margin-right: 12px;
 							background-image: url('../assets/icons/nophoto.svg');
 							background-size: 35%;
-
-							background-image: url('../assets/images/profile.jpg');
-							background-size: cover;
+							&.filled{
+								background-image: url('../assets/images/profile.jpg');
+								background-size: cover;
+							}
 						}
 						.card_info_wrap{
 							display: flex;

@@ -1,13 +1,13 @@
 <template>
 
-	<div class="the_element marginB12">
+	<router-link class="the_element marginB12" to="/catalog/category">
 		<div class="the_element_box">
 			<!-- <img src="./../assets/images/element.jpg" alt="element"> -->
 			<img :src="post.preview" alt="element">
 		</div>
 		<span class="the_title fontSize14 fontFamilyEB">{{ post.title }}</span>
 		<!-- <span class="the_title fontSize14 fontFamilyEB">Короткий заголовок у элемента</span> -->
-	</div>
+	</router-link>
 	
 	
 </template>
@@ -38,6 +38,7 @@ export default({
 <style lang="scss" scoped>
 
 .the_element{
+	display: block;
 	width: 100%;
 	position: relative;
 	cursor: pointer;

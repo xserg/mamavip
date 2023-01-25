@@ -27,6 +27,40 @@ export const contentModule = {
 			},
 		],
 
+		currentCategory:{
+			id: '1',
+			title: 'Беременность',
+			preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
+		},
+
+
+
+		subCategories: [
+			{
+				id: '1',
+				title: 'Беременность',
+				preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
+			},
+			{
+				id: '2',
+				title: 'Роды',
+				preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
+			},
+			{
+				id: '3',
+				title: 'Не роды',
+				preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
+			},
+			{
+				id: '4',
+				title: 'Да роды',
+				preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
+			},
+		],
+
+
+
+
 		posts: [
 			{
 				id: '1',
@@ -50,7 +84,7 @@ export const contentModule = {
 			{
 				id: '1',
 				title: 'Константин Константинопольский',
-				preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
+				preview: ''
 			},
 			{
 				id: '2',
@@ -98,6 +132,9 @@ export const contentModule = {
 		sortedElementsViewed(state){
 			return state.posts;
 		},
+		sortedElementsNotview(state){
+			return state.posts;
+		},
 
 		sortedElementsBegin(state){
 			return state.posts;
@@ -109,9 +146,16 @@ export const contentModule = {
 		catalogList(state){
 			return state.catalog;
 		},
+		subCategoriesList(state){
+			return state.subCategories;
+		},
 		teachersList(state){
 			return state.teachers;
-		}
+		},
+
+		currentCategory(state){
+			return state.currentCategory;
+		},
 		// sortedPosts(state){
 		// 	return [...state.posts].sort( (post1, post2) => {
 		// 		return post1[state.selectedSort]?.localeCompare(post2[state.selectedSort])

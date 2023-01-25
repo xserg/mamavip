@@ -1,6 +1,6 @@
 <template>
 
-	<agile :options="sliderOptions" class="theSlider">
+	<agile :options="sliderOptions" :speed="400" :throttleDelay="100" :swipeDistance="10" :timing="'ease-in-out'" class="theSlider">
 		<element 
 			v-for="post in posts"
 			:post="post"

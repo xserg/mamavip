@@ -1,6 +1,6 @@
 <template>
 
-	<agile :options="sliderOptions" :speed="400" :throttleDelay="100" :swipeDistance="10" :timing="'ease-in-out'" class="theSlider">
+	<agile :options="sliderOptions" :speed="300" :throttleDelay="100" :swipeDistance="10" :timing="'ease-in-out'" class="theSlider">
 		<teacher-element 
 			v-for="teacher in teachers"
 			:teacher="teacher"
@@ -41,18 +41,24 @@ export default({
 				// infinite: false,
 				dots: false,
 				navButtons: false,
-				slidesToShow: 2.2,
+				slidesToShow: 2.5,
 				responsive: [
 				{
 						breakpoint: 350,
 						settings: {
-								slidesToShow: 3.2
+								slidesToShow: 2.85
+						}
+					},
+					{
+						breakpoint: 480,
+						settings: {
+								slidesToShow: 3.4
 						}
 					},
 					{
 						breakpoint: 550,
 						settings: {
-								slidesToShow: 3.4
+								slidesToShow: 3.8
 						}
 					},
 					{
