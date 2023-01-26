@@ -376,7 +376,7 @@ export default {
 			}
 			.logutinfo_wrap{
 				background-color: #FFF;
-				padding: 16px 0;
+				padding: 16px 16px;
 				padding-bottom: 24px;
 			}
 

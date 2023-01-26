@@ -1,12 +1,12 @@
 <template>
 
-	<div class="the_subcategory marginB12">
+	<router-link to="/catalog/category/subcategory" class="the_subcategory">
 		<div class="the_subcategory_wrap">
 			<div class="the_subcategory_box">
 				<div class="bottom_line fontFamilyEB fontSize14">Название подкатегории</div>
 			</div>
 		</div>
-	</div>
+	</router-link>
 	
 	
 </template>

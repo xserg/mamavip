@@ -59,6 +59,11 @@ export const contentModule = {
 		],
 
 
+		currentSubCategory: {
+			id: '2',
+			title: 'Роды',
+			preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
+		},
 
 
 		posts: [
@@ -123,6 +128,9 @@ export const contentModule = {
 	}),
 	getters: {
 
+		sortedElements(state){
+			return state.posts;
+		},
 		sortedElementsSaved(state){
 			return state.posts;
 		},
@@ -156,6 +164,9 @@ export const contentModule = {
 		currentCategory(state){
 			return state.currentCategory;
 		},
+		currentSubCategory(state){
+			return state.currentSubCategory;
+		}
 		// sortedPosts(state){
 		// 	return [...state.posts].sort( (post1, post2) => {
 		// 		return post1[state.selectedSort]?.localeCompare(post2[state.selectedSort])

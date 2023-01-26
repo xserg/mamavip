@@ -16,7 +16,7 @@
 				</div>
 				<div class="midWrap content_box info_box">
 					<span class="the_title fontSize20 fontFamilyEB">Беременность</span>
-					<span class="the_subtitle">Разнообразные материалы о самых разных аспектах беременности - от первых недель до родов</span>
+					<span class="the_subtitle fontSize14">Разнообразные материалы о самых разных аспектах беременности - от первых недель до родов</span>
 				</div>
 				<div class="bottomWrap content_box categories_box">
 					<catalog-sub-element v-for="subCategory in subCategoriesList" :key="subCategory.id"/>

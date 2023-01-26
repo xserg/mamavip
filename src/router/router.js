@@ -14,6 +14,8 @@ import Teachers from '@/pages/Teachers.vue'
 import ForView from '@/pages/ForView.vue'
 import Catalog from '@/pages/Catalog.vue'
 import Category from '@/pages/Category.vue'
+import SubCategory from '@/pages/SubCategory.vue'
+import Lecture from '@/pages/Lecture.vue'
 
 const routes = [
   {
@@ -30,6 +32,16 @@ const routes = [
     path: '/catalog/category',
     name: 'category',
     component: Category
+  },
+	{
+    path: '/catalog/category/subcategory',
+    name: 'subcategory',
+    component: SubCategory
+  },
+	{
+    path: '/catalog/lecture',
+    name: 'lecture',
+    component: Lecture
   },
 	{
     path: '/profile',

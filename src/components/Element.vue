@@ -1,6 +1,6 @@
 <template>
 
-	<div class="the_element marginB12">
+	<router-link class="the_element marginB12" to="/catalog/lecture">
 		<div class="info_line flexWrap">
 			<div class="icons flexWrap">
 				<span class="viewed blockWrap"></span>
@@ -16,7 +16,7 @@
 		</div>
 		<span class="the_title fontSize14 fontFamilyEB">{{ post.title + ' ' + post.id}}</span>
 		<!-- <span class="the_title fontSize14 fontFamilyEB">Короткий заголовок у элемента</span> -->
-	</div>
+	</router-link>
 	
 	
 </template>
@@ -51,9 +51,10 @@ export default({
 	position: relative;
 	cursor: pointer;
 	transition: all .24s ease;
-	// &:hover{
-	// 	opacity: .86;
-	// }
+	display: block;
+	&:hover{
+		opacity: 1;
+	}
 	.info_line{
 		padding: 8px 12px;
 		width: 100%;

@@ -164,6 +164,19 @@ body .marginAuto{
 	background-image: url('../assets/icons/arrow-left-w.svg');
 }
 
+.buttonFav{
+	width: 24px;
+	min-width: 24px;
+	height: 24px;
+	background-position: right;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-image: url('../assets/icons/bookmark.svg');
+}
+.buttonFav.active{
+	background-image: url('../assets/icons/bookmark-active.svg');
+}
+
 
 .buttonClose{
 	padding: 5px;
@@ -680,9 +693,38 @@ a:hover{
 
 /* ------ @Media ------- */
 
+
+@media screen and (max-width: 550px) {
+
+	body{
+		font-size: 14px;
+	}
+	
+	.fontSize12{
+		font-size: 11px;
+	}
+	.fontSize14{
+		font-size: 12px;
+	}
+	.fontSize16{
+		font-size: 14px;
+	}
+	.fontSize20{
+		font-size: 18px;
+	}
+	.fontSize32{
+		font-size: 26px;
+	}
+	
+	
+	
+}
+
+
+
 @media screen and (max-width: 375px) {
 
-body{
+/* body{
 	font-size: 14px;
 }
 
@@ -700,8 +742,12 @@ body{
 }
 .fontSize32{
 	font-size: 26px;
-}
+} */
 
+
+.buttonConfirm, .buttonOptimal{
+	min-width: 100%;
+}
 
 
 }

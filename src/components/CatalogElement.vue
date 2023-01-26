@@ -43,9 +43,9 @@ export default({
 	position: relative;
 	cursor: pointer;
 	transition: all .24s ease;
-	// &:hover{
-	// 	opacity: .86;
-	// }
+	&:hover{
+		opacity: 1;
+	}
 	.the_element_box{
 		border: 1px solid rgba(35, 41, 45, 0.1);
 		border-radius: 8px;
