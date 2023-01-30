@@ -396,6 +396,7 @@ export default {
 					color: #23292DB2;
 					width: 100%;
 					display: block;
+					font-size: 16px;
 				}
 			}
 			.moreelements_wrap{
@@ -417,6 +418,7 @@ export default {
 						padding-right: calc(24px + 26px); 
 						position: relative;
 						line-height: 24px;
+						font-size: 16px;
 						&::after{
 							content: '';
 							position: absolute;

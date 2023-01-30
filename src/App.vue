@@ -69,12 +69,15 @@ export default {
 	padding: 0;
 	position: relative;
 	background: #FFEAEB;
+	// max-height: 100vh;
+	// min-height: 100vh;
+	// height: 100vh;
+	max-height: 100%;
+	min-height: 100%;
 	height: 100%;
-	min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-	height: 100vh;
 	&::before{
 		z-index: 5;
 		content: '';
@@ -109,6 +112,7 @@ export default {
 	.appContainer{
 		z-index: 10;
 		position: relative;
+		height: 100%;
 	}
 }
 

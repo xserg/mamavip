@@ -41,7 +41,7 @@
 
 				<div class="contentSubWrap profile_wrap">
 					
-					<div class="photo_wrap topWrap marginB12">
+					<div class="photo_wrap topWrap marginB12"> 
 
 						<span class="the_photo theButton buttonTransparent blockWrap" :class="{hiddenWrap: hasPhoto == true}" @click="hasPhotoTrue"></span>
 						<img class="the_photo blockWrap the_photo_has" src="./../assets/images/profile.jpg" :class="{hiddenWrap: hasPhoto == false}">
@@ -382,7 +382,7 @@ export default {
 			.delete_wrap{
 				background-color: #FFF;
 				padding: 8px 16px;
-				padding-bottom: 32px;
+				// padding-bottom: 32px;
 			}
 
 			.formWrap{

@@ -64,12 +64,14 @@ button, span.theButton{
 
 
 body{
+	height: 100vh;
 	background: #FFEAEB;
 	color: #23292D;
 	padding: 0;
 	margin: 0;
 	font-family: Manrope, Arial, sans-serif;
 	font-weight: 400;
+	overflow: hidden;
 }
 /* a:visited{
 	color: #23292D;
@@ -102,9 +104,11 @@ body .marginAuto{
 	width: 100%;
 	height: 100%;
 	overflow: scroll;
+	/* overflow: hidden; */
 }
 
 .contentWrap{
+	position: relative;
 	/* height: 100%; */
 	max-width: 600px;
 	padding-left: 16px;
@@ -116,6 +120,15 @@ body .marginAuto{
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
+	/* padding-bottom: 16px !important; */
+}
+.contentWrap::after{
+	position: relative;
+	content: '';
+	width: 100%;
+	height: 48px;
+	display: block;
+
 }
 
 .topWrap{
@@ -566,6 +579,10 @@ a:hover{
 
 /* ------- Другое -------- */
 
+.popup_wrap .agile__track{
+	padding: 0;
+}
+
 .agile__track{
 	padding: 0 6px;
 }
@@ -751,3 +768,13 @@ a:hover{
 
 
 }
+
+
+/* .mainContainer .contentWrap{
+	padding-top: 200px !important;
+	padding-bottom: 0 !important;
+}
+
+.mainContainer .contentWrap .contentSubWrap .teachers_box .the_element .the_title{
+	font-size: 12px !important;
+} */

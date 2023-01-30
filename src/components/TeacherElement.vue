@@ -1,13 +1,13 @@
 <template>
 
-	<div class="the_element marginB12">
+	<router-link class="the_element marginB12" to="/speakers/speaker">
 		<div class="the_element_box">
 			<!-- <img src="./../assets/images/element.jpg" alt="element"> -->
 			<img v-if="teacher.preview" :src="teacher.preview" alt="element">
 		</div>
-		<span class="the_title fontSize14 fontFamilyB">{{ teacher.title }}</span>
+		<span class="the_title fontFamilyB">{{ teacher.title }}</span>
 		<!-- <span class="the_title fontSize14 fontFamilyEB">Короткий заголовок у элемента</span> -->
-	</div>
+	</router-link>
 	
 	
 </template>
@@ -84,6 +84,7 @@ export default({
 		padding: 0 8px;
 		position: relative;
 		overflow: hidden;
+		// font-size: 12px !important;
 		&::before{
 			content: '';
 			width: 16px;

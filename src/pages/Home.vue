@@ -84,7 +84,7 @@
 				</div>
 
 
-				<div class="videos_box bottomWrap marginB12">
+				<div class="videos_box bottomWrap">
 					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/forview">Вы ещё не смотрели</router-link>
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
 					<div class="element_box">

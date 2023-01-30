@@ -14,7 +14,7 @@
 			<!-- <img src="./../assets/images/element.jpg" alt="element"> -->
 			<img :src="post.preview" alt="element">
 		</div>
-		<span class="the_title fontSize14 fontFamilyEB">{{ post.title + ' ' + post.id}}</span>
+		<span class="the_title fontSize16 fontFamilyEB">{{ post.title + ' ' + post.id}}</span>
 		<!-- <span class="the_title fontSize14 fontFamilyEB">Короткий заголовок у элемента</span> -->
 	</router-link>
 	
@@ -69,18 +69,24 @@ export default({
 		.icons{
 			height: max-content;
 			.viewed{
-				width: 28px;
-				height: 16px;
-				border-radius: 8px;
+				// width: 28px;
+				// height: 16px;
+				width: 34px;
+				height: 19.5px;
+				// border-radius: 8px;
+				border-radius: 10px;
 				background: rgba(255, 255, 255, 0.7);
 				backdrop-filter: blur(10px);
 				margin-right: 4px;
-				padding: 2px 8px;
+				// padding: 2px 8px;
+				padding: 2px 10px;
 				&::before{
 					display: block;
 					content: '';
-					width: 12px;
-					height: 12px;
+					// width: 12px;
+					// height: 12px;
+					width: 15px;
+					height: 15px;
 					background-image: url('../assets/icons/viewed.svg');
 					background-size: contain;
 					background-repeat: no-repeat;
@@ -88,18 +94,18 @@ export default({
 				}
 			}
 			.bought{
-				width: 28px;
-				height: 16px;
-				border-radius: 8px;
 				background: rgba(255, 255, 255, 0.7);
 				backdrop-filter: blur(10px);
 				margin-right: 4px;
-				padding: 2px 8px;
+				width: 34px;
+				height: 19.5px;
+				border-radius: 10px;
+				padding: 2px 10px;
 				&::before{
+					width: 14px;
+					height: 14px;
 					display: block;
 					content: '';
-					width: 11px;
-					height: 11px;
 					background-image: url('../assets/icons/bag.svg');
 					background-size: contain;
 					background-repeat: no-repeat;
@@ -107,17 +113,17 @@ export default({
 				}
 			}
 			.premium{
-				padding: 2px 8px;
-				width: 28px;
-				height: 16px;
-				border-radius: 8px;
 				background: #FD7C84;
 				box-shadow: 0px 2px 4px rgba(253, 124, 132, 0.5);
+				width: 34px;
+				height: 19.5px;
+				border-radius: 10px;
+				padding: 2px 10px;
 				&::before{
 					display: block;
 					content: '';
-					width: 12px;
-					height: 12px;
+					width: 15px;
+					height: 15px;
 					background-image: url('../assets/icons/premium.svg');
 					background-size: contain;
 					background-repeat: no-repeat;

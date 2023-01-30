@@ -11,6 +11,7 @@ import ProfileAbout from '@/pages/ProfileAbout.vue'
 import ProfileEdit from '@/pages/ProfileEdit.vue'
 
 import Teachers from '@/pages/Teachers.vue'
+import Teacher from '@/pages/Teacher.vue'
 import ForView from '@/pages/ForView.vue'
 import Catalog from '@/pages/Catalog.vue'
 import Category from '@/pages/Category.vue'
@@ -83,6 +84,11 @@ const routes = [
     path: '/speakers',
     name: 'speakers',
     component: Teachers
+  },
+	{
+    path: '/speakers/speaker',
+    name: 'speaker',
+    component: Teacher
   },
 	{
     path: '/forview',
