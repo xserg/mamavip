@@ -49,9 +49,11 @@ export default {
 		overflow: scroll;
 		justify-content: flex-start;
 		.bottomLine{
-			background-color: #ffffffa8;
+			// background-color: #ffffffa8;
+			background-color: #fbfbfba8;
 			backdrop-filter: blur(5px);
-			border-bottom: 1px solid rgba(35, 41, 45, 0.1);
+			// border-top: 1px solid rgb(196, 196, 196, 0.07);
+			// border-bottom: 1px solid rgba(35, 41, 45, 0.1);
 			position: fixed;
 			width: 100%;
 			bottom: 0;

@@ -52,6 +52,8 @@ export default({
 	cursor: pointer;
 	transition: all .24s ease;
 	display: block;
+	// margin-bottom: 5px;
+	padding-bottom: 8px;
 	&:hover{
 		opacity: 1;
 	}
@@ -155,7 +157,7 @@ export default({
 		border: 1px solid rgba(35, 41, 45, 0.1);
 		border-radius: 8px;
 		overflow: hidden;
-		margin-bottom: 4px;
+		margin-bottom: 8px;
 		position: relative;
 		height: 0;
 		width: 100%;

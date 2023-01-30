@@ -268,6 +268,10 @@ export default {
 			}
 			.infoWrap{
 				margin-bottom: 20px;
+				line-height: 150%;
+				p{
+					line-height: 150%;
+				}
 			}
 			.buttonConfirm{
 				margin: 0 auto;
@@ -286,7 +290,9 @@ export default {
 		}
 
 		.infoWrap{
-			.policy_text{}
+			.policy_text{
+				line-height: 150%;
+			}
 		}
 	}
 }

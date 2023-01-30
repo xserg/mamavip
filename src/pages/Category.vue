@@ -132,6 +132,7 @@ export default({
 			}
 			.info_box{
 				padding: 16px;
+				padding-bottom: 24px;
 				.the_title{
 					margin-bottom: 4px;
 					padding-right: 32px;
@@ -162,6 +163,7 @@ export default({
 
 			.categories_box{
 				padding: 16px;
+				padding-bottom: 48px;
 				margin-bottom: 0;
 				display: grid;
 				// -ms-grid-columns: 1fr[2];

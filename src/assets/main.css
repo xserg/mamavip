@@ -126,7 +126,7 @@ body .marginAuto{
 	position: relative;
 	content: '';
 	width: 100%;
-	height: 48px;
+	height: 62px;
 	display: block;
 
 }
@@ -586,7 +586,7 @@ a:hover{
 .agile__track{
 	padding: 0 6px;
 }
-.teachers_box .agile__slides{
+.agile__slides{
 	align-items: flex-start;
 }
 
@@ -771,10 +771,9 @@ a:hover{
 
 
 /* .mainContainer .contentWrap{
-	padding-top: 200px !important;
 	padding-bottom: 0 !important;
-}
-
+} */
+/* 
 .mainContainer .contentWrap .contentSubWrap .teachers_box .the_element .the_title{
 	font-size: 12px !important;
 } */

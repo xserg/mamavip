@@ -5,7 +5,7 @@
 			<!-- <img src="./../assets/images/element.jpg" alt="element"> -->
 			<img :src="post.preview" alt="element">
 		</div>
-		<span class="the_title fontSize14 fontFamilyEB">{{ post.title }}</span>
+		<span class="the_title fontSize16 fontFamilyEB">{{ post.title }}</span>
 		<!-- <span class="the_title fontSize14 fontFamilyEB">Короткий заголовок у элемента</span> -->
 	</router-link>
 	
@@ -50,7 +50,7 @@ export default({
 		border: 1px solid rgba(35, 41, 45, 0.1);
 		border-radius: 8px;
 		overflow: hidden;
-		margin-bottom: 4px;
+		margin-bottom: 6px;
 		position: relative;
 		height: 0;
 		width: 100%;
@@ -64,6 +64,7 @@ export default({
 			height: 100%;
 			object-fit: cover;
 			display: block;
+			margin-bottom: 6px;
 		}
 	}
 	.the_title{

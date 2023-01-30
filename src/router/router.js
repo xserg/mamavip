@@ -17,12 +17,18 @@ import Catalog from '@/pages/Catalog.vue'
 import Category from '@/pages/Category.vue'
 import SubCategory from '@/pages/SubCategory.vue'
 import Lecture from '@/pages/Lecture.vue'
+import Policy from '@/pages/Policy.vue'
 
 const routes = [
   {
     path: '/',
     name: 'home',
     component: Home
+  },
+	{
+    path: '/policy',
+    name: 'policy',
+    component: Policy
   },
 	{
     path: '/catalog',

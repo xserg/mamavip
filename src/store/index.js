@@ -12,34 +12,31 @@ export default createStore({
   },
   mutations: {
 
-		scrollTop(){
-			window.scrollTo(0,0);
-		},
 
 		setLogPage(state){
 			state.newReg = false;
-			this.scrollTop();
+			window.scrollTo(0,0);
 		},
 		setRegPage(state){
 			state.newReg = true;
-			this.scrollTop();
+			window.scrollTo(0,0);
 		},
 		setAuthOut(state){
 			state.isAuth = false;
-			this.scrollTop();
+			window.scrollTo(0,0);
 		},
 		setAuthIn(state){
 			state.isAuth = true;
-			this.scrollTop();
+			window.scrollTo(0,0);
 		},
 
 		setHomeTab(state){
 			state.curTab = 'home';
-			this.scrollTop();
+			window.scrollTo(0,0);
 		},
 		setProfileTab(state){
 			state.curTab = 'profile';
-			this.scrollTop();
+			window.scrollTo(0,0);
 		},
 		
   },

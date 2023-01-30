@@ -42,6 +42,7 @@ export default({
 	position: relative;
 	cursor: pointer;
 	transition: all .24s ease;
+	height: 100%;
 	// padding: 0 18px;
 	margin-bottom: 0;
 	// &:hover{

@@ -120,7 +120,7 @@
 					</div>
 
 					<div class="delete_wrap bottomWrap">
-						<span class="theButton buttonTransparent" @click="deleteAccountTrue">Удалить мой аккаунт</span>
+						<span class="theButton buttonTransparent fontSize16" @click="deleteAccountTrue">Удалить мой аккаунт</span>
 					</div>
 
 
@@ -145,7 +145,7 @@
 				<img src="./../assets/images/delete.png" alt="delete-account" class="the_img">
 				<span class="the_title blockWrap fontFamilyEB marginB12">Подтвердите заявку на удаление профиля</span>
 				<p class="the_desc blockWrap fontSize14 marginB12">Ваш профиль будет удалён окончательно и безвозвратно. Все ваши покупки, закладки и все данные будут потеряны.</p>
-				<span class="theButton buttonPrimary buttonOptimal" @click="deleteAccountConfirm">Подтвердить</span>
+				<span class="theButton buttonPrimary buttonOptimal fontSize16" @click="deleteAccountConfirm">Подтвердить</span>
 			</div>
 
 		</div>
@@ -382,7 +382,7 @@ export default {
 			.delete_wrap{
 				background-color: #FFF;
 				padding: 8px 16px;
-				// padding-bottom: 32px;
+				padding-bottom: 32px;
 			}
 
 			.formWrap{
@@ -409,6 +409,8 @@ export default {
 	.contentWrap.finish_delete_container{
 		align-items: center;
 		justify-content: center;
+		padding-left: 10px;
+		padding-right: 10px;
 		.contentSubWrap.finish_delete_wrap{
 			max-width: 480px;
 			width: 100%;
@@ -419,12 +421,15 @@ export default {
 				margin-left: auto;
 				margin-right: auto;
 				display: block;
-				width: 100%;
+				// width: 100%;
+				width: 55.6%;
+				margin-bottom: 10px;
+				display: block;
 			}
 			.the_title{
 				color: #23292DB2;
 				text-align: center;
-				margin-bottom: 8px;
+				margin-bottom: 12px;
 			}
 			.the_desc{
 				text-align: center;

@@ -12,18 +12,22 @@
 
 				<div class="userinfo_wrap topWrap marginB12">
 					<div class="userinfo_box">
-						<div class="userinfo_card">
+						<router-link class="userinfo_card" to="/edit">
 							<span class="card_photo_wrap"></span>
 							<!-- <span class="card_photo_wrap filled" style=""></span> -->
 							<div class="card_info_wrap">
-								<span class="card_name">Заполните профиль</span>
+								<span class="card_name">
+									<span class="the_value">Заполните профиль</span>
+									<span class="card_button theButton buttonTransparent buttonOptimal"></span>
+								</span>
 								<!-- <span class="card_name">Привет, Екатерина!</span> -->
 								<span class="card_status fontSize14">Это необходимо, чтобы пользоваться сервисом</span>
 								<!-- <span class="card_status fontSize14">Ваш срок — примерно 29 недель</span> -->
 								<!-- <span class="card_status fontSize14">Вас уже можно поздравить?</span> -->
+								
 							</div>
-							<router-link class="card_button theButton buttonTransparent buttonOptimal" to="/edit"></router-link>
-						</div>
+							
+						</router-link>
 					</div>
 				</div>
 
@@ -197,33 +201,40 @@ export default {
 						.card_info_wrap{
 							display: flex;
 							flex-direction: column;
+							width: 100%;
+							position: relative;
 							.card_name{
 								font-weight: 800;
 								margin-bottom: 4px;
 								user-select: none;
+								color: #23292D;
+								position: relative;
+								padding-right: 48px;
 							}
 							.card_status{
 								padding-right: 40px;
 								color: #23292DB2;
 							}
+							.card_button{
+								position: absolute;
+								right: 0;
+								// top: -5px;
+								top: 50%;
+								transform: translateY(-50%);
+								display: block;
+								background-position: center;
+								background-repeat: no-repeat;
+								background-size: 20px;
+								background-image: url('../assets/icons/arrow-right.svg');
+								min-width: 30px;
+								width: 30px;
+								height: 30px;
+								border: none;
+								padding: 5px;
+								background-color: transparent;
+							}
 						}
-						.card_button{
-							position: absolute;
-							right: 0;
-							top: 50%;
-							transform: translateY(-50%);
-							display: block;
-							background-position: center;
-							background-repeat: no-repeat;
-							background-size: 20px;
-							background-image: url('../assets/icons/arrow-right.svg');
-							min-width: 30px;
-							width: 30px;
-							height: 30px;
-							border: none;
-							padding: 5px;
-							background-color: transparent;
-						}
+						
 					}
 				}
 			}

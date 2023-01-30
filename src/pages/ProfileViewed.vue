@@ -94,13 +94,13 @@ export default {
 <style lang="scss" scoped>
 
 .mainContainer{
-	height: 100vh;
+	// height: 100vh;
 	.contentWrap{
 		padding: 0;
 		padding-top: 45px;
 		padding-bottom: 48px;
 		background-color: #FFF;
-		overflow: scroll;
+		// overflow: scroll;
 		justify-content: flex-start;
 
 		&.centered{

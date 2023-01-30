@@ -2,6 +2,17 @@
   <div class="mainContainer">
 		<div class="contentWrap" :class="{hiddenWrap: celebrateWrap}">
 
+			<div class="popup_wrap" :class="{ghostWrap: !thePopup}">
+				<div class="popup_box">
+					<span class="the_title blockWrap fontSize16 alignCenter marginB12 fontFamilyB">Вы уверены, что хотите выйти?</span>
+					<div class="buttons_wrap flexWrap">
+						<span class="theButton buttonPrimary" @click="showPopup">Отмена</span>
+						<span class="theButton buttonTertiary" @click="this.setAuthOut(), this.setLogPage()">Да, выйти</span>
+					</div>
+				</div>
+				<!-- <popup-slider class="slider_wrap" :posts="sertificateslist" /> -->
+			</div>
+
 			<div class="topLine flexWrap">
 				<span class="theButton leftButton buttonTransparent ghostWrap">Назад</span>
 				<h1 class="theTitle alignCenter">Профиль</h1>
@@ -28,7 +39,7 @@
 							</div>
 							<router-link class="card_button theButton buttonTransparent buttonOptimal" to="/edit"></router-link>
 						</div>
-						<button class="user_info_button theButton buttonPrimary" v-if="!this.yesBaby" @click="celebrateBirthday">Отметить рождение малыша</button>
+						<button class="user_info_button theButton buttonPrimary fontSize16" v-if="!this.yesBaby" @click="celebrateBirthday">Отметить рождение малыша</button>
 					</div>
 				</div>
 
@@ -77,7 +88,7 @@
 
 			<div class="contentSubWrap">
 				<div class="logutinfo_wrap bottomWrap">
-					<button class="theButton buttonTertiary fontFamilyB marginAuto buttonOptimal" @click="this.setAuthOut(), this.setLogPage()">Выйти из аккаунта</button>
+					<button class="theButton buttonTertiary fontFamilyB marginAuto buttonOptimal fontSize16" @click="showPopup">Выйти из аккаунта</button>
 				</div>
 			</div>
 
@@ -134,6 +145,7 @@ export default {
 
 	data(){
 		return{
+			thePopup: false,
 			profileIsFill: true,
 			yesBaby: false,
 			celebrateWrap: false,
@@ -162,6 +174,14 @@ export default {
 		// Закрыть экран поздравления
 		finishSelebrate(){
 			this.celebrateWrap = false;
+		},
+
+		showPopup(){
+			if(this.thePopup == true){
+				this.thePopup = false;
+			}else{
+				this.thePopup = true;
+			}
 		},
 
 	},
@@ -204,6 +224,42 @@ export default {
 		background-color: #FFF;
 		overflow: scroll;
 		justify-content: flex-start;
+
+		.popup_wrap{
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			background-color: rgba(0, 0, 0, 0.65);
+			z-index: 10000010;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			transition: all .24s ease;
+			padding-left: 16px;
+			padding-right: 16px;
+			.popup_box{
+				max-width: 395px;
+				width: 100%;
+				border-radius: 12px;
+				background-color: #FFF;
+				padding: 16px;
+				.the_title{
+					color: #23292D;
+				}
+				.buttons_wrap{
+					width: calc(100% + 8px);
+					margin-left: -4px;
+					margin-right: -4px;
+					.theButton{
+						width: 100%;
+						margin: 4px;
+					}
+				}
+			}
+		}
+
 
 		.contentSubWrap{
 			width: 100%;

@@ -113,7 +113,7 @@ export default {
 	data(){
 		return{ 
 			moreDesc: false,
-			thePopup: true,
+			thePopup: false,
 
 			currSlide: 0,
 			totalSlide: 0,
@@ -263,9 +263,12 @@ export default {
 		padding-top: 45px;
 		padding-bottom: 48px;
 		background-color: #FFF;
-		overflow: scroll;
+		// overflow: scroll;
 		justify-content: flex-start;
-		height: 100vh;
+		// height: 100vh;
+		&::after{
+			display: none;
+		}
 		&.fixed{
 			overflow: hidden;
 		}
@@ -349,7 +352,6 @@ export default {
 			padding: 16px 0px;
 			padding: 0;
 			background-color: #F3F5F6;
-
 			
 			.theSlider{
 				.the_element{
@@ -393,6 +395,14 @@ export default {
 			.recommended_box{
 				background-color: #FFF;
 				padding: 16px;
+				padding-bottom: 48px;
+				position: relative;
+				&::after{
+					display: block;
+					width: 100%;
+					height: 62px;
+					content: '';
+				}
 			}
 			
 			.photo_wrap{

@@ -271,6 +271,7 @@ export default({
 			.elements_box{
 				padding: 0px;
 				margin-bottom: 0;
+				padding-bottom: 12px;
 				.the_title{
 					padding-top: 16px;
 					padding-left: 16px;

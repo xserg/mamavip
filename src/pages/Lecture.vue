@@ -449,6 +449,7 @@ export default({
 				padding: 16px;
 				font-size: 12px;
 				color: #23292D80;
+				padding-bottom: 48px;
 				.the_link{
 					color: #FD7C84;
 				}
