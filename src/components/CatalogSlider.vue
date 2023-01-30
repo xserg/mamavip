@@ -1,6 +1,14 @@
 <template>
 
-	<agile :options="sliderOptions" :speed="400" :throttleDelay="100" :swipeDistance="10" :timing="'ease-in-out'" class="theSlider">
+	<agile 
+		:options="sliderOptions" 
+		:speed="400" 
+		:throttleDelay="100" 
+		:swipeDistance="10" 
+		:timing="'ease-in-out'" 
+		@before-change="lockHeight()"
+		@after-change="unlockHeight()"
+		class="theSlider">
 		<catalog-element 
 			v-for="post in posts"
 			:post="post"
@@ -12,12 +20,13 @@
 
 
 <script>
+import {mapMutations} from 'vuex'; 
 import { VueAgile } from 'vue-agile'
 
 import CatalogElement from '@/components/CatalogElement';
 
 
-export default({
+export default({ 
 
 	name: 'CatalogSlider',
 	components: {
@@ -31,6 +40,22 @@ export default({
 			required: true,
 		}
 	},
+
+	methods: {
+		...mapMutations({
+			lockHeight: 'lockHeight',
+			unlockHeight: 'unlockHeight',
+		}),
+	},
+
+
+	// computed:{
+	// 	...mapState({
+	// 		heightLock: state => state.heightLock,
+	// 	}),
+	// },
+
+
 
 	data(){
 		return{

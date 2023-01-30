@@ -1,6 +1,9 @@
 <template>
 
-	<agile ref="sertificatesSlider" :options="sliderOptions" :speed="400" :throttleDelay="100" :swipeDistance="10" :timing="'ease-in-out'" class="theSlider">
+	<agile 
+	@before-change="lockHeight()"
+	@after-change="unlockHeight()"
+	ref="sertificatesSlider" :options="sliderOptions" :speed="400" :throttleDelay="100" :swipeDistance="10" :timing="'ease-in-out'" class="theSlider">
 		<sertificate-element 
 			v-for="post in posts"
 			:post="post"
@@ -13,6 +16,7 @@
 
 
 <script>
+import {mapMutations} from 'vuex'; 
 import { VueAgile } from 'vue-agile'
 
 import SertificateElement from '@/components/SertificateElement';
@@ -66,6 +70,14 @@ export default({
 			},
 
 		}
+	},
+
+
+	methods: {
+		...mapMutations({
+			lockHeight: 'lockHeight',
+			unlockHeight: 'unlockHeight',
+		}),
 	},
 
 });

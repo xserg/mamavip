@@ -3,7 +3,7 @@
 		<div class="contentWrap">
 
 			<div class="topLine flexWrap">
-				<router-link class="theButton leftButton buttonTransparent buttonBack" to="/profile"></router-link>
+				<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Помощь</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
@@ -52,39 +52,28 @@
 
 <script>
 // @ is an alias to /src
-// import DefaultLikes from '@/components/DefaultLikes.vue'
-
-import {mapState, mapMutations} from 'vuex';
+import {mapMutations} from 'vuex';
 
 export default {
   name: 'ProfileHelp',
 
 	data(){
 		return{
-			// profileIsFill: true,
 		}
 	},
 
 	methods:{
-
 		...mapMutations({
 			setLogPage: 'setLogPage',
 			setAuthOut: 'setAuthOut',
-			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
 
 	},
 
   components: {
-    // DefaultLikes,
   },
 
 
-	// computed:{
-	// 	...mapState({
-	// 		isAuth: state => state.isAuth,
-	// 	}),
-	// },
 }
 </script>
 
@@ -92,24 +81,20 @@ export default {
 <style lang="scss" scoped>
 
 .mainContainer{
-	height: 100vh;
 	.contentWrap{
 		padding: 0;
 		padding-top: 45px;
 		padding-bottom: 48px;
 		background-color: #FFF;
-		overflow: scroll;
 		justify-content: flex-start;
 
 		.contentSubWrap{
 			width: 100%;
-			padding: 16px 0px;
 			padding: 0;
-			// background-color: #F3F5F6;
 			.tabsinfo_wrap{
 				background-color: #FFF;
 				padding: 16px 4px;
-
+				padding-bottom: 48px;
 				.link_button{
 					border: none;
 					display: flex;

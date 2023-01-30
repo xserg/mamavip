@@ -3,7 +3,7 @@
 		<div class="contentWrap">
 
 			<div class="topLine flexWrap">
-				<router-link class="theButton leftButton buttonTransparent buttonBack" to="/"></router-link>
+				<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Наши лекторы</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
@@ -94,10 +94,12 @@ export default {
 				width: 100%;
 				min-width: 100%;
 				margin-bottom: 10px;
+				height: auto;
 				.the_element_box{
 					width: 60%;
 					min-width: 60%;
 					padding-top: 60%;
+					margin-bottom: 8px;
 				}
 				.the_title::before{
 					display: none;

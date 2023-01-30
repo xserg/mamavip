@@ -92,9 +92,8 @@ export default({
 			overflow: hidden;
 			margin-bottom: 4px;
 			position: relative;
-			height: 0;
+			height: 100%;
 			width: 100%;
-			padding-top: 130%;
 			z-index: 10;
 			img{
 				position: absolute;
@@ -102,7 +101,7 @@ export default({
 				top: 0;
 				width: 100%;
 				height: 100%;
-				object-fit: cover;
+				object-fit: contain;
 				display: block;
 			}
 		}

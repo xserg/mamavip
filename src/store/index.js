@@ -4,6 +4,7 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
+		heightLock: false,
 		isAuth: true,
 		newReg: false,
 		curTab: 'home',
@@ -38,6 +39,17 @@ export default createStore({
 			state.curTab = 'profile';
 			window.scrollTo(0,0);
 		},
+
+
+		lockHeight(state){	
+			state.heightLock = true;
+		},
+		unlockHeight(state){
+			setTimeout(() => {
+				state.heightLock = false;
+      }, 100);
+		},
+
 		
   },
   actions: {

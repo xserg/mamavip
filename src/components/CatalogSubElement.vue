@@ -51,6 +51,7 @@ export default({
 		// overflow: hidden;
 		.the_subcategory_subwrap{
 			position: relative;
+			// filter: drop-shadow(0px -1px 8px rgba(253, 124, 132, 0.7));
 		}
 		
 		&::before{
@@ -76,7 +77,7 @@ export default({
 			border-radius: 12px;
 			padding-top: 15.4%;
 			padding-bottom: 8px;
-			filter: drop-shadow(0px -1px 8px rgba(253, 124, 132, 0.7));
+			
 			// overflow: hidden;
 			.bottom_line{
 				background: rgba(255, 255, 255, 0.7);

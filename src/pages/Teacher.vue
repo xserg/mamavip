@@ -1,9 +1,9 @@
 <template>
-  <div class="mainContainer">
+  <div class="mainContainer" :class="{fixed: heightLock}">
 		<div class="contentWrap" :class="{fixed: thePopup}">
 
 			<div class="topLine flexWrap">
-				<span class="theButton leftButton buttonTransparent ghostWrap">Назад</span>
+				<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent buttonBack"></a>
 				<h1 class="theTitle alignCenter">Лектор</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
@@ -14,7 +14,16 @@
 					<h1 class="theTitle alignCenter">{{ this.currSlide + 1 }}/{{ sertificateslist.length }}</h1>
 					<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 				</div>
-				<agile ref="sertificateSlider" @after-change="getCurSlide($refs.sertificateSlider.getCurrentSlide())" :options="sliderOptions2" :speed="400" :throttleDelay="100" :swipeDistance="10" :timing="'ease-in-out'" :as-nav-for="asNavFor2" class="theSlider slider_wrap">
+				<agile 
+					@before-change="lockHeight()"
+					ref="sertificateSlider" 
+					@after-change="getCurSlide($refs.sertificateSlider.getCurrentSlide()), unlockHeight()" 
+					:options="sliderOptions2" 
+					:speed="400" 
+					:throttleDelay="100" 
+					:swipeDistance="10" 
+					:timing="'ease-in-out'" 
+					:as-nav-for="asNavFor2" class="theSlider slider_wrap">
 					<div class="the_slide" 
 						v-for="(post, index) in sertificateslist"
 						:post="post"
@@ -35,8 +44,8 @@
 				<div class="photo_wrap topWrap marginB12">
 					<!-- <span class="the_photo theButton buttonTransparent blockWrap" :class="{hiddenWrap: hasPhoto == true}" @click="hasPhotoTrue"></span> -->
 					<img class="the_photo blockWrap the_photo_has" src="./../assets/images/profile.jpg" >
-					<span class="the_title blockWrap fontFamilyB" :class="{hiddenWrap: hasPhoto == true}">Анна Ахматова</span>
-					<p class="the_desc fontSize12 marginB12" :class="{hiddenWrap: hasPhoto == true}">Акушер • стаж: 12 лет</p>
+					<span class="the_title blockWrap fontFamilyB">Анна Ахматова</span>
+					<p class="the_desc fontSize12 marginB12">Акушер • стаж: 12 лет</p>
 				</div> 
 
 				<div class="midWrap desc_box content_box marginB12">
@@ -55,7 +64,10 @@
 							:posts="sertificateslist"
 							@showElement="showElement"
 						/> -->
-						<agile ref="sertificatesSlider" :options="sliderOptions1" :speed="400" :throttleDelay="100" :swipeDistance="10" :timing="'ease-in-out'" :as-nav-for="asNavFor1" class="theSlider">
+						<agile 
+						@before-change="lockHeight()"
+						@after-change="unlockHeight()" 
+						ref="sertificatesSlider" :options="sliderOptions1" :speed="400" :throttleDelay="100" :swipeDistance="10" :timing="'ease-in-out'" :as-nav-for="asNavFor1" class="theSlider">
 							<div class="the_element" 
 								v-for="(post, index) in sertificateslist"
 								:post="post"
@@ -193,6 +205,12 @@ export default {
 
 
 	methods: {
+
+		...mapMutations({
+			lockHeight: 'lockHeight',
+			unlockHeight: 'unlockHeight',
+		}),
+
 		showMoreDesc(){
 			if(this.moreDesc == true){
 				this.moreDesc = false;
@@ -202,19 +220,11 @@ export default {
 		},
 
 		showPopup(){
-			// const indx = $refs.sertificatesSlider.getCurrentSlide();
-			// console.log(indx);
 			if(this.thePopup == true){
 				this.thePopup = false;
 			}else{
 				this.thePopup = true;
 			}
-		},
-
-		showElement(element){
-			this.showPopup();
-			console.log('Show Element!');
-			console.log(element);
 		},
 
 		getCurSlide(index){
@@ -226,7 +236,7 @@ export default {
 
 	computed:{
 		...mapState({
-			// isAuth: state => state.isAuth,
+			heightLock: state => state.heightLock,
 		}),
 		...mapGetters({
 			recommendationElement: 'content/recommendationElement',
@@ -320,6 +330,7 @@ export default {
 					position: relative;
 					cursor: pointer;
 					transition: all .24s ease;
+					height: 100%;
 					&:hover{
 						opacity: 1;
 					}
@@ -327,9 +338,9 @@ export default {
 						overflow: hidden;
 						margin-bottom: 4px;
 						position: relative;
-						height: 0;
+						height: 100%;
 						width: 100%;
-						padding-top: 130%;
+						// padding-top: 130%;
 						z-index: 10;
 						img{
 							position: absolute;
@@ -337,7 +348,7 @@ export default {
 							top: 0;
 							width: 100%;
 							height: 100%;
-							object-fit: cover;
+							object-fit: contain;
 							display: block;
 						}
 					}

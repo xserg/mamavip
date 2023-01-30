@@ -1,6 +1,9 @@
 <template>
 
-	<agile :options="sliderOptions" :speed="400" :throttleDelay="100" :swipeDistance="10" :timing="'ease-in-out'" class="theSlider">
+	<agile 
+	@before-change="lockHeight()"
+	@after-change="unlockHeight()"
+	:options="sliderOptions" :speed="400" :throttleDelay="100" :swipeDistance="10" :timing="'ease-in-out'" class="theSlider">
 		<element 
 			v-for="post in posts"
 			:post="post"
@@ -12,6 +15,7 @@
 
 
 <script>
+import {mapMutations} from 'vuex';
 import { VueAgile } from 'vue-agile'
 
 import Element from '@/components/Element';
@@ -56,6 +60,16 @@ export default({
 			},
 
 		}
+	},
+
+
+	methods: {
+
+	...mapMutations({
+		lockHeight: 'lockHeight',
+		unlockHeight: 'unlockHeight',
+	}),
+
 	},
 
 });

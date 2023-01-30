@@ -1,6 +1,9 @@
 <template>
 
-	<agile :options="sliderOptions" :speed="300" :throttleDelay="100" :swipeDistance="10" :timing="'ease-in-out'" class="theSlider">
+	<agile 
+	@before-change="lockHeight()"
+	@after-change="unlockHeight()"
+	:options="sliderOptions" :speed="300" :throttleDelay="100" :swipeDistance="10" :timing="'ease-in-out'" class="theSlider">
 		<teacher-element 
 			v-for="teacher in teachers"
 			:teacher="teacher"
@@ -12,6 +15,7 @@
 
 
 <script>
+import {mapMutations} from 'vuex';
 import { VueAgile } from 'vue-agile'
 
 import TeacherElement from '@/components/TeacherElement';
@@ -30,6 +34,13 @@ export default({
 			type: Array,
 			required: true,
 		}
+	},
+
+	methods: {
+		...mapMutations({
+			lockHeight: 'lockHeight',
+			unlockHeight: 'unlockHeight',
+		}),
 	},
 
 	data(){
@@ -83,6 +94,7 @@ export default({
 .theSlider{
 	margin-bottom: 12px;
 	.the_element{
+		font-size: 14px;
 		.top_line{
 			padding: 8px 16px;
 		}
@@ -95,7 +107,14 @@ export default({
 
 /* -------- @media ----------- */
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 550px) {
+
+
+.theSlider{
+	.the_element{
+		font-size: 12px;
+	}
+}
 
 
 }

@@ -375,11 +375,11 @@ export default defineComponent({
 			this.curResetValues = values;
 			console.log(JSON.stringify(this.curResetValues, null, 2));
 			setTimeout(() => {
-        this.showNotification = true;
-      }, 400);
+				this.showNotification = true;
+			}, 400);
 			setTimeout(() => {
-        this.showNotification = false;
-      }, 5000);
+				this.showNotification = false;
+			}, 5000);
 			// this.showErrors = true;
 			// this.$refs.forgotEmailInput.reset();
 			this.curStep = 'auth_code';
@@ -387,17 +387,19 @@ export default defineComponent({
 			this.restartOne();
 		},
 		onResendCode(){
-			this.$refs.forgotCodeInput.reset();
-			setTimeout(() => {
-        this.showNotification = true;
-      }, 400);
-			setTimeout(() => {
-        this.showNotification = false;
-      }, 5000);
-			// this.showErrors = true;
-			this.curStep = 'auth_code';
-			this.resendCode = false;
-			this.restartOne();
+			if(this.resendCode){
+				this.$refs.forgotCodeInput.reset();
+				setTimeout(() => {
+					this.showNotification = true;
+				}, 400);
+				setTimeout(() => {
+					this.showNotification = false;
+				}, 5000);
+				// this.showErrors = true;
+				this.curStep = 'auth_code';
+				this.resendCode = false;
+				this.restartOne();
+			}
 		},
 
 

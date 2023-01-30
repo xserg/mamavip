@@ -536,7 +536,9 @@ a:hover{
 
 
 
-
+.mainContainer.fixed{
+	overflow: hidden;
+}
 
 .mainContainer .contentWrap .topLine{
 
@@ -766,7 +768,6 @@ a:hover{
 	min-width: 100%;
 }
 
-
 }
 
 
@@ -777,3 +778,10 @@ a:hover{
 .mainContainer .contentWrap .contentSubWrap .teachers_box .the_element .the_title{
 	font-size: 12px !important;
 } */
+
+.popup_wrap .agile__list{
+	height: 100%;
+}
+.popup_wrap .agile__track{
+	height: 100%;
+}

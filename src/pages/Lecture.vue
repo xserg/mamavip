@@ -1,6 +1,6 @@
 <template>
 
-	<div class="mainContainer theLecture">
+	<div class="mainContainer theLecture" :class="{fixed: heightLock}">
 		<div class="contentWrap">
 
 			<div class="notificationWrap flexWrap fontSize14" :class="{ ghostWrap: !this.showNotification }">
@@ -12,7 +12,7 @@
 			</div>
 
 			<div class="topLine flexWrap">
-				<router-link class="theButton leftButton buttonTransparent buttonBack" to="/catalog/category/subcategory"></router-link>
+				<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Лекция</h1>
 				<button class="theButton rightButton buttonTransparent buttonFav fontFamilyB" :class="{active: theFav}" @click="addToFav"></button>
 			</div>
@@ -168,6 +168,7 @@ export default({
 
 	computed:{
 		...mapState({
+			heightLock: state => state.heightLock,
 		}),
 		...mapGetters({
 			sortedElements: 'content/sortedElements',

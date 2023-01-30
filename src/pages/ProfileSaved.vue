@@ -4,7 +4,7 @@
 		<div class="contentWrap" v-if="sortedElementsSaved.length > 0">
 
 			<div class="topLine flexWrap">
-				<router-link class="theButton leftButton buttonTransparent buttonBack" to="/profile"></router-link>
+				<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Сохранённые</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
@@ -22,7 +22,7 @@
 		<div class="contentWrap centered" v-else>
 
 			<div class="topLine flexWrap">
-				<router-link class="theButton leftButton buttonTransparent buttonBack" to="/profile"></router-link>
+				<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Сохранённые</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
@@ -45,7 +45,6 @@
 
 <script>
 // @ is an alias to /src
-// import DefaultLikes from '@/components/DefaultLikes.vue'
 import ElementsList from '@/components/ElementsList';
 
 import {mapState, mapMutations, mapGetters} from 'vuex';
@@ -58,7 +57,6 @@ export default {
 
 	data(){
 		return{
-			// hasElements: false,
 		}
 	},
 
@@ -68,37 +66,20 @@ export default {
 			setLogPage: 'setLogPage',
 			setAuthOut: 'setAuthOut',
 			setHomeTab: 'setHomeTab',
-			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
 
-		methods: {
-			deleteElement(post){
-				console.log('Имитация удаления элемента: ID ' + post.id)
-				// this.posts = this.posts.filter(p => p.id !== post.id)
-			},
-			// setElements(){
-			// 	if(sortedElementsSaved && sortedElementsSaved.length > 0){
-			// 		this.hasElements = true;
-			// 	}else{
-			// 		this.hasElements = false;
-			// 	}
-			// },
-		},
+		// 	deleteElement(post){
+		// 		console.log('Имитация удаления элемента: ID ' + post.id)
+		// 	},
 
-
-		// mounted(){
-		// 	this.setElements();
-		// },
 
 	},
 
 
 	computed:{
 		...mapState({
-			// curFilter: state => state.content.curFilter,
 		}),
 		...mapGetters({
-			// sortedPosts: 'post/sortedPosts',
 			sortedElementsSaved: 'content/sortedElementsSaved',
 		}),
 	},
@@ -116,7 +97,6 @@ export default {
 		padding-top: 45px;
 		padding-bottom: 48px;
 		background-color: #FFF;
-		// overflow: scroll;
 		justify-content: flex-start;
 
 		&.centered{
@@ -126,9 +106,6 @@ export default {
 
 		.contentSubWrap{
 			width: 100%;
-			// padding: 16px 0px;
-			// padding: 0;
-			// background-color: #F3F5F6;
 			&.elements_wrap{
 				padding-top: 8px;
 			}

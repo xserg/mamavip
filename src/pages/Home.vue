@@ -1,5 +1,5 @@
 <template>
-  <div class="mainContainer">
+  <div class="mainContainer" :class="{fixed: heightLock}">
 		<div class="contentWrap">
 
 			<div class="topLine flexWrap">
@@ -128,8 +128,10 @@ export default {
     // DefaultLikes,
   },
 
+
 	computed:{
 		...mapState({
+			heightLock: state => state.heightLock,
 		}),
 		...mapGetters({
 			recommendationElement: 'content/recommendationElement',

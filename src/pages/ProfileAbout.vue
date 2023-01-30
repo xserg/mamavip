@@ -3,7 +3,7 @@
 		<div class="contentWrap">
 
 			<div class="topLine flexWrap">
-				<router-link class="theButton leftButton buttonTransparent buttonBack" to="/profile"></router-link>
+				<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">О приложении</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
@@ -41,8 +41,6 @@
 
 <script>
 // @ is an alias to /src
-// import DefaultLikes from '@/components/DefaultLikes.vue'
-
 import {mapState, mapMutations} from 'vuex';
 
 export default {
@@ -50,7 +48,6 @@ export default {
 
 	data(){
 		return{
-			// profileIsFill: true,
 		}
 	},
 
@@ -59,7 +56,6 @@ export default {
 		...mapMutations({
 			setLogPage: 'setLogPage',
 			setAuthOut: 'setAuthOut',
-			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
 
 		copyLink(){
@@ -69,15 +65,9 @@ export default {
 	},
 
   components: {
-    // DefaultLikes,
   },
 
 
-	// computed:{
-	// 	...mapState({
-	// 		isAuth: state => state.isAuth,
-	// 	}),
-	// },
 }
 </script>
 
@@ -85,13 +75,11 @@ export default {
 <style lang="scss" scoped>
 
 .mainContainer{
-	height: 100vh;
 	.contentWrap{
 		padding: 0;
 		padding-top: 45px;
 		padding-bottom: 48px;
 		background-color: #FFF;
-		overflow: scroll;
 		justify-content: flex-start;
 
 		.contentSubWrap{
@@ -134,7 +122,7 @@ export default {
 			.links_wrap{
 				background-color: #FFF;
 				padding: 16px;
-				padding-bottom: 48px;
+				padding-bottom: 46px;
 				.link_wrap{
 					margin-bottom: 16px;
 					position: relative;
