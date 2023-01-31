@@ -304,7 +304,7 @@ export default defineComponent({
       code: yup.string().required('Введите код подтверждения').min(6, 'Код должен состоять из 6 символов').max(6, 'Код должен состоять из 6 символов').typeError().label('Код из письма'),
 		});
 		const schema_newpass = yup.object({
-      newpass: yup.string().required('Пожалуйста, заполните это поле').min(8, 'Поле пароля должно содержать не менее 8 символов').label('Пароль'),
+      newpass: yup.string().required('Пожалуйста, заполните это поле').min(8, 'Поле должно содержать не менее 8 символов').label('Пароль'),
 			confirm_newpass: yup.string().label('Подтверждение пароля').required('Пожалуйста, заполните это поле').oneOf([yup.ref('newpass'), null], 'Пароли должны совпадать'),
 		});
     return {
@@ -379,7 +379,7 @@ export default defineComponent({
 			}, 400);
 			setTimeout(() => {
 				this.showNotification = false;
-			}, 5000);
+			}, 3000);
 			// this.showErrors = true;
 			// this.$refs.forgotEmailInput.reset();
 			this.curStep = 'auth_code';
@@ -394,7 +394,7 @@ export default defineComponent({
 				}, 400);
 				setTimeout(() => {
 					this.showNotification = false;
-				}, 5000);
+				}, 3000);
 				// this.showErrors = true;
 				this.curStep = 'auth_code';
 				this.resendCode = false;
@@ -418,7 +418,7 @@ export default defineComponent({
       }, 400);
 			setTimeout(() => {
         this.showNotification = false;
-      }, 5000);
+      }, 3000);
 		},
 
 		hideMessages(){

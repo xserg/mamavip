@@ -157,7 +157,7 @@ export default({
 			}, 400);
 			setTimeout(() => {
 				this.showNotification = false;
-			}, 5000);
+			}, 3000);
 		},
 
 		hideMessages(){

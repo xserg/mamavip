@@ -1,19 +1,22 @@
 <template>
 
-	<router-link class="the_element marginB12" to="/catalog/category">
+	<div class="the_element marginB12" @mousedown="handleMouseDown" @click="handleClick">  
+		<!-- @mousedown="handleMouseDown(event)" -->
 		<div class="the_element_box">
 			<!-- <img src="./../assets/images/element.jpg" alt="element"> -->
 			<img :src="post.preview" alt="element">
 		</div>
 		<span class="the_title fontSize16 fontFamilyEB">{{ post.title }}</span>
 		<!-- <span class="the_title fontSize14 fontFamilyEB">Короткий заголовок у элемента</span> -->
-	</router-link>
+	</div>
 	
 	
 </template>
 
 
 <script>
+import router from "@/router/router"; 
+
 export default({
 
 	name: 'CatalogElement', 
@@ -27,8 +30,34 @@ export default({
 
 	data(){
 		return{
+			startX: 0,
 			// post: {},
 		}
+	},
+
+	methods: {
+
+		routeToElement(){
+			router.push('/catalog/category');
+		},
+
+		handleMouseDown(event){
+      this.startX = event.screenX;
+    },
+
+		handleClick(event){
+			// console.log(event.screenX);
+    	const delta = Math.abs(event.screenX - this.startX);
+			if (delta > 10) {
+				// console.log('Сработал свайп');
+			}else{
+				// console.log('Сработал клик');
+				this.routeToElement();
+			}
+			this.startX = 0;
+		},
+		
+
 	},
 
 });

@@ -17,7 +17,7 @@
 				<agile 
 					@before-change="lockHeight()"
 					ref="sertificateSlider" 
-					@after-change="getCurSlide($refs.sertificateSlider.getCurrentSlide()), unlockHeight()" 
+					@after-change="getCurSlide($refs.sertificatesSlider.getCurrentSlide()), unlockHeight()" 
 					:options="sliderOptions2" 
 					:speed="400" 
 					:throttleDelay="100" 
@@ -65,15 +65,24 @@
 							@showElement="showElement"
 						/> -->
 						<agile 
-						@before-change="lockHeight()"
-						@after-change="unlockHeight()" 
-						ref="sertificatesSlider" :options="sliderOptions1" :speed="400" :throttleDelay="100" :swipeDistance="10" :timing="'ease-in-out'" :as-nav-for="asNavFor1" class="theSlider">
+							@before-change="lockHeight()"
+							@after-change="getCurSlide($refs.sertificatesSlider.getCurrentSlide()), unlockHeight()" 
+							ref="sertificatesSlider" 
+							:options="sliderOptions1" 
+							:speed="400" 
+							:throttleDelay="100" 
+							:swipeDistance="10" 
+							:timing="'ease-in-out'" 
+							:as-nav-for="asNavFor1" 
+							class="theSlider"
+						>
 							<div class="the_element" 
 								v-for="(post, index) in sertificateslist"
 								:post="post"
 								:key="index"
 								:id="'serfs_slide_' + post.id"
-								@click="showPopup(), getCurSlide(index), $refs.sertificatesSlider.goTo(index)"
+								@mousedown="handleMouseDown" 
+								@click=" this.getCurSlide(index), $refs.sertificatesSlider.goTo(index), $refs.sertificateSlider.goTo(index), handleClick(index, $event)"
 							>
 							<!-- @click="showPopup" -->
 								<div class="the_element_box"> 
@@ -110,6 +119,7 @@
 <script>
 // @ is an alias to /src
 // import Element from '@/components/Element';
+// import { ref } from "vue";
 import { VueAgile } from 'vue-agile'
 
 import Element from '@/components/Element';
@@ -121,9 +131,14 @@ import {mapState, mapMutations, mapGetters} from 'vuex';
 export default {
   name: 'Profile',
 
+	// setup() {
+	// 	const sertificatesSlider = ref(null);
+	// },
 
 	data(){
 		return{ 
+			startX: 0,
+
 			moreDesc: false,
 			thePopup: false,
 
@@ -229,7 +244,29 @@ export default {
 
 		getCurSlide(index){
 			this.currSlide = index;
-		}
+		},
+
+
+		handleMouseDown(event){
+      this.startX = event.screenX;
+    },
+
+		handleClick(index, event){
+			
+			// console.log(event.screenX);
+    	const delta = Math.abs(event.screenX - this.startX);
+			if (delta > 10) {
+				// console.log('Сработал свайп');
+				// $refs.sertificatesSlider.goTo(index);
+			}else{
+				// console.log('Сработал клик');
+				// this.routeToElement();
+				this.showPopup();
+			}
+			this.startX = 0;
+		},
+
+
 
 	},
 

@@ -115,7 +115,7 @@ body .marginAuto{
 	padding-right: 16px;
 	margin-left: auto;
 	margin-right: auto;
-	min-height: 100vh;
+	min-height: 100.1vh;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -593,6 +593,12 @@ a:hover{
 }
 
 
+.popup_wrap .agile__list{
+	height: 100%;
+}
+.popup_wrap .agile__track{
+	height: 100%;
+}
 
 
 
@@ -735,6 +741,9 @@ a:hover{
 		font-size: 26px;
 	}
 	
+	.theButton{
+		font-size: 14px;
+	}
 	
 	
 }
@@ -770,18 +779,3 @@ a:hover{
 
 }
 
-
-/* .mainContainer .contentWrap{
-	padding-bottom: 0 !important;
-} */
-/* 
-.mainContainer .contentWrap .contentSubWrap .teachers_box .the_element .the_title{
-	font-size: 12px !important;
-} */
-
-.popup_wrap .agile__list{
-	height: 100%;
-}
-.popup_wrap .agile__track{
-	height: 100%;
-}

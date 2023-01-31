@@ -4,7 +4,7 @@
 		<div class="contentWrap">
 
 			<div class="topLine flexWrap">
-				<router-link class="theButton leftButton buttonTransparent buttonBack" to="/"></router-link>
+				<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Политика конфиденциальности</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
@@ -86,6 +86,10 @@ export default {
 		justify-content: flex-start;
 		.contentSubWrap{
 			padding: 32px 16px;
+			p{
+				line-height: 150%;
+			}
+			
 		}
 	}
 }

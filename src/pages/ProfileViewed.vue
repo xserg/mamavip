@@ -33,7 +33,7 @@
 				<img class="the_img" src="./../assets/images/emptyState.png" alt="img">
 				<span class="the_title fontFamilyEB">Нет просмотренных лекций</span>
 				<!-- <p class="the_desc fontSize14">Сохраняйте лекции, чтобы вернуться к ним в любой момент</p> -->
-				<router-link class="theButton buttonPrimary buttonOptimal" to="/" @click="this.setHomeTab()">Искать лекции</router-link>
+				<router-link class="theButton buttonPrimary buttonOptimal fontSize16" to="/" @click="this.setHomeTab()">Искать лекции</router-link>
 			</div>
 
 			<bottom-line></bottom-line>
@@ -113,8 +113,12 @@ export default {
 				align-items: center;
 				justify-content: center;
 				max-width: 480px;
+				padding-left: 10px;
+				padding-right: 10px;
 				.the_img{
-					width: 100%;
+					width: 56.56%;
+					margin-left: auto;
+					margin-right: auto;
 				}
 				.the_title{
 					color: #23292DB2;

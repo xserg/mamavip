@@ -20,8 +20,9 @@
 
 
 <script>
+
 import {mapMutations} from 'vuex'; 
-import { VueAgile } from 'vue-agile'
+import { VueAgile } from 'vue-agile';
 
 import CatalogElement from '@/components/CatalogElement';
 

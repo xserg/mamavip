@@ -34,7 +34,7 @@
 
 				<div class="topLine flexWrap">
 					
-					<router-link class="theButton leftButton buttonTransparent" to="/profile">Отмена</router-link>
+					<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent">Отмена</a>
 					<h1 class="theTitle alignCenter">Профиль</h1>
 					<button class="theButton rightButton buttonTransparent fontFamilyB">Готово</button>
 				</div>
