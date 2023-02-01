@@ -8,7 +8,7 @@
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			<div class="popup_wrap" :class="{ghostWrap: !thePopup}">
+			<div class="popup_wrap" :class="{ghostWrap: !thePopup}" @keydown.esc="showPopup">
 				<div class="topLine flexWrap">
 					<span class="theButton leftButton buttonTransparent buttonClose" @click="showPopup"></span>
 					<h1 class="theTitle alignCenter">{{ this.currSlide + 1 }}/{{ sertificateslist.length }}</h1>
@@ -17,7 +17,7 @@
 				<agile 
 					@before-change="lockHeight()"
 					ref="sertificateSlider" 
-					@after-change="getCurSlide($refs.sertificatesSlider.getCurrentSlide()), unlockHeight()" 
+					@after-change="getCurSlide($refs.sertificateSlider.getCurrentSlide()), unlockHeight()" 
 					:options="sliderOptions2" 
 					:speed="400" 
 					:throttleDelay="100" 
@@ -30,12 +30,12 @@
 						:key="index"
 						:id="`popup_slide_${index}`"
 					>
-					<!-- @click="showPopup" -->
 						<div class="the_slide_box"> 
 							<img :src="post.preview" alt="element">
 						</div>
 					</div>
 				</agile>
+
 				<!-- <popup-slider class="slider_wrap" :posts="sertificateslist" /> -->
 			</div>
 
@@ -60,13 +60,10 @@
 					<span class="the_title fontFamilyEB fontSize20 blockWrap marginB12">Дипломы и сертификаты</span>
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
 					<div class="element_box">
-						<!-- <sertificates-slider 
-							:posts="sertificateslist"
-							@showElement="showElement"
-						/> -->
+						
 						<agile 
 							@before-change="lockHeight()"
-							@after-change="getCurSlide($refs.sertificatesSlider.getCurrentSlide()), unlockHeight()" 
+							@after-change="getCurSlide($refs.sertificateSlider.getCurrentSlide()), unlockHeight()" 
 							ref="sertificatesSlider" 
 							:options="sliderOptions1" 
 							:speed="400" 
@@ -82,9 +79,8 @@
 								:key="index"
 								:id="'serfs_slide_' + post.id"
 								@mousedown="handleMouseDown" 
-								@click=" this.getCurSlide(index), $refs.sertificatesSlider.goTo(index), $refs.sertificateSlider.goTo(index), handleClick(index, $event)"
+								@click="handleClick(index, $event)"
 							>
-							<!-- @click="showPopup" -->
 								<div class="the_element_box"> 
 									<img :src="post.preview" alt="element">
 								</div>
@@ -119,7 +115,6 @@
 <script>
 // @ is an alias to /src
 // import Element from '@/components/Element';
-// import { ref } from "vue";
 import { VueAgile } from 'vue-agile'
 
 import Element from '@/components/Element';
@@ -131,9 +126,6 @@ import {mapState, mapMutations, mapGetters} from 'vuex';
 export default {
   name: 'Profile',
 
-	// setup() {
-	// 	const sertificatesSlider = ref(null);
-	// },
 
 	data(){
 		return{ 
@@ -257,10 +249,11 @@ export default {
     	const delta = Math.abs(event.screenX - this.startX);
 			if (delta > 10) {
 				// console.log('Сработал свайп');
-				// $refs.sertificatesSlider.goTo(index);
+				this.getCurSlide(index);
 			}else{
+				this.getCurSlide(index);
 				// console.log('Сработал клик');
-				// this.routeToElement();
+				this.$refs.sertificatesSlider.goTo(index);
 				this.showPopup();
 			}
 			this.startX = 0;
@@ -387,6 +380,7 @@ export default {
 							height: 100%;
 							object-fit: contain;
 							display: block;
+							user-select: none;
 						}
 					}
 				}

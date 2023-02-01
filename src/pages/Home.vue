@@ -10,6 +10,7 @@
 
 			<div class="contentSubWrap">
 
+	
 				<div class="userinfo_wrap topWrap marginB12">
 					<div class="userinfo_box">
 						<router-link class="userinfo_card" to="/edit">

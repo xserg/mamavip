@@ -94,7 +94,7 @@ export default({
 .theSlider{
 	margin-bottom: 12px;
 	.the_element{
-		font-size: 14px;
+		// font-size: 14px;
 		.top_line{
 			padding: 8px 16px;
 		}
@@ -112,7 +112,7 @@ export default({
 
 .theSlider{
 	.the_element{
-		font-size: 12px;
+		// font-size: 12px; 
 	}
 }
 

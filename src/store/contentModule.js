@@ -69,7 +69,7 @@ export const contentModule = {
 		posts: [
 			{
 				id: '1',
-				title: 'Компонент',
+				title: 'Компонент в две или три строки, зависит от размера шрифта и места на экране',
 				preview: 'https://images.unsplash.com/photo-1674581648641-6362c00ac9ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80'
 			},
 			{

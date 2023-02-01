@@ -10,7 +10,11 @@
 		</nav> -->
 		<!-- {{ curStep }}
 		<button @click="nextStep">Добавить шаг</button> -->
-		<router-view></router-view>
+		<router-view v-slot="{ Component }">
+			<transition name="slide" mode="out-in">
+				<component :is="Component" />
+			</transition>
+		</router-view>
 	</div>
 </template>
 
@@ -54,7 +58,15 @@ export default {
 			newReg: state => state.newReg,
 			// thePopup: state => state.thePopup,
 		}),
-	}
+	},
+
+	watch: {
+    $route(to, from) {
+      const toDepth = to.path.split('/').length
+      const fromDepth = from.path.split('/').length
+      this.transitionName = toDepth < fromDepth ? 'slide-right' : 'slide-left'
+    },
+  },
 
 }
 

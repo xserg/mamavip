@@ -1,6 +1,6 @@
 <template>
 
-	<router-link class="the_element marginB12" to="/catalog/lecture">
+	<div class="the_element marginB12" @mousedown="handleMouseDown" @click="handleClick">
 		<div class="info_line flexWrap">
 			<div class="icons flexWrap">
 				<span class="viewed blockWrap"></span>
@@ -16,13 +16,14 @@
 		</div>
 		<span class="the_title fontSize16 fontFamilyEB">{{ post.title + ' ' + post.id}}</span>
 		<!-- <span class="the_title fontSize14 fontFamilyEB">Короткий заголовок у элемента</span> -->
-	</router-link>
+	</div>
 	
 	
 </template>
 
 
 <script>
+import router from "@/router/router"; 
 export default({
 
 	name: 'Element', 
@@ -36,15 +37,41 @@ export default({
 
 	data(){
 		return{
+			startX: 0,
 			// post: {},
 		}
+	},
+
+	methods: {
+
+		routeToElement(){
+			router.push('/catalog/lecture');
+		},
+
+		handleMouseDown(event){
+			this.startX = event.screenX;
+		},
+
+		handleClick(event){
+			// console.log(event.screenX);
+			const delta = Math.abs(event.screenX - this.startX);
+			if (delta > 10) {
+				// console.log('Сработал свайп');
+			}else{
+				// console.log('Сработал клик');
+				this.routeToElement();
+			}
+			this.startX = 0;
+		},
+
+
 	},
 
 });
 </script>
 
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 .the_element{
 	width: 100%;
@@ -176,6 +203,17 @@ export default({
 	.the_title{
 		display: block;
 		color: #23292D;
+
+		max-height: 3.06rem;
+    height: 100%;
+    line-height: 1.53rem;
+    text-overflow: ellipsis;
+    font-size: 1.07rem;
+    overflow: hidden;
+		white-space: normal; 
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
 	}
 }
 
@@ -183,7 +221,15 @@ export default({
 
 /* -------- @media ----------- */
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 550px) {
+
+	.the_element{
+		.the_title{
+			max-height: 2.66rem;
+			line-height: 1.33rem;
+			font-size: .93rem;
+		}
+	}
 
 }
 
