@@ -1,23 +1,23 @@
 <template>
-  <div class="mainContainer" :class="{fixed: heightLock}">
+  <div class="mainContainer" :class="{fixed: heightLock, zindex: thePopup}">
 		<div class="contentWrap" :class="{fixed: thePopup}">
 
 			<div class="topLine flexWrap">
-				<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent buttonBack"></a>
+				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack"></a>
 				<h1 class="theTitle alignCenter">Лектор</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			<div class="popup_wrap" :class="{ghostWrap: !thePopup}" @keydown.esc="showPopup">
+			<div class="popup_wrap" :class="{ghostWrap: !thePopup}">
 				<div class="topLine flexWrap">
-					<span class="theButton leftButton buttonTransparent buttonClose" @click="showPopup"></span>
+					<span class="theButton leftButton buttonTransparent buttonClose" @click="showPopup(), unlockHeight()"></span>
 					<h1 class="theTitle alignCenter">{{ this.currSlide + 1 }}/{{ sertificateslist.length }}</h1>
 					<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 				</div>
 				<agile 
 					@before-change="lockHeight()"
 					ref="sertificateSlider" 
-					@after-change="getCurSlide($refs.sertificateSlider.getCurrentSlide()), unlockHeight()" 
+					@after-change="unlockHeight(), getCurSlide($refs.sertificateSlider.getCurrentSlide())" 
 					:options="sliderOptions2" 
 					:speed="400" 
 					:throttleDelay="100" 
@@ -63,7 +63,7 @@
 						
 						<agile 
 							@before-change="lockHeight()"
-							@after-change="getCurSlide($refs.sertificateSlider.getCurrentSlide()), unlockHeight()" 
+							@after-change=" unlockHeight(), getCurSlide($refs.sertificateSlider.getCurrentSlide())" 
 							ref="sertificatesSlider" 
 							:options="sliderOptions1" 
 							:speed="400" 
@@ -103,7 +103,7 @@
 
 			</div>
 
-			<bottom-line></bottom-line>
+			<!-- <bottom-line></bottom-line> -->
 			
 		</div>
 
@@ -216,6 +216,7 @@ export default {
 		...mapMutations({
 			lockHeight: 'lockHeight',
 			unlockHeight: 'unlockHeight',
+			setRouterAnimate: 'setRouterAnimate',
 		}),
 
 		showMoreDesc(){
@@ -291,6 +292,9 @@ export default {
 .mainContainer{
 	height: 100vh;
 	position: relative;
+	&.zindex{
+		z-index: 10000010;
+	}
 	.contentWrap.ghostWrap{
 		position: absolute;
 		top: 0;
@@ -496,14 +500,16 @@ export default {
 					height: auto; 
 					max-height: 54px;
 					overflow: hidden;
-					transition: opacity .8s ease, max-height .8s cubic-bezier(.08,1.1,.7,.98);
+					// transition: opacity .8s ease, max-height .8s cubic-bezier(.08,1.1,.7,.98);
+					transition: opacity .8s ease, max-height .66s cubic-bezier(0.09, 0.96, 0.83, 0.98);
 					font-size: 14px;
 					p{
 						line-height: 19px;
 					}
 					&.active{
 						max-height: 100vh;
-						transition: opacity 1s cubic-bezier(.05,.91,.25,1),max-height 1.2s cubic-bezier(.22,.45,.65,.88);
+						// transition: opacity 1s cubic-bezier(.05,.91,.25,1),max-height 1.2s cubic-bezier(.22,.45,.65,.88);
+						transition: opacity 1s cubic-bezier(.05,.91,.25,1),max-height 0.6s cubic-bezier(0.69, 0.43, 0.42, 0.61);
 					}
 				}
 				.show_more{

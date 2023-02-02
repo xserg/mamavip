@@ -108,10 +108,24 @@ body .marginAuto{
 }
 
 
+.appContainer{
+	/* max-width: 600px; */
+}
+
 .mainContainer{
 	width: 100%;
 	height: 100%;
+	/* max-width: 600px;
+	margin-left: auto;
+	margin-right: auto; */
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
 	overflow: scroll;
+	/* overflow-x: hidden; */
+	z-index: 15;
 	/* overflow: hidden; */
 }
 
@@ -189,13 +203,55 @@ body .marginAuto{
 	width: 24px;
 	min-width: 24px;
 	height: 24px;
+	position: relative;
+	/* background-position: right;
+	background-repeat: no-repeat;
+	background-size: contain;
+	position: relative;
+	background-image: url('../assets/icons/bookmark.svg'); */
+}
+.buttonFav::before{
+	content: '';	
+	display: block;
+	width: 24px;
+	height: 24px;
+	opacity: 1;
+	visibility: visible;
+	transition: all .2s ease;
+	background-image: url('../assets/icons/bookmark-active.svg');
 	background-position: right;
 	background-repeat: no-repeat;
 	background-size: contain;
-	background-image: url('../assets/icons/bookmark.svg');
+	position: absolute;
+	right: 0;
+	top: 0;
 }
-.buttonFav.active{
-	background-image: url('../assets/icons/bookmark-active.svg');
+.buttonFav::after{
+	content: '';	
+	display: block;
+	width: 24px;
+	height: 24px;
+	opacity: 0;
+	visibility: hidden;
+	transition: all .2s ease;
+	background-image: url('../assets/icons/bookmark.svg');
+	background-position: right;
+	background-repeat: no-repeat;
+	background-size: contain;
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+
+.buttonFav.active::before{
+	opacity: 0;
+	visibility: hidden;
+	/* background-image: url('../assets/icons/bookmark-active.svg'); */
+}
+.buttonFav.active::after{
+	opacity: 1;
+	visibility: visible;
+	/* background-image: url('../assets/icons/bookmark-active.svg'); */
 }
 
 
@@ -609,37 +665,46 @@ a:hover{
 }
 
 
+.slide-right-enter-active,
+.slide-right-leave-active,
+.slide-left-enter-active,
+.slide-left-leave-active{
+  transition: all .32s cubic-bezier(0.52, 0.14, 0.41, 0.91);
+	overflow: hidden;
+}
+
+.slide-left-enter {
+  transform: translateX(100%);
+	opacity: 0;
+}
+
+.slide-left-leave-to {
+   transform: translateX(-100%);
+	 opacity: 0;
+}
+
+.slide-right-enter {
+  transform: translateX(-100%);
+	opacity: 0;
+}
+
+.slide-right-leave-to {
+   transform: translateX(100%);
+	 opacity: 0;
+}
 
 
 
-.slide-enter-active,
-.slide-leave-active {
-  transition: all 0.75s ease-out;
-}
-.slide-enter-to {
-  position: absolute;
-  right: 0;
-}
-.slide-enter-from {
-  position: absolute;
-  right: -100%;
-}
-.slide-leave-to {
-  position: absolute;
-  left: -100%;
-}
-.slide-leave-from {
-  position: absolute;
-  left: 0;
-}
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s ease;
+  /* transition: opacity 0.2s cubic-bezier(1, 0.02, 0.69, 1); */
+	transition: opacity 0.12s cubic-bezier(1,-0.14, 0.6, 0.99); 
+	/* transition: opacity .34s cubic-bezier(1,-0.67, 0.66, 1.02); */
 }
 .fade-enter-from,
 .fade-leave-to {
-  opacity: 0;
+  opacity: 0.02;
 }
 
 
@@ -760,7 +825,7 @@ a:hover{
 /* ------ @Media ------- */
 
 @media screen and (max-width: 600px) {
-	.mainContainer{
+	.appContainer .mainContainer{
 		background-color: #FFF;
 	}
 }

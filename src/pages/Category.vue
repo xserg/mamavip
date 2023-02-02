@@ -12,7 +12,7 @@
 			<div class="contentSubWrap">
 				<div class="topWrap content_box preview_box">
 					<!-- <router-link class="theButton buttonBack theWhite" to="/catalog" /> -->
-					<a @click="$router.go(-1)" class="theButton buttonBack theWhite" />
+					<a @click="$router.go(-1), setRouterAnimate()" class="theButton buttonBack theWhite" />
 					<img src="./../assets/images/category.jpg" alt="">
 				</div>
 				<div class="midWrap content_box info_box">
@@ -30,7 +30,7 @@
 				<!-- {{ currentCategory.id }} -->
 			</div>
 
-			<bottom-line></bottom-line>
+			<!-- <bottom-line></bottom-line> -->
 			
 		</div>
 	</div>
@@ -76,6 +76,11 @@ export default({
 		}),
 	},
 
+	methods:{
+    ...mapMutations({
+      setRouterAnimate: 'setRouterAnimate',
+    }),
+	},
 
 
 });

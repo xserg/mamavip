@@ -13,7 +13,7 @@
 	
 				<div class="userinfo_wrap topWrap marginB12">
 					<div class="userinfo_box">
-						<router-link class="userinfo_card" to="/edit">
+						<router-link class="userinfo_card" to="/edit" @click="setRouterAnimate">
 							<span class="card_photo_wrap"></span>
 							<!-- <span class="card_photo_wrap filled" style=""></span> -->
 							<div class="card_info_wrap">
@@ -56,7 +56,7 @@
 
 
 				<div class="catalog_box midWrap marginB12">
-					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/catalog">Каталог лекций</router-link>
+					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/catalog" @click="setRouterAnimate">Каталог лекций</router-link>
 					<span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span>
 					<div class="element_box">
 						<calalog-slider 
@@ -66,7 +66,7 @@
 				</div>
 
 				<div class="error_box midWrap marginB12">
-					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/catalog">Каталог лекций</router-link>
+					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/catalog" @click="setRouterAnimate">Каталог лекций</router-link>
 					<span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span>
 					
 					<img class="the_img" src="./../assets/images/noResponse.png">
@@ -77,7 +77,7 @@
 				</div>
 
 				<div class="teachers_box midWrap marginB12">
-					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/speakers">Наши лекторы</router-link>
+					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/speakers" @click="setRouterAnimate">Наши лекторы</router-link>
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
 					<div class="element_box">
 						<!-- <element 
@@ -88,9 +88,8 @@
 					</div>
 				</div>
 
-
 				<div class="videos_box bottomWrap">
-					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/forview">Вы ещё не смотрели</router-link>
+					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/forview" @click="setRouterAnimate">Вы ещё не смотрели</router-link>
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
 					<div class="element_box">
 						<!-- <element 
@@ -101,8 +100,7 @@
 					</div>
 				</div>
 
-
-				<bottom-line></bottom-line>
+				<!-- <bottom-line></bottom-line> -->
 			</div>
 			
 		</div>
@@ -117,7 +115,7 @@ import ElementsSlider from '@/components/ElementsSlider';
 import CalalogSlider from '@/components/CatalogSlider';
 import TeacherSlider from '@/components/TeacherSlider';
 
-import {mapState, mapGetters, mapMutations, mapActions} from 'vuex';
+import {mapState, mapGetters, mapMutations} from 'vuex';
 
 export default {
   name: 'Home',
@@ -143,6 +141,11 @@ export default {
 	},
 
 
+	methods:{
+    ...mapMutations({
+      setRouterAnimate: 'setRouterAnimate',
+    }),
+	},
 
 }
 </script>

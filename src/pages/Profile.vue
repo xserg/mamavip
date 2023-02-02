@@ -26,7 +26,7 @@
 						<span class="the_icon"></span>
 						<span class="the_title blockWrap fontFamilyEB alignCenter">Заполните профиль</span>
 						<p class="the_info blockWrap fontSize14 alignCenter">Это необходимо, чтобы пользоваться сервисом</p>
-						<button class="theButton buttonTransparent fontFamilyB">Заполнить</button>
+						<router-link class="theButton buttonTransparent fontFamilyB" to="/edit" @click="setRouterAnimate">Заполнить</router-link>
 					</div>
 					<div class="userinfo_box" v-else>
 						<div class="userinfo_card">
@@ -37,28 +37,28 @@
 								<span class="card_status fontSize14" v-if="!this.yesBaby">Ваш срок — примерно 29 недель</span>
 								<span class="card_status fontSize14" v-else>Малыш родился</span>
 							</div>
-							<router-link class="card_button theButton buttonTransparent buttonOptimal" to="/edit"></router-link>
+							<router-link class="card_button theButton buttonTransparent buttonOptimal" to="/edit" @click="setRouterAnimate"></router-link>
 						</div>
 						<button class="user_info_button theButton buttonPrimary fontSize16" v-if="!this.yesBaby" @click="celebrateBirthday">Отметить рождение малыша</button>
 					</div>
 				</div>
 
 				<div class="tabsinfo_wrap midWrap marginB12 fontSize16">
-					<router-link class="link_button" to="/profile/saved">
+					<router-link class="link_button" to="/profile/saved" @click="setRouterAnimate">
 						<div class="left_wrap">
 							<span class="the_icon save_icon"></span>
 							<span class="the_title">Сохранённые лекции</span>
 						</div>
 						<span class="the_count">{{ sortedElementsSaved.length }}</span>
 					</router-link>
-					<router-link class="link_button" to="/profile/bought">
+					<router-link class="link_button" to="/profile/bought" @click="setRouterAnimate">
 						<div class="left_wrap">
 							<span class="the_icon buy_icon"></span>
 							<span class="the_title">Купленные лекции</span>
 						</div>
 						<span class="the_count">{{ sortedElementsBought.length }}</span>
 					</router-link>
-					<router-link class="link_button" to="/profile/viewed">
+					<router-link class="link_button" to="/profile/viewed" @click="setRouterAnimate">
 						<div class="left_wrap">
 							<span class="the_icon see_icon"></span>
 							<span class="the_title">Просмотренные лекции</span>
@@ -68,14 +68,14 @@
 				</div>
 
 				<div class="moreinfo_wrap midWrap marginB12">
-					<router-link class="link_button" to="/profile/help">
+					<router-link class="link_button" to="/profile/help" @click="setRouterAnimate">
 						<div class="left_wrap">
 							<span class="the_icon help_icon"></span>
 							<span class="the_title">Помощь</span>
 						</div>
 						<span class="the_count"></span>
 					</router-link>
-					<router-link class="link_button" to="/profile/about">
+					<router-link class="link_button" to="/profile/about" @click="setRouterAnimate">
 						<div class="left_wrap">
 							<span class="the_icon info_icon"></span>
 							<span class="the_title">О приложении</span>
@@ -92,7 +92,7 @@
 				</div>
 			</div>
 
-			<bottom-line></bottom-line>
+			<!-- <bottom-line></bottom-line> -->
 			
 		</div>
 
@@ -163,6 +163,7 @@ export default {
 		...mapMutations({
 			setLogPage: 'setLogPage',
 			setAuthOut: 'setAuthOut',
+			setRouterAnimate: 'setRouterAnimate',
 			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
 
@@ -517,6 +518,12 @@ export default {
 		}
 	}
 
+}
+
+@media screen and (max-width: 420px) {
+	.mainContainer .contentWrap .contentSubWrap .userinfo_wrap .userinfo_box .user_info_button{
+		max-width: 395px;
+	}
 }
 
 </style>

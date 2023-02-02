@@ -3,29 +3,31 @@
 		<autoriz v-if="!newReg"></autoriz>
 		<registr v-if="newReg"></registr>
 	</div>
+	<!-- v-touch-swipe.mouse.right="$router.go(-1)" -->
 	<div v-if="isAuth" class="appContainer">
-		<!-- <nav>
-			<router-link to="/">Home</router-link> |
-			<router-link to="/about">About</router-link>
-		</nav> -->
-		<!-- {{ curStep }}
-		<button @click="nextStep">Добавить шаг</button> -->
 		<router-view v-slot="{ Component }">
-			<transition name="slide" mode="out-in">
+			<transition 
+				:name="curRouterAnimate"
+				mode="out-in"
+			>
 				<component :is="Component" />
 			</transition>
 		</router-view>
+		<bottom-line></bottom-line>
+		<div class="empty_layout" v-if="isAuth"></div>
 	</div>
+	
 </template>
 
 
 <script>
 
 // Импортирование компонентов 
+// import 'animate.css'
 import Autoriz from '@/pages/Autoriz';
 import Registr from '@/pages/Registr';
 
-import {mapState, mapMutations} from 'vuex';
+import { mapState, mapGetters} from 'vuex';
 
 
 
@@ -35,16 +37,12 @@ export default {
 
 	data(){
 		return{
+			transitionName: '',
 			// curStep: 1,
 		}
 	},
 
-	methods: {
-		...mapMutations({
-			// hiddenPopup: state => state.hiddenPopup,
-			// hiddenSelectDropdown: 'hiddenSelectDropdown',
-			// hiddenSelectDropdownMenu: 'hiddenSelectDropdownMenu',
-		}),
+	methods:{
 		// nextStep(){
 		// 	this.curStep += 1;
 		// }
@@ -58,15 +56,35 @@ export default {
 			newReg: state => state.newReg,
 			// thePopup: state => state.thePopup,
 		}),
+		...mapGetters({
+			curRouterAnimate: 'curRouterAnimate',
+		}),
 	},
 
-	watch: {
-    $route(to, from) {
-      const toDepth = to.path.split('/').length
-      const fromDepth = from.path.split('/').length
-      this.transitionName = toDepth < fromDepth ? 'slide-right' : 'slide-left'
-    },
-  },
+	
+  // watch: {
+  //   $route(to, from) {
+  //     const toDepth = to.path.split('/').length;
+  //     const fromDepth = from.path.split('/').length;
+	// 		console.log('toDepth: ' + toDepth + ' and fromDepth: ' + fromDepth);
+	// 		if( toDepth < fromDepth ){
+	// 			this.transitionName = 'slide-right';
+	// 		}else if( toDepth > fromDepth ){
+	// 			this.transitionName = 'slide-left';
+	// 		}else{
+	// 			console.log(to.path);
+	// 			console.log(from.path);
+	// 			if(to.path == '/'){
+	// 				this.transitionName = 'slide-right';
+	// 			}else if(from.path == '/'){
+	// 				this.transitionName = 'slide-left';
+	// 			}else{
+	// 				this.transitionName = 'fade';
+	// 			}
+				
+	// 		}
+  //   },
+  // },
 
 }
 
@@ -125,6 +143,21 @@ export default {
 		z-index: 10;
 		position: relative;
 		height: 100%;
+		// background-color: #FFF;
+	}
+	.empty_layout{
+		position: absolute;
+		left: 50%;
+		top: 0;
+		transform: translateX(-50%);
+    max-width: 600px;
+		width: 100%;
+		margin-left: auto;
+		margin-right: auto;
+		min-height: 100vh;
+		height: 100vh;
+		background-color: rgb(255, 255, 255);
+		z-index: 10;
 	}
 }
 

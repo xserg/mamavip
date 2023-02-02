@@ -4,9 +4,9 @@
 		<div class="contentWrap" v-if="sortedElementsSaved.length > 0">
 
 			<div class="topLine flexWrap">
-				<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent buttonBack" />
+				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Сохранённые</h1>
-				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
+				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Готово</button>
 			</div>
 
 			<elements-list 
@@ -14,7 +14,7 @@
 				:posts="sortedElementsSaved"
 			></elements-list>
 
-			<bottom-line></bottom-line>
+			<!-- <bottom-line></bottom-line> -->
 			
 		</div>
 
@@ -22,7 +22,7 @@
 		<div class="contentWrap centered" v-else>
 
 			<div class="topLine flexWrap">
-				<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent buttonBack" />
+				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Сохранённые</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
@@ -31,10 +31,10 @@
 				<img class="the_img" src="./../assets/images/emptyState.png" alt="img">
 				<span class="the_title fontFamilyEB">Нет сохранённых лекций</span>
 				<p class="the_desc fontSize14">Сохраняйте лекции, чтобы вернуться к ним в любой момент</p>
-				<router-link class="theButton buttonPrimary buttonOptimal fontSize16" to="/" @click="this.setHomeTab()">Искать лекции</router-link>
+				<router-link class="theButton buttonPrimary buttonOptimal fontSize16" to="/" @click="setHomeTab(), setRouterAnimate()">Искать лекции</router-link>
 			</div>
 
-			<bottom-line></bottom-line>
+			<!-- <bottom-line></bottom-line> -->
 
 		</div>
 
@@ -63,9 +63,8 @@ export default {
 	methods:{
 
 		...mapMutations({
-			setLogPage: 'setLogPage',
-			setAuthOut: 'setAuthOut',
 			setHomeTab: 'setHomeTab',
+			setRouterAnimate: 'setRouterAnimate',
 		}),
 
 		// 	deleteElement(post){

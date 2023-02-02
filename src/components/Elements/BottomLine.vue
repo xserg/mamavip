@@ -1,11 +1,11 @@
 <template>
 
 	<div class="bottomLine flexWrap">
-		<router-link class="theButton leftButton buttonTransparent fontFamilyB left_button" :class="{active: this.curTab == 'home'}" to="/" @click="setHomeTab">
+		<router-link class="theButton leftButton buttonTransparent fontFamilyB left_button" :class="{active: this.curTab == 'home'}" to="/" @click="setHomeTab(), setRouterAnimate()">
 			<span class="the_icon home_icon"></span>
 			<span class="the_title">Главное</span>
 		</router-link>
-		<router-link class="theButton rightButton buttonTransparent fontFamilyB right_button" :class="{active: this.curTab == 'profile'}" to="/profile" @click="setProfileTab">
+		<router-link class="theButton rightButton buttonTransparent fontFamilyB right_button" :class="{active: this.curTab == 'profile'}" to="/profile" @click="setProfileTab(), setRouterAnimate()">
 			<span class="the_icon profile_icon"></span>
 			<span class="the_title">Профиль</span>
 		</router-link>
@@ -25,6 +25,7 @@ export default {
 		...mapMutations({
 			setHomeTab: 'setHomeTab',
 			setProfileTab: 'setProfileTab',
+			setRouterAnimate: 'setRouterAnimate',
 		}),
 	},
 
@@ -38,16 +39,16 @@ export default {
 
 <style lang="scss" scoped>
 
-.mainContainer{
-	height: 100vh;
-	position: relative;
-	.contentWrap{
-		padding: 0;
-		padding-top: 45px;
-		padding-bottom: 48px;
-		background-color: #FFF;
-		overflow: scroll;
-		justify-content: flex-start;
+// .mainContainer{
+	// height: 100vh;
+	// position: relative;
+	// .contentWrap{
+		// padding: 0;
+		// padding-top: 45px;
+		// padding-bottom: 48px;
+		// background-color: #FFF;
+		// overflow: scroll;
+		// justify-content: flex-start;
 		.bottomLine{
 			// background-color: #ffffffa8;
 			background-color: #fbfbfba8;
@@ -102,7 +103,7 @@ export default {
 			.left_button{}
 			.right_button{}
 		}
-	}
-}
+// 	}
+// }
 
 </style>

@@ -3,7 +3,7 @@
 		<div class="contentWrap">
 
 			<div class="topLine flexWrap">
-				<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent buttonBack" />
+				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Каталог лекций</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
@@ -16,7 +16,7 @@
 				/>
 			</div>
 
-			<bottom-line></bottom-line>
+			<!-- <bottom-line></bottom-line> -->
 			
 		</div>
 	</div>
@@ -52,6 +52,7 @@ export default {
 		...mapMutations({
 			setLogPage: 'setLogPage',
 			setAuthOut: 'setAuthOut',
+			setRouterAnimate: 'setRouterAnimate',
 			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
 

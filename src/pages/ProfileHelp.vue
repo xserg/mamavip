@@ -3,7 +3,7 @@
 		<div class="contentWrap">
 
 			<div class="topLine flexWrap">
-				<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent buttonBack" />
+				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Помощь</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
@@ -44,7 +44,7 @@
 			</div>
 
 
-			<bottom-line></bottom-line>
+			<!-- <bottom-line></bottom-line> -->
 			
 		</div>
 	</div>
@@ -64,8 +64,7 @@ export default {
 
 	methods:{
 		...mapMutations({
-			setLogPage: 'setLogPage',
-			setAuthOut: 'setAuthOut',
+			setRouterAnimate: 'setRouterAnimate',
 		}),
 
 	},

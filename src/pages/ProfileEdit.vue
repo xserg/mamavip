@@ -126,7 +126,7 @@
 
 				</div>
 
-				<bottom-line></bottom-line>
+				<!-- <bottom-line></bottom-line> -->
 
 			</Form>
 			

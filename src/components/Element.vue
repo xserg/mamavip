@@ -23,6 +23,7 @@
 
 
 <script>
+import {mapMutations} from 'vuex';
 import router from "@/router/router"; 
 export default({
 
@@ -44,6 +45,10 @@ export default({
 
 	methods: {
 
+		...mapMutations({
+      setRouterAnimate: 'setRouterAnimate',
+    }),
+
 		routeToElement(){
 			router.push('/catalog/lecture');
 		},
@@ -59,6 +64,7 @@ export default({
 				// console.log('Сработал свайп');
 			}else{
 				// console.log('Сработал клик');
+				this.setRouterAnimate();
 				this.routeToElement();
 			}
 			this.startX = 0;

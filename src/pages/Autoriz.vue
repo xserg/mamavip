@@ -211,6 +211,7 @@
 <script>
 // 1. Подключаем defineComponent, watchEffect, onMounted как просит того модуль vue-timer-hook
 // 2. Подключаем ref как в примерах для корректной работы обновления данных в setup
+import router from "@/router/router"; 
 import { defineComponent, watchEffect, onMounted, ref } from "vue";
 
 import {mapState, mapMutations} from 'vuex';
@@ -343,6 +344,7 @@ export default defineComponent({
 			setAuthIn: 'setAuthIn',
 			setAuthOut: 'setAuthOut',
 			setRegPage: 'setRegPage',
+			setRouterAnimate: 'setRouterAnimate',
 			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
 
@@ -368,7 +370,10 @@ export default defineComponent({
 		onSubmit(values){
 			console.log(JSON.stringify(values, null, 2));
 			// this.showErrors = true;
+			this.setRouterAnimate();
+			router.push('/');
 			this.setAuthIn();
+			setTimeout(() => {}, 50);
 		},
 
 		onSendCode(values){

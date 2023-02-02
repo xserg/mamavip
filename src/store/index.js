@@ -8,8 +8,12 @@ export default createStore({
 		isAuth: true,
 		newReg: false,
 		curTab: 'home',
+		routerAnimation: '',
   },
   getters: {
+		curRouterAnimate(state){
+			return state.routerAnimation;
+		},
   },
   mutations: {
 
@@ -49,6 +53,14 @@ export default createStore({
 				state.heightLock = false;
       }, 100);
 		},
+
+
+		setRouterAnimate(state){
+			state.routerAnimation = 'fade';
+			setTimeout(() => {
+				state.routerAnimation = '';
+			}, 300);
+		}
 
 		
   },

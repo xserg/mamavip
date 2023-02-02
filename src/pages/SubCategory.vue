@@ -4,9 +4,9 @@
 		<div class="contentWrap">
 
 			<div class="topLine flexWrap">
-				<router-link class="theButton leftButton buttonTransparent buttonBack" to="/catalog/category"></router-link>
+				<span class="theButton leftButton buttonTransparent buttonBack" @click="$router.go(-1), setRouterAnimate()"></span>
 				<h1 class="theTitle alignCenter">Беременность</h1>
-				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
+				<span class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</span>
 			</div>
 
 			<div class="contentSubWrap">
@@ -52,7 +52,7 @@
 
 
 
-			<bottom-line></bottom-line>
+			<!-- <bottom-line></bottom-line> -->
 			
 		</div>
 	</div>
@@ -88,6 +88,13 @@ export default({
 			// post: {},
 		}
 	},
+
+	methods:{
+    ...mapMutations({
+      setRouterAnimate: 'setRouterAnimate',
+    }),
+	},
+
 
 	computed:{
 		...mapState({

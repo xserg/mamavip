@@ -1,6 +1,6 @@
 <template>
 
-	<router-link to="/catalog/category/subcategory" class="the_subcategory">
+	<router-link to="/catalog/category/subcategory" class="the_subcategory" @click="setRouterAnimate">
 		<div class="the_subcategory_wrap">
 			<div class="the_subcategory_subwrap">
 				<div class="the_subcategory_box">
@@ -15,6 +15,7 @@
 
 
 <script>
+import {mapMutations} from 'vuex';
 export default({
 
 	name: 'CatalogElement', 
@@ -30,6 +31,12 @@ export default({
 		return{
 			// post: {},
 		}
+	},
+
+	methods:{
+    ...mapMutations({
+      setRouterAnimate: 'setRouterAnimate',
+    }),
 	},
 
 });

@@ -12,7 +12,7 @@
 				<teacher-element class="the_element" v-for="teacher in teachersList" :key="teacher" :teacher="teacher" />
 			</div>
 
-			<bottom-line></bottom-line>
+			<!-- <bottom-line></bottom-line> -->
 			
 		</div>
 	</div>

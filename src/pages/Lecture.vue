@@ -12,7 +12,7 @@
 			</div>
 
 			<div class="topLine flexWrap">
-				<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent buttonBack" />
+				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Лекция</h1>
 				<button class="theButton rightButton buttonTransparent buttonFav fontFamilyB" :class="{active: theFav}" @click="addToFav"></button>
 			</div>
@@ -50,7 +50,7 @@
 
 				<div class="userinfo_wrap topWrap marginB12">
 					<div class="userinfo_box">
-						<router-link class="userinfo_card" to="/speakers/speaker">
+						<router-link class="userinfo_card" to="/speakers/speaker" @click="setRouterAnimate">
 							<!-- <span class="card_photo_wrap"></span> -->
 							<span class="card_photo_wrap filled" style=""></span>
 							<div class="card_info_wrap">
@@ -67,7 +67,7 @@
 
 				<div class="midWrap content_box elements_box marginB12">
 					<span class="the_subtitle fontSize14">Ещё в подборке</span>
-					<span class="the_title fontSize20 fontFamilyEB">Беременность</span>
+					<router-link class="the_title fontSize20 fontFamilyEB" to="/catalog/category" @click="setRouterAnimate">Беременность</router-link>
 					<elements-slider 
 						:posts="sortedElements"
 					/>
@@ -75,7 +75,7 @@
 
 
 				<div class="bottomWrap moreinfo_box content_box">
-					<p>Представленные материалы не являются лечением или руководством к действию. Перед любыми действиями требуется консультация специалиста. Просматривая материалы вы подтверждаете факт ознакомления с <router-link class="the_link" to="/policy">обязательным соглашением</router-link></p>
+					<p>Представленные материалы не являются лечением или руководством к действию. Перед любыми действиями требуется консультация специалиста. Просматривая материалы вы подтверждаете факт ознакомления с <router-link class="the_link" to="/policy" @click="setRouterAnimate">обязательным соглашением</router-link></p>
 				</div>
 
 				<!-- <div class="bottomWrap empty_wrap">
@@ -101,7 +101,7 @@
 			</div>
 
 
-			<bottom-line></bottom-line>
+			<!-- <bottom-line></bottom-line> -->
 			
 		</div>
 	</div>
@@ -136,6 +136,10 @@ export default({
 	},
 
 	methods: {
+
+		...mapMutations({
+      setRouterAnimate: 'setRouterAnimate',
+    }),
 
 		showMoreDesc(){
 			if(this.moreDesc == true){
@@ -308,14 +312,14 @@ export default({
 					height: auto;
 					max-height: 57px;
 					overflow: hidden;
-					transition: opacity .8s ease, max-height .8s cubic-bezier(.08,1.1,.7,.98);
+					transition: opacity .8s ease, max-height .66s cubic-bezier(0.09, 0.96, 0.83, 0.98);
 					font-size: 14px;
 					p{
 						line-height: 19px;
 					}
 					&.active{
-						max-height: 100vh;
-						transition: opacity 1s cubic-bezier(.05,.91,.25,1),max-height 1.2s cubic-bezier(.22,.45,.65,.88);
+						max-height: 80vh;
+						transition: opacity 1s cubic-bezier(.05,.91,.25,1),max-height 0.6s cubic-bezier(0.69, 0.43, 0.42, 0.61);
 					}
 				}
 				.show_more, .show_less{
@@ -407,7 +411,7 @@ export default({
 				padding: 0px;
 				margin-bottom: 0;
 				.the_title{
-					
+					color: #23292D;
 					padding-left: 16px;
 					padding-right: 16px;
 					margin-bottom: 12px;
@@ -475,6 +479,14 @@ export default({
 	}
 
 
+}
+
+
+@media screen and (max-width: 420px) {
+	.mainContainer.theLecture .contentWrap .contentSubWrap .info_box .buttons_wrap .theButton{
+		max-width: 395px;
+		width: 100%;
+	}
 }
 
 

@@ -15,6 +15,7 @@
 
 
 <script>
+import {mapState, mapMutations} from 'vuex';
 import router from "@/router/router"; 
 
 export default({
@@ -35,7 +36,11 @@ export default({
 		}
 	},
 
-	methods: {
+	methods:{
+
+		...mapMutations({
+			setRouterAnimate: 'setRouterAnimate',
+		}),
 
 		routeToElement(){
 			router.push('/catalog/category');
@@ -46,15 +51,21 @@ export default({
     },
 
 		handleClick(event){
+
 			// console.log(event.screenX);
     	const delta = Math.abs(event.screenX - this.startX);
 			if (delta > 10) {
 				// console.log('Сработал свайп');
 			}else{
+				this.setRouterAnimate();
+				setTimeout(() => {
+					this.routeToElement();
+				}, 50);
 				// console.log('Сработал клик');
-				this.routeToElement();
+				// this.routeToElement();
 			}
 			this.startX = 0;
+
 		},
 		
 
