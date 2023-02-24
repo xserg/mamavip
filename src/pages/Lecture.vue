@@ -14,7 +14,7 @@
 			<div class="topLine flexWrap">
 				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Лекция</h1>
-				<button class="theButton rightButton buttonTransparent buttonFav fontFamilyB" :class="{active: theFav}" @click="addToFav"></button>
+				<button class="theButton rightButton buttonTransparent buttonFav fontFamilyB" :class="{active: !theFav}" @click="addToFav"></button>
 			</div>
 
 			<div class="contentSubWrap">

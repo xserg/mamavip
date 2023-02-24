@@ -12,6 +12,8 @@
 				<teacher-element class="the_element" v-for="teacher in teachersList" :key="teacher" :teacher="teacher" />
 			</div>
 
+			{{ this.info }}
+
 			<!-- <bottom-line></bottom-line> -->
 			
 		</div>
@@ -21,6 +23,7 @@
 <script>
 // @ is an alias to /src
 // import DefaultLikes from '@/components/DefaultLikes.vue'
+// import axios from 'axios';
 import TeacherElement from '@/components/TeacherElement';
 
 import {mapState, mapGetters, mapMutations} from 'vuex';
@@ -30,9 +33,12 @@ export default {
 
 	data(){
 		return{
+			info: [],
 			// profileIsFill: true,
 		}
 	},
+
+	
 
 
 	components: {
@@ -46,6 +52,8 @@ export default {
 		...mapMutations({
 			setLogPage: 'setLogPage',
 			setAuthOut: 'setAuthOut',
+			// loadMorePosts: 'post/loadMorePosts',
+      fetchPosts: 'content/fetchPosts'
 			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
 
@@ -53,11 +61,13 @@ export default {
 			console.log('Скопировано');
 		},
 
+
 	},
 
 
 	computed:{
 		...mapState({
+			posts: state => state.content.posts,
 		}),
 		...mapGetters({
 			// recommendationElement: 'content/recommendationElement',
@@ -66,6 +76,19 @@ export default {
 			// notViewList: 'content/notViewList',
 		}),
 	},
+
+	// mounted() {
+  //   this.fetchPosts();
+  // },
+
+
+	// mounted () {
+  //   axios
+  //     .get('https://api.coindesk.com/v1/bpi/currentprice.json')
+  //     .then(response => (this.info = response))
+  // }
+
+
 }
 </script>
 

@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, RouteRecordRaw, RouterScrollBehavior, Router, NavigationGuard } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/pages/Home.vue'
 import Profile from '@/pages/Profile.vue'
 
@@ -26,6 +26,12 @@ const routes = [
     path: '/',
     name: 'home',
     component: Home,
+		// meta: {
+    //   scrollPos: {
+    //     top: 0,
+    //     left: 0,
+    //   },
+    // },
   },
 	{
     path: '/policy/',
@@ -83,7 +89,7 @@ const routes = [
     component: ProfileAbout
   },
 	{
-    path: '/edit/',
+    path: '/profile/edit/',
     name: 'edit',
     component: ProfileEdit
   },
@@ -112,25 +118,32 @@ const routes = [
 ]
 
 
-const scrollBehavior = (to, from, savedPosition) => {
-  if (to.name === from.name) {
-    to.meta?.scrollPos && (to.meta.scrollPos.top = 0)
-    return { left: 0, top: 0 }
-  }
-  const scrollpos = savedPosition || to.meta?.scrollPos || { left: 0, top: 0 }
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(scrollpos)
-    }, 600)
-  })
-}
+// const scrollBehavior = (to, from, savedPosition) => {
+//   if (to.name === from.name) {
+//     to.meta?.scrollPos && (to.meta.scrollPos.top = 0)
+//     return { left: 0, top: 0 }
+//   }
+//   const scrollpos = savedPosition || to.meta?.scrollPos || { left: 0, top: 0 }
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       resolve(scrollpos)
+//     }, 600)
+//   })
+// }
 
 
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
-	// scrollBehavior,
+	scrollBehavior(to, from, savedPosition) {
+		console.log(to.path);
+      return {
+				top: 0,
+        // el: '#homeContainer',
+				behavior: 'smooth',
+      }
+  },
 })
 
 

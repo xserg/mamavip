@@ -1,5 +1,5 @@
 <template>
-  <div class="mainContainer" :class="{fixed: heightLock}">
+  <div class="mainContainer" :class="{fixed: heightLock}" id="homeContainer">
 		<div class="contentWrap">
 
 			<div class="topLine flexWrap">
@@ -13,7 +13,7 @@
 	
 				<div class="userinfo_wrap topWrap marginB12">
 					<div class="userinfo_box">
-						<router-link class="userinfo_card" to="/edit" @click="setRouterAnimate">
+						<router-link class="userinfo_card" to="/profile/edit" @click="setRouterAnimate">
 							<span class="card_photo_wrap"></span>
 							<!-- <span class="card_photo_wrap filled" style=""></span> -->
 							<div class="card_info_wrap">

@@ -6,11 +6,12 @@
 	<!-- v-touch-swipe.mouse.right="$router.go(-1)" -->
 	<div v-if="isAuth" class="appContainer">
 		<router-view v-slot="{ Component }">
+			<!-- mode="out-in" -->
 			<transition 
 				:name="curRouterAnimate"
 				mode="out-in"
 			>
-				<component :is="Component" />
+				<component :is="Component"  />
 			</transition>
 		</router-view>
 		<bottom-line></bottom-line>
@@ -27,7 +28,7 @@
 import Autoriz from '@/pages/Autoriz';
 import Registr from '@/pages/Registr';
 
-import { mapState, mapGetters} from 'vuex';
+import { mapState, mapGetters, mapMutations} from 'vuex';
 
 
 
@@ -43,6 +44,10 @@ export default {
 	},
 
 	methods:{
+		...mapMutations({
+			setHomeTab: 'setHomeTab',
+			setProfileTab: 'setProfileTab',
+		})
 		// nextStep(){
 		// 	this.curStep += 1;
 		// }
@@ -61,7 +66,19 @@ export default {
 		}),
 	},
 
-	
+	watch: {
+    $route(to) {
+			const toPath = to.path;
+			const profileSubString = '/profile';
+			if(toPath.includes(profileSubString)){
+				// console.log('В пути есть /profile');
+				this.setProfileTab();
+			}else{
+				// console.log('В пути нет /profile');
+				this.setHomeTab();
+			};
+		}
+	}
   // watch: {
   //   $route(to, from) {
   //     const toDepth = to.path.split('/').length;

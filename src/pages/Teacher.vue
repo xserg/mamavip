@@ -14,10 +14,11 @@
 					<h1 class="theTitle alignCenter">{{ this.currSlide + 1 }}/{{ sertificateslist.length }}</h1>
 					<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 				</div>
+				<!-- @before-change="lockHeight()"
+				@after-change="unlockHeight(), getCurSlide($refs.sertificateSlider.getCurrentSlide())"  -->
 				<agile 
-					@before-change="lockHeight()"
 					ref="sertificateSlider" 
-					@after-change="unlockHeight(), getCurSlide($refs.sertificateSlider.getCurrentSlide())" 
+					@after-change="getCurSlide($refs.sertificateSlider.getCurrentSlide())" 
 					:options="sliderOptions2" 
 					:speed="400" 
 					:throttleDelay="100" 
@@ -30,7 +31,13 @@
 						:key="index"
 						:id="`popup_slide_${index}`"
 					>
-						<div class="the_slide_box"> 
+					<!-- @mousedown="mousedown($event)"
+					@mouseup="mouseup($event)" -->
+					<!-- @mousedown="handleMouseDownY" 
+						@click="handleClickY($event)" -->
+					<!-- @click="handleClickY($event)" -->
+						<div class="the_slide_box"
+						> 
 							<img :src="post.preview" alt="element">
 						</div>
 					</div>
@@ -78,7 +85,7 @@
 								:post="post"
 								:key="index"
 								:id="'serfs_slide_' + post.id"
-								@mousedown="handleMouseDown" 
+								@mousedown="handleMouseDown($event)" 
 								@click="handleClick(index, $event)"
 							>
 								<div class="the_element_box"> 
@@ -130,6 +137,7 @@ export default {
 	data(){
 		return{ 
 			startX: 0,
+			// startY: 0,
 
 			moreDesc: false,
 			thePopup: false,
@@ -261,6 +269,34 @@ export default {
 		},
 
 
+		// handleMouseDownY(event){
+    //   this.startY = event.screenY;
+    // },
+
+		// handleClickY(event){
+		// 	// console.log(event.screenX);
+    // 	const delta = Math.abs(event.screenY - this.startY);
+		// 	// console.log(event.screenY);
+		// 	// console.log(this.startY);
+		// 	if (delta > 10) {
+		// 		console.log('Сработал свайп');
+		// 	}else{
+		// 		console.log('Типа клик');
+		// 	}
+		// 	this.startY = 0;
+		// },
+
+
+		// mousedown(event) {
+    //   // console.log( "mousedown" );
+		// 	this.startY = event;
+    // },
+    
+    // mouseup(event) {
+		// 	console.log( this.startY );
+    //   console.log( event );
+    // }
+
 
 	},
 
@@ -375,7 +411,7 @@ export default {
 						height: 100%;
 						width: 100%;
 						// padding-top: 130%;
-						z-index: 10;
+						z-index: 1000000000;
 						img{
 							position: absolute;
 							left: 0;

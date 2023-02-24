@@ -26,7 +26,7 @@
 						<span class="the_icon"></span>
 						<span class="the_title blockWrap fontFamilyEB alignCenter">Заполните профиль</span>
 						<p class="the_info blockWrap fontSize14 alignCenter">Это необходимо, чтобы пользоваться сервисом</p>
-						<router-link class="theButton buttonTransparent fontFamilyB" to="/edit" @click="setRouterAnimate">Заполнить</router-link>
+						<router-link class="theButton buttonTransparent fontFamilyB" to="/profile/edit" @click="setRouterAnimate">Заполнить</router-link>
 					</div>
 					<div class="userinfo_box" v-else>
 						<div class="userinfo_card">
@@ -37,7 +37,7 @@
 								<span class="card_status fontSize14" v-if="!this.yesBaby">Ваш срок — примерно 29 недель</span>
 								<span class="card_status fontSize14" v-else>Малыш родился</span>
 							</div>
-							<router-link class="card_button theButton buttonTransparent buttonOptimal" to="/edit" @click="setRouterAnimate"></router-link>
+							<router-link class="card_button theButton buttonTransparent buttonOptimal" to="/profile/edit" @click="setRouterAnimate"></router-link>
 						</div>
 						<button class="user_info_button theButton buttonPrimary fontSize16" v-if="!this.yesBaby" @click="celebrateBirthday">Отметить рождение малыша</button>
 					</div>

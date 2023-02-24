@@ -4,6 +4,10 @@ import axios from 'axios';
 export const contentModule = {
 	state: () => ({
 
+		posts: [],
+		totalPages: '',
+		statusIsLoading: false,
+
 		catalog: [
 			{
 				id: '1',
@@ -224,40 +228,90 @@ export const contentModule = {
 		// 	state.totalPages = totalPages;
 		// },
 
+		setPosts(state, posts) {
+			state.posts = posts;
+		},
 
+		setTotalPages(state, totalPages) {
+			state.totalPages = totalPages
+		},
+
+		setStatusLoading(state, bool) {
+			state.statusIsLoading = bool
+		},
 
 	},
 	actions: {
 
-		// async fetchPosts({state, commit}){
-		// 	try{
-		// 		// пишем коммит, так как работаем с экшеном,
-		// 		// значением берем функцию setLoading из мутаций, вторым параметром передаем то, что хотим присвоить
-		// 		commit('setIsPostsLoading', true);
-		// 		// this.isPostsLoading = true;
-		// 		setTimeout( async () => {
-		// 			const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
-		// 				params: {
-		// 					// пишем state.page потому что это просто значения, не функции мутаций
-		// 					_page: state.page,
-		// 					_limit: state.limit,
-		// 				}
-		// 			});
-		// 			// this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit);
-		// 			commit('setTotalPages', Math.ceil(response.headers['x-total-count'] / state.limit));
-					
-		// 			// this.posts = response.data;
-		// 			commit('setPosts', response.data);
-					
-		// 			// this.isPostsLoading = false;
-		// 			commit('setIsPostsLoading', false);
-		// 		}, 1000 )
-				
-		// 	} catch(e){
-		// 		console.log(e);
-		// 	} finally {}
+
+		// async fetchPosts({state, commit}) {
+		// 		try {
+		// 				commit('setLoading', true);
+		// 				const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+		// 						params: {
+		// 								_page: state.page,
+		// 								_limit: state.limit
+		// 						}
+		// 				});
+		// 				commit('setTotalPages', Math.ceil(response.headers['x-total-count'] / state.limit))
+		// 				commit('setPosts', response.data)
+		// 		} catch (e) {
+		// 				console.log(e)
+		// 		} finally {
+		// 				commit('setLoading', false);
+		// 		}
 		// },
 
+		// async loadMorePosts({state, commit}) {
+		// 		try {
+		// 				commit('setPage', state.page + 1)
+		// 				const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+		// 						params: {
+		// 								_page: state.page,
+		// 								_limit: state.limit
+		// 						}
+		// 				});
+		// 				commit('setTotalPages', Math.ceil(response.headers['x-total-count'] / state.limit))
+		// 				commit('setPosts', [...state.posts, ...response.data]);
+		// 		} catch (e) {
+		// 				console.log(e)
+		// 		}
+		// },
+
+
+
+
+		async fetchPosts({state, commit}){
+			try{
+				// пишем коммит, так как работаем с экшеном,
+				// значением берем функцию setLoading из мутаций, вторым параметром передаем то, что хотим присвоить
+				commit('setStatusLoading', true);
+				// this.isPostsLoading = true;
+				setTimeout( async () => {
+					const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+						params: {
+							// пишем state.page потому что это просто значения, не функции мутаций
+							_page: state.page,
+							_limit: state.limit,
+						}
+					});
+					// this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit);
+					commit('setTotalPages', Math.ceil(response.headers['x-total-count'] / state.limit));
+					
+					// this.posts = response.data;
+					commit('setPosts', response.data);
+					
+					// this.isPostsLoading = false;
+					commit('setStatusLoading', false);
+				}, 1000 )
+				
+			} catch(e){
+				console.log(e);
+			} finally {}
+		},
+
+		
+		
 		// async loadMorePosts({state, commit}){
 		// 	try{
 		// 		setTimeout( async () => {
