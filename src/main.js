@@ -12,5 +12,9 @@ components.forEach(component => {
 	app.component(component.name, component);
 });
 
+store.subscribe( (mutation, state) => {
+	localStorage.setItem('currUser', JSON.stringify(state.currUser));  
+	localStorage.setItem('currUserContent', JSON.stringify(state.content.currUser));  
+})
 
 app.use(store).use(router).mount('#app')

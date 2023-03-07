@@ -2,7 +2,8 @@
 
 	<div class="mainContainer blockWrap">
 		<div class="contentWrap authstep_login" v-show=" this.curStep == 'auth_login' ">
-			<Form @submit="onSubmit" v-slot="{ errors }" :validation-schema="schema">
+			<Form @submit="handleLogin" v-slot="{ errors }" :validation-schema="schema">
+				<!-- onSubmit -->
 
 				<div class="notificationWrap flexWrap fontSize14" :class="{ ghostWrap: !this.showNotification }">
 					<p>Пароль был успешно обновлен</p>
@@ -29,7 +30,7 @@
 				<div class="contentSubWrap">
 
 					<div class="titleLine">
-						<h2 class="pageTitle fontSize20 alignCenter fontFamilyEB">Добро пожаловать в школу мам и пап</h2>
+						<h2 class="pageTitle fontSize20 alignCenter fontFamilyEB">Добро пожаловать в школу мам и пап</h2>
 						<h2 class="pageSubtitle fontSize32 alignCenter fontFamilyEB">"Нежность"</h2>
 					</div>
 					<div class="formWrap">
@@ -212,9 +213,11 @@
 // 1. Подключаем defineComponent, watchEffect, onMounted как просит того модуль vue-timer-hook
 // 2. Подключаем ref как в примерах для корректной работы обновления данных в setup
 import router from "@/router/router"; 
+import axios from 'axios';
+
 import { defineComponent, watchEffect, onMounted, ref } from "vue";
 
-import {mapState, mapMutations} from 'vuex';
+import {mapState, mapMutations, mapActions} from 'vuex';
 
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as yup from 'yup';
@@ -322,6 +325,7 @@ export default defineComponent({
 
 	data(){
 		return{
+			loading: false,
 			curStep: 'auth_login',
 			inputPassType: 'password',
 			showErrors: false,
@@ -345,8 +349,50 @@ export default defineComponent({
 			setAuthOut: 'setAuthOut',
 			setRegPage: 'setRegPage',
 			setRouterAnimate: 'setRouterAnimate',
+			setCurUserContent: 'content/setCurUserContent',
 			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
+
+		// ...mapActions({
+    //   fetchAuth: 'fetchAuth',
+    // }),
+
+		handleLogin(user) {
+      this.loading = true;
+			// console.log(user);
+			// this.fetchAuth(user);
+			try{
+				setTimeout( async () => {
+					const response = await axios.post('https://api.xn--80axb4d.online/v1/user/login', user);
+					console.log(response.data);
+					this.$router.push("/");
+					this.setAuthIn(response.data);
+					this.setCurUserContent(response.data);
+				}, 500 );
+				
+			} catch(e){
+				console.log(e);
+			} finally {}
+
+
+
+      // this.$store.dispatch("auth/login", user).then(
+      //   () => {
+      //     this.$router.push("/profile");
+			// 		// this.setAuthIn();
+      //   },
+      //   (error) => {
+      //     this.loading = false;
+      //     this.message =
+      //       (error.response &&
+      //         error.response.data &&
+      //         error.response.data.message) ||
+      //       error.message ||
+      //       error.toString();
+      //   }
+      // );
+    },
+
 
 		loginStep(){
 			this.curStep = 'auth_login';
@@ -438,7 +484,19 @@ export default defineComponent({
 			isAuth: state => state.isAuth,
 			newReg: state => state.newReg,
 		}),
+
+		loggedIn() {
+      return this.$store.state.auth.status.loggedIn;
+    },
+
 	},
+
+	created() {
+    if (this.loggedIn) {
+      this.$router.push("/profile");
+    }
+  },
+
 
 	// mounted(){
 	// 	this.setTimes();

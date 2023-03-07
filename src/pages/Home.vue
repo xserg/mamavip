@@ -10,19 +10,22 @@
 
 			<div class="contentSubWrap">
 
-	
+
+				<!-- ПРОФИЛЬ -->
 				<div class="userinfo_wrap topWrap marginB12">
 					<div class="userinfo_box">
 						<router-link class="userinfo_card" to="/profile/edit" @click="setRouterAnimate">
-							<span class="card_photo_wrap"></span>
+							<span class="card_photo_wrap" :class="{filled: this.getCurrUser.user.photo_small}"></span>
 							<!-- <span class="card_photo_wrap filled" style=""></span> -->
 							<div class="card_info_wrap">
-								<span class="card_name">
+								<span class="card_name" v-if="this.getCurrUser.user.name">Привет, {{ this.getCurrUser.user.name }}!</span>
+								<span class="card_name" v-else>
 									<span class="the_value">Заполните профиль</span>
 									<span class="card_button theButton buttonTransparent buttonOptimal"></span>
 								</span>
-								<!-- <span class="card_name">Привет, Екатерина!</span> -->
-								<span class="card_status fontSize14">Это необходимо, чтобы пользоваться сервисом</span>
+								<span class="card_status fontSize14" v-if="!this.getCurrUser.user.name">Это необходимо, чтобы пользоваться сервисом</span>
+								
+								
 								<!-- <span class="card_status fontSize14">Ваш срок — примерно 29 недель</span> -->
 								<!-- <span class="card_status fontSize14">Вас уже можно поздравить?</span> -->
 								
@@ -31,51 +34,54 @@
 						</router-link>
 					</div>
 				</div>
+				<!-- ПРОФИЛЬ END -->
 
-				<div class="recommended_box midWrap marginB12">
+
+				<!-- РЕКОМЕНДУЕМ -->
+				<div class="recommended_box midWrap marginB12" :class="{recommended_box: true, notavailable_box: false }">
 					<span class="the_title fontFamilyEB fontSize20 blockWrap">Рекомендуем</span>
 					<span class="the_subtitle marginB12 fontSize14 blockWrap">Не пропустите новые лекции!</span>
-					<div class="element_box">
+					<div class="element_box" v-if="true">
 						<element 
 						:post="recommendationElement"
-						:key="recommendationElement.id"
 						/>
 					</div>
-				</div>
-
-				<div class="notavailable_box midWrap marginB12">
-					<span class="the_title fontFamilyEB fontSize20 blockWrap">Рекомендуем</span>
-					<span class="the_subtitle marginB12 fontSize14 blockWrap">Не пропустите новые лекции!</span>
-					<div class="message_wrap">
+					<div class="message_wrap" v-else>
 						<span class="mess_icon"></span>
 						<span class="mess_title fontFamilyEB">График просмотра</span>
 						<span class="mess_desc">Следующая лекция доступна через <br>18 ч. 59 мин. 32 сек.</span>
 					</div>
 				</div>
+				<!-- РЕКОМЕНДУЕМ END -->
 
 
-
-				<div class="catalog_box midWrap marginB12">
-					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/catalog" @click="setRouterAnimate">Каталог лекций</router-link>
-					<span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span>
-					<div class="element_box">
-						<calalog-slider 
-							:posts="catalogList"
-						/>
-					</div>
-				</div>
-
-				<div class="error_box midWrap marginB12">
+				<!-- КАТАЛОГ -->
+				<div class="midWrap marginB12" :class="{catalog_box: !catalogError, error_box: catalogError }" v-if="!catalogError">
 					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/catalog" @click="setRouterAnimate">Каталог лекций</router-link>
 					<span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span>
 					
-					<img class="the_img" src="./../assets/images/noResponse.png">
+					<div class="element_box" v-if="!catalogError">
+						<calalog-slider 
+							v-if="catalogList.data"
+							:posts="catalogList.data"
+						/>
+						<div v-else class="roller_box">
+							<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+						</div>
+					</div>
 
-					<span class="info_title fontFamilyB">Данные не загрузились</span>
-					<span class="info_subtitle fontSize14">Попробуйте обновить страницу</span>
-					<span class="theButton buttonTertiary buttonOptimal">Обновить</span>
+					<div class="element_box" v-else>
+						<img class="the_img" src="./../assets/images/noResponse.png">
+						<span class="info_title fontFamilyB">Данные не загрузились</span>
+						<span class="info_subtitle fontSize14">Попробуйте обновить страницу</span>
+						<span class="theButton buttonTertiary buttonOptimal">Обновить</span>
+					</div>
+
 				</div>
+				<!-- КАТАЛОГ END -->
 
+
+				<!-- ЛЕКТОРЫ -->
 				<div class="teachers_box midWrap marginB12">
 					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/speakers" @click="setRouterAnimate">Наши лекторы</router-link>
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
@@ -84,10 +90,16 @@
 						:post="recommendationElement"
 						:key="recommendationElement.id"
 						/> -->
-						<teacher-slider :teachers="teachersList"/>
+						<teacher-slider v-if="teachersList.data" :teachers="teachersList.data"/>
+						<div v-else class="roller_box">
+							<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+						</div>
 					</div>
 				</div>
+				<!-- ЛЕКТОРЫ END -->
 
+
+				<!-- НЕ ПРОСМОТРЕННЫЕ -->
 				<div class="videos_box bottomWrap">
 					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/forview" @click="setRouterAnimate">Вы ещё не смотрели</router-link>
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
@@ -96,9 +108,14 @@
 						:post="recommendationElement"
 						:key="recommendationElement.id"
 						/> -->
-						<elements-slider :posts="sortedElementsNotview"/>
+						<elements-slider v-if="sortedElementsNotview" :posts="sortedElementsNotview"/>
+						<div v-else class="roller_box">
+							<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+						</div>
 					</div>
 				</div>
+				<!-- НЕ ПРОСМОТРЕННЫЕ END -->
+
 
 				<!-- <bottom-line></bottom-line> -->
 			</div>
@@ -115,7 +132,7 @@ import ElementsSlider from '@/components/ElementsSlider';
 import CalalogSlider from '@/components/CatalogSlider';
 import TeacherSlider from '@/components/TeacherSlider';
 
-import {mapState, mapGetters, mapMutations} from 'vuex';
+import {mapState, mapGetters, mapMutations, mapActions} from 'vuex';
 
 export default {
   name: 'Home',
@@ -131,8 +148,10 @@ export default {
 	computed:{
 		...mapState({
 			heightLock: state => state.heightLock,
+			catalogError: state =>state.content.catalogError,
 		}),
 		...mapGetters({
+			getCurrUser: 'content/getCurrUser',
 			recommendationElement: 'content/recommendationElement',
 			catalogList: 'content/catalogList',
 			teachersList: 'content/teachersList',
@@ -145,7 +164,17 @@ export default {
     ...mapMutations({
       setRouterAnimate: 'setRouterAnimate',
     }),
+		...mapActions({
+      fetchLectors: 'content/fetchLectors',
+			fetchCatalog: 'content/fetchCatalog',
+    }),
 	},
+
+
+	mounted() {
+    this.fetchLectors();
+		this.fetchCatalog();
+  },
 
 }
 </script>
@@ -307,6 +336,9 @@ export default {
 						border: none;
 						background-color: transparent;
 					}
+				}
+				.roller_box{
+					min-height: 150px !important;
 				}
 			}
 

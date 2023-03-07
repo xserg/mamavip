@@ -13,14 +13,24 @@
 				<div class="topWrap content_box preview_box">
 					<!-- <router-link class="theButton buttonBack theWhite" to="/catalog" /> -->
 					<a @click="$router.go(-1), setRouterAnimate()" class="theButton buttonBack theWhite" />
-					<img src="./../assets/images/category.jpg" alt="">
+					<!-- <img src="./../assets/images/category.jpg" alt=""> -->
+					<img :src="currentCategory.preview_picture" alt="category_image">
+					
 				</div>
 				<div class="midWrap content_box info_box">
-					<span class="the_title fontSize20 fontFamilyEB">Беременность</span>
-					<span class="the_subtitle fontSize14">Разнообразные материалы о самых разных аспектах беременности - от первых недель до родов</span>
+					<span class="the_title fontSize20 fontFamilyEB">{{ currentCategory.title }}</span>
+					<span class="the_subtitle fontSize14">{{ currentCategory.description }}</span>
+					<!-- <span class="the_subtitle fontSize14">{{ currentCategory.info }}</span> -->
 				</div>
-				<div class="bottomWrap content_box categories_box">
-					<catalog-sub-element v-for="subCategory in subCategoriesList" :key="subCategory.id"/>
+				<div class="bottomWrap content_box categories_box" v-if="!currLoadingStatus && currentCategoryList.data">
+					<catalog-sub-element 
+					v-for="subCategory in currentCategoryList.data" 
+					:key="subCategory.id"
+					:subCategory="subCategory"
+					/>
+				</div>
+				<div class="bottomWrap content_box categories_box roller_box" v-else >
+					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 				</div>
 				<!-- <catalog-element 
 					v-for="post in catalogList"
@@ -71,16 +81,28 @@ export default({
 		...mapState({
 		}),
 		...mapGetters({
+			currLoadingStatus: 'content/currLoadingStatus',
 			currentCategory: 'content/currentCategory',
-			subCategoriesList: 'content/subCategoriesList',
+			currentCategoryList: 'content/currentCategoryList',
 		}),
 	},
 
 	methods:{
     ...mapMutations({
       setRouterAnimate: 'setRouterAnimate',
+			// setCurrentCategory: 'content/setCurrentCategory',
     }),
 	},
+
+
+	// mounted() {
+	// 	this.setCurrentCategory(JSON.parse(localStorage.getItem("currentCategory")) || []);
+	// },
+	// watch: {
+	// 	currentCategory(newValue, oldValue) {
+	// 		localStorage.setItem("currentCategory", JSON.stringify(newValue));
+	// 	}
+	// },
 
 
 });

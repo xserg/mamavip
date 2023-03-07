@@ -78,7 +78,14 @@ export default {
 				this.setHomeTab();
 			};
 		}
-	}
+	},
+
+	beforeMount() {
+		this.$store.commit('initialiseVuex')
+		this.$store.commit('content/initialiseVuexContent');
+	}, 
+
+
   // watch: {
   //   $route(to, from) {
   //     const toDepth = to.path.split('/').length;

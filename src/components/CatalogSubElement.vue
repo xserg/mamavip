@@ -1,21 +1,24 @@
 <template>
 
-	<router-link to="/catalog/category/subcategory" class="the_subcategory" @click="setRouterAnimate">
+	<div class="the_subcategory" @mousedown="handleMouseDown" @click="handleClick">
 		<div class="the_subcategory_wrap">
 			<div class="the_subcategory_subwrap">
 				<div class="the_subcategory_box">
-					<div class="bottom_line fontFamilyEB">Название подкатегории</div>
+					<img v-if="subCategory.preview_picture" :src="subCategory.preview_picture" alt="preview_image">
+					<div class="bottom_line fontFamilyEB">{{ subCategory.title }}</div>
 				</div>
 			</div>
 		</div>
-	</router-link>
+	</div>
 	
 	
 </template>
 
 
 <script>
-import {mapMutations} from 'vuex';
+import {mapMutations, mapActions} from 'vuex';
+import router from "@/router/router";  
+
 export default({
 
 	name: 'CatalogElement', 
@@ -36,7 +39,44 @@ export default({
 	methods:{
     ...mapMutations({
       setRouterAnimate: 'setRouterAnimate',
+			setCurrentSubCategory: 'content/setCurrentSubCategory',
+			setCurrentCategorySubElements: 'content/setCurrentSubCategoryElements',
     }),
+		...mapActions({
+      fetchSubCategoryElements: 'content/fetchSubCategoryElements',
+    }), 
+		
+
+		routeToElement(){
+			router.push('/catalog/subcategory');
+		},
+
+		handleMouseDown(event){
+      this.startX = event.screenX;
+    },
+
+		handleClick(event){
+
+			// console.log(event.screenX);
+    	const delta = Math.abs(event.screenX - this.startX);
+			if (delta > 10) {
+				// console.log('Сработал свайп');
+			}else{
+				this.setRouterAnimate();
+				setTimeout(() => {
+					this.routeToElement();
+				}, 50);
+				// console.log('Кликнули по подкатегории');
+				this.setCurrentSubCategory(this.subCategory);
+				this.fetchSubCategoryElements(this.subCategory.id); 
+				// this.setCurrentCategoryElements($post.slug);
+				// console.log(this.subCategory); 
+			}
+			this.startX = 0;
+
+		},
+
+
 	},
 
 });
@@ -49,6 +89,7 @@ export default({
 	padding-top: 12px;
 	overflow: hidden;
 	border-radius: 12px 12px 12px 12px;
+	cursor: pointer;
 	.the_subcategory_wrap{
 		width: 100%;
 		background-color: #FEABB0;
@@ -80,10 +121,23 @@ export default({
 			background-repeat: no-repeat;
 			background-size: cover;
 			background-position: center;
-			background-image: url('./../assets/images/subcategory.jpg');
+			// background-image: url('./../assets/images/subcategory.jpg');
 			border-radius: 12px;
 			padding-top: 15.4%;
 			padding-bottom: 8px;
+			position: relative;
+			overflow: hidden;
+			background-color: #ffdee0;
+			img{
+				width: 104%;
+				height: 104%;
+				transform: translate(-50%, -50%);
+				object-fit: cover;
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				z-index: 5;
+			}
 			
 			// overflow: hidden;
 			.bottom_line{
@@ -92,6 +146,8 @@ export default({
 				padding: 12px;
 				color: #FD7C84;
 				font-size: 14px;
+				position: relative;
+				z-index: 10;
 			}
 		}
 		

@@ -49,7 +49,7 @@ const routes = [
     component: Category
   },
 	{
-    path: '/catalog/category/subcategory/',
+    path: '/catalog/subcategory/',
     name: 'subcategory',
     component: SubCategory
   },

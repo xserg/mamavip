@@ -10,7 +10,7 @@
 
 			<div class="contentSubWrap">
 				<catalog-element 
-					v-for="post in catalogList"
+					v-for="post in catalogList.data"
 					:post="post"
 					:key="post.id"
 				/>
@@ -28,7 +28,7 @@
 // import TeacherElement from '@/components/TeacherElement';
 import CatalogElement from '@/components/CatalogElement';
 
-import {mapState, mapGetters, mapMutations} from 'vuex';
+import {mapState, mapGetters, mapMutations, mapActions} from 'vuex';
 
 export default {
   name: 'Catalog',
@@ -55,6 +55,9 @@ export default {
 			setRouterAnimate: 'setRouterAnimate',
 			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
+		...mapActions({
+      fetchCatalog: 'content/fetchCatalog'
+    }),
 
 		copyLink(){
 			console.log('Скопировано');
@@ -73,6 +76,10 @@ export default {
 			// notViewList: 'content/notViewList',
 		}),
 	},
+
+	mounted() {
+    this.fetchCatalog();
+  },
 }
 </script>
 

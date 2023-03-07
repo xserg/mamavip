@@ -38,10 +38,10 @@
 						<label class="inputWrap">
 							<span class="label">Повторите пароль</span>
 							<div class="inputBox">
-								<Field name="confirm_password" :type="inputPassType" />
+								<Field name="password_confirmation" :type="inputPassType" />
 								<span class="theButton buttonShowPass" :class="{ active: this.inputPassType == 'text' }" @click="showPass"></span>
 							</div>
-							<ErrorMessage class="errorTitle" name="confirm_password" />
+							<ErrorMessage class="errorTitle" name="password_confirmation" />
 						</label>
 						<div class="infoWrap">
 							<span class="theTitle">Есть аккаунт?</span>
@@ -110,8 +110,9 @@
 <script>
 
 import {mapState, mapMutations} from 'vuex';
-import { Form, Field, ErrorMessage, useField } from 'vee-validate';
+import axios from 'axios';
 
+import { Form, Field, ErrorMessage, useField } from 'vee-validate';
 import { object, string, ref} from 'yup';
 
 
@@ -133,7 +134,7 @@ export default {
       email: string().required('Пожалуйста, заполните это поле').email('Пожалуйста, введите корректный email').typeError('Поле Email обязателен').label('Email'),
 			// name: string().required('Поле обязательно на заполнение').label('Имя'),
       password: string().required('Пожалуйста, заполните это поле').min(8, 'Поле пароля должно содержать не менее 8 символов').label('Пароль'),
-			confirm_password: string().label('Подтверждение пароля').required('Пожалуйста, заполните это поле').oneOf([ref('password'), null], 'Пароли должны совпадать'),
+			password_confirmation: string().label('Подтверждение пароля').required('Пожалуйста, заполните это поле').oneOf([ref('password'), null], 'Пароли должны совпадать'),
 		});
     return {
       schema,
@@ -199,11 +200,18 @@ export default {
 		},
 
 		confirmRegistr(){
-			console.log(JSON.stringify(this.formValues, null, 2));
-			this.curStep += 1;
-			this.finishReg = false;
+			// console.log(JSON.stringify(this.formValues, null, 2));
+			try{
+				setTimeout( async () => {
+					const response = await axios.post('https://api.xn--80axb4d.online/v1/user/register', this.formValues);
+				}, 500 );
+			} catch(e){
+				console.log(e);
+			} finally {
+				this.curStep += 1;
+				this.finishReg = false;
+			}
 		},
-
 
 		
 	},

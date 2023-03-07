@@ -5,27 +5,31 @@
 
 			<div class="topLine flexWrap">
 				<span class="theButton leftButton buttonTransparent buttonBack" @click="$router.go(-1), setRouterAnimate()"></span>
-				<h1 class="theTitle alignCenter">Беременность</h1>
+				<h1 class="theTitle alignCenter">{{ this.currentCategory.title }}</h1>
 				<span class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</span>
 			</div>
 
 			<div class="contentSubWrap">
 				<div class="topWrap content_box info_box">
 					<div class="img_wrap">
-						<img class="the_img" src="./../assets/images/category.jpg" alt="" />
+						<img class="the_img" v-if="this.currentSubCategory.preview_picture" :src="this.currentSubCategory.preview_picture" alt="subcategory_image" />
 						<span class="empty_icon"></span>
 					</div>
-					<span class="the_title fontSize20 fontFamilyEB">Диагностика и беременность</span>
-					<span class="the_subtitle fontSize14">В данной подкатегории мы расскажем Вам о самых разных лабораторных и инструментальных исследованиях, проводимых в период беременности, о  пренатальном скрининге и других интересных вещах.</span>
+					<span class="the_title fontSize20 fontFamilyEB">{{ this.currentSubCategory.title }}</span>
+					<span class="the_subtitle fontSize14">{{ this.currentSubCategory.description }}</span>
 				</div>
 
-				<div class="bottomWrap content_box elements_box">
+				<div class="bottomWrap content_box elements_box" v-if="currentSubCategoryList.data">
 					<span class="the_title fontSize20 fontFamilyEB">Лекции</span>
-					<span class="the_subtitle fontSize14">Всего: 14 • Просмотрено: 5</span>
+					<span class="the_subtitle fontSize14">Всего: {{ this.currentSubCategoryList.data.length ? this.currentSubCategoryList.data.length : '-' }} • Просмотрено: 5</span>
 					<elements-list 
+						v-if="currentSubCategoryList.data.length > 0"
 						class="elements_list"
-						:posts="sortedElements"
+						:posts="currentSubCategoryList.data" 
 					/>
+				</div>
+				<div class="bottomWrap content_box elements_box roller_box" v-else >
+					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 				</div>
 
 				<!-- <div class="bottomWrap empty_wrap">
@@ -101,7 +105,9 @@ export default({
 		}),
 		...mapGetters({
 			sortedElements: 'content/sortedElements',
+			currentCategory: 'content/currentCategory',
 			currentSubCategory: 'content/currentSubCategory',
+			currentSubCategoryList: 'content/currentSubCategoryList',
 		}),
 	},
 

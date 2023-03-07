@@ -4,7 +4,8 @@
 		<!-- @mousedown="handleMouseDown(event)" -->
 		<div class="the_element_box">
 			<!-- <img src="./../assets/images/element.jpg" alt="element"> -->
-			<img :src="post.preview" alt="element">
+			<img v-if="post.preview_picture" :src="post.preview_picture" alt="element">
+			<span class="post_noimg" v-else ></span>
 		</div>
 		<span class="the_title fontSize16 fontFamilyEB">{{ post.title }}</span>
 		<!-- <span class="the_title fontSize14 fontFamilyEB">Короткий заголовок у элемента</span> -->
@@ -15,7 +16,7 @@
 
 
 <script>
-import {mapState, mapMutations} from 'vuex';
+import {mapState, mapMutations, mapActions} from 'vuex';
 import router from "@/router/router"; 
 
 export default({
@@ -40,7 +41,12 @@ export default({
 
 		...mapMutations({
 			setRouterAnimate: 'setRouterAnimate',
+			setCurrentCategory: 'content/setCurrentCategory',
+			setCurrentCategoryElements: 'content/setCurrentCategoryElements',
 		}),
+		...mapActions({
+      fetchCategoryElements: 'content/fetchCategoryElements',
+    }),
 
 		routeToElement(){
 			router.push('/catalog/category');
@@ -61,8 +67,10 @@ export default({
 				setTimeout(() => {
 					this.routeToElement();
 				}, 50);
-				// console.log('Сработал клик');
-				// this.routeToElement();
+				this.setCurrentCategory(this.post);
+				this.fetchCategoryElements(this.post.slug);
+				// this.setCurrentCategoryElements($post.slug);
+				// console.log(this.post);
 			}
 			this.startX = 0;
 
@@ -105,6 +113,15 @@ export default({
 			object-fit: cover;
 			display: block;
 			margin-bottom: 6px;
+		}
+		.post_noimg{
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			left: 0;
+			top: 0;
+			display: block;
+			background-color: #f2f2f2;
 		}
 	}
 	.the_title{

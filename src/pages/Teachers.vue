@@ -9,10 +9,8 @@
 			</div>
 
 			<div class="contentSubWrap">
-				<teacher-element class="the_element" v-for="teacher in teachersList" :key="teacher" :teacher="teacher" />
+				<teacher-element class="the_element" v-for="teacher in teachersList.data" :key="teacher" :teacher="teacher" />
 			</div>
-
-			{{ this.info }}
 
 			<!-- <bottom-line></bottom-line> -->
 			
@@ -22,28 +20,24 @@
 
 <script>
 // @ is an alias to /src
-// import DefaultLikes from '@/components/DefaultLikes.vue'
-// import axios from 'axios';
 import TeacherElement from '@/components/TeacherElement';
+// import { HTTP } from '@/http-common';
 
-import {mapState, mapGetters, mapMutations} from 'vuex';
+import {mapState, mapGetters, mapMutations, mapActions} from 'vuex';
 
 export default {
   name: 'Teachers',
 
 	data(){
 		return{
-			info: [],
-			// profileIsFill: true,
+			errors: [],
 		}
 	},
-
-	
 
 
 	components: {
 		TeacherElement,
-    // DefaultLikes,
+		// HTTP,
   },
 
 
@@ -52,10 +46,12 @@ export default {
 		...mapMutations({
 			setLogPage: 'setLogPage',
 			setAuthOut: 'setAuthOut',
-			// loadMorePosts: 'post/loadMorePosts',
       fetchPosts: 'content/fetchPosts'
 			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
+		...mapActions({
+      fetchLectors: 'content/fetchLectors'
+    }),
 
 		copyLink(){
 			console.log('Скопировано');
@@ -72,20 +68,25 @@ export default {
 		...mapGetters({
 			// recommendationElement: 'content/recommendationElement',
 			// catalogList: 'content/catalogList',
-			teachersList: 'content/teachersList',
 			// notViewList: 'content/notViewList',
+			teachersList: 'content/teachersList', 
 		}),
 	},
 
-	// mounted() {
-  //   this.fetchPosts();
-  // },
 
+	mounted() {
+    this.fetchLectors();
+  },
 
-	// mounted () {
-  //   axios
-  //     .get('https://api.coindesk.com/v1/bpi/currentprice.json')
-  //     .then(response => (this.info = response))
+	// created() {
+  //   HTTP.get(`categories`)
+  //   .then(response => {
+  //     this.info = response.data;
+	// 		console.log(this.info);
+  //   })
+  //   .catch(e => {
+  //     this.errors.push(e)
+  //   })
   // }
 
 

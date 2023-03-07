@@ -3,9 +3,9 @@
 	<div class="the_element marginB12" @mousedown="handleMouseDown" @click="handleClick">
 		<div class="the_element_box">
 			<!-- <img src="./../assets/images/element.jpg" alt="element"> -->
-			<img v-if="teacher.preview" :src="teacher.preview" alt="element">
+			<img v-if="teacher.photo" :src="teacher.photo" alt="element">
 		</div>
-		<span class="teacher_title fontFamilyB fontSize14">{{ teacher.title }}</span>
+		<span class="teacher_title fontFamilyB fontSize14">{{ teacher.name }}</span>
 		<!-- <span class="the_title fontFamilyB">{{ teacher.title }}</span> -->
 		<!-- <span class="the_title fontSize14 fontFamilyEB">Короткий заголовок у элемента</span> -->
 	</div>
