@@ -1,9 +1,12 @@
 <template>
 
-	<agile 
+	<agile
 	@before-change="lockHeight()"
 	@after-change="unlockHeight()"
-	ref="sertificatesSlider" :options="sliderOptions" :speed="400" :throttleDelay="100" :swipeDistance="10" :timing="'ease-in-out'" class="theSlider">
+	ref="sertificatesSlider" :options="sliderOptions" :speed="400" :throttleDelay="100" :swipeDistance="10" :timing="'ease-in-out'" 
+	class="theSlider"
+	:class="{active: listLoaded}"
+	>
 		<sertificate-element 
 			v-for="post in posts"
 			:post="post"
@@ -39,7 +42,7 @@ export default({
 
 	data(){
 		return{
-
+			listLoaded: false,
 			sliderOptions: {
 				// swipeDistance: 20,
 				// timing: 'ease-out',
@@ -78,6 +81,15 @@ export default({
 			lockHeight: 'lockHeight',
 			unlockHeight: 'unlockHeight',
 		}),
+		goLoadList(){
+			setTimeout( async () => {
+			this.listLoaded = true;
+			}, 500);
+		},
+	},
+
+	mounted(){
+		this.goLoadList();
 	},
 
 });
@@ -89,6 +101,11 @@ export default({
 
 .theSlider{
 	// margin-bottom: 12px;
+	transition: all .45s cubic-bezier(1, -0.15, 0.63, 0.99);
+	opacity: 0;
+	&.active{
+		opacity: 1;
+	}
 	.the_element{
 		padding: 0 6px;
 		.top_line{

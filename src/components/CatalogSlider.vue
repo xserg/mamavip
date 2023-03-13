@@ -1,6 +1,7 @@
 <template>
 
 	<agile 
+		:class="{active: sliderLoaded}"
 		:options="sliderOptions" 
 		:speed="400" 
 		:throttleDelay="100" 
@@ -47,6 +48,11 @@ export default({
 			lockHeight: 'lockHeight',
 			unlockHeight: 'unlockHeight',
 		}),
+		goLoadSlider(){
+			setTimeout( async () => {
+			this.sliderLoaded = true;
+			}, 500);
+		},
 	},
 
 
@@ -60,7 +66,7 @@ export default({
 
 	data(){
 		return{
-
+			sliderLoaded: false, 
 			sliderOptions: {
 				// swipeDistance: 20,
 				// timing: 'ease-out',
@@ -93,6 +99,12 @@ export default({
 		}
 	},
 
+
+	mounted(){
+		this.goLoadSlider();
+	},
+
+
 });
 </script>
 
@@ -102,6 +114,11 @@ export default({
 
 .theSlider{
 	margin-bottom: 12px;
+	transition: all .45s cubic-bezier(1, -0.15, 0.63, 0.99);;
+	opacity: 0;
+	&.active{
+		opacity: 1;
+	}
 	.the_element{
 		padding: 0 6px;
 		.top_line{

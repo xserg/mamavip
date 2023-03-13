@@ -15,7 +15,7 @@
 
 
 <script>
-import {mapMutations} from 'vuex';
+import {mapMutations, mapActions} from 'vuex';
 import router from "@/router/router"; 
 
 export default({
@@ -40,10 +40,14 @@ export default({
 
 		...mapMutations({
       setRouterAnimate: 'setRouterAnimate',
+			setStatusLoading: 'content/setStatusLoading',
     }),
+		...mapActions({
+			fetchCurrentLector: 'content/fetchCurrentLector',
+		}),
 
 		routeToElement(){
-			router.push('/speakers/speaker'); 
+			router.push('/lectors/' + this.teacher.id); 
 		},
 
 		handleMouseDown(event){
@@ -57,6 +61,8 @@ export default({
 				// console.log('Сработал свайп');
 			}else{
 				// console.log('Сработал клик');
+				this.setStatusLoading(true);
+				this.fetchCurrentLector(this.teacher.id);
 				this.setRouterAnimate();
 				this.routeToElement();
 			}

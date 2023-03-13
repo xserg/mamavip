@@ -1,6 +1,6 @@
 <template>
 
-<div class="elements_wrap flexWrap">
+<div class="elements_wrap flexWrap" :class="{active: listLoaded}">
 	<element
 		v-for="post in posts"
 		:post="post"
@@ -31,6 +31,24 @@ export default({
 	},
 
 	data() {
+		return{
+			listLoaded: false, 
+		}
+	},
+
+	methods: { 
+	goLoadList(){
+		setTimeout( async () => {
+		this.listLoaded = true;
+		}, 500);
+	},
+
+
+	},
+
+
+	mounted(){
+		this.goLoadList();
 	},
 
 });
@@ -45,6 +63,11 @@ export default({
 	flex-wrap: wrap;
 	margin-left: -8px;
 	margin-right: -8px;
+	transition: all .45s cubic-bezier(1, -0.15, 0.63, 0.99);;
+	opacity: 0;
+	&.active{
+		opacity: 1;
+	}
 	.the_element{
 		width: calc(50% - 16px);
 		margin-left: 8px;

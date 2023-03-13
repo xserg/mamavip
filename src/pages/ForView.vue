@@ -1,7 +1,7 @@
 <template>
   <div class="mainContainer">
 
-		<div class="contentWrap" v-if="sortedElementsNotview.length > 0">
+		<div class="contentWrap" v-if="sortedElementsNotview.length">
 
 			<div class="topLine flexWrap">
 				<router-link class="theButton leftButton buttonTransparent buttonBack" to="/" @click="setRouterAnimate"></router-link>
@@ -11,8 +11,12 @@
 
 			<elements-list 
 				class="contentSubWrap"
+				v-if="sortedElementsNotview"
 				:posts="sortedElementsNotview"
 			></elements-list>
+			<div v-else class="roller_box">
+				<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+			</div>
 
 			<!-- <bottom-line></bottom-line> -->
 			
@@ -79,7 +83,7 @@ export default {
 		}),
 		...mapGetters({
 			// sortedPosts: 'post/sortedPosts',
-			sortedElementsNotview: 'content/sortedElementsNotview',
+			sortedElementsNotview: 'sortedElementsNotview',
 		}),
 	},
 }

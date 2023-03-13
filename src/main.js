@@ -13,8 +13,14 @@ components.forEach(component => {
 });
 
 store.subscribe( (mutation, state) => {
-	localStorage.setItem('currUser', JSON.stringify(state.currUser));  
-	localStorage.setItem('currUserContent', JSON.stringify(state.content.currUser));  
+	localStorage.setItem('infos', JSON.stringify(state.infos)); 
+	localStorage.setItem('currUser', JSON.stringify(state.currUser)); 
+	localStorage.setItem('currentCategory', JSON.stringify(state.content.currentCategory));
+	localStorage.setItem('currentCategoryElements', JSON.stringify(state.content.currentCategoryElements));  
+	localStorage.setItem('currentSubCategory', JSON.stringify(state.content.currentSubCategory));  
+	localStorage.setItem('currentSubCategoryElements', JSON.stringify(state.content.currentSubCategoryElements));    
+	localStorage.setItem('currentLecture', JSON.stringify(state.content.currentLecture));    
+	localStorage.setItem('currentLector', JSON.stringify(state.content.currentLector));   
 })
 
 app.use(store).use(router).mount('#app')

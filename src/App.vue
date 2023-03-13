@@ -1,10 +1,10 @@
 <template>
-	<div v-if="!isAuth" class="authContainer">
+	<div v-if="!getCurrUser.access_token" class="authContainer">
 		<autoriz v-if="!newReg"></autoriz>
 		<registr v-if="newReg"></registr>
 	</div>
 	<!-- v-touch-swipe.mouse.right="$router.go(-1)" -->
-	<div v-if="isAuth" class="appContainer">
+	<div v-if="getCurrUser.access_token" class="appContainer">
 		<router-view v-slot="{ Component }">
 			<!-- mode="out-in" -->
 			<transition 
@@ -15,7 +15,7 @@
 			</transition>
 		</router-view>
 		<bottom-line></bottom-line>
-		<div class="empty_layout" v-if="isAuth"></div>
+		<div class="empty_layout" v-if="getCurrUser.access_token"></div>
 	</div>
 	
 </template>
@@ -62,6 +62,7 @@ export default {
 			// thePopup: state => state.thePopup,
 		}),
 		...mapGetters({
+			getCurrUser: 'getCurrUser',
 			curRouterAnimate: 'curRouterAnimate',
 		}),
 	},
@@ -82,7 +83,8 @@ export default {
 
 	beforeMount() {
 		this.$store.commit('initialiseVuex')
-		this.$store.commit('content/initialiseVuexContent');
+		// this.$store.commit('initialiseVuexContent');
+		// this.$store.dispatch("content/initialiseVuexContent");
 	}, 
 
 

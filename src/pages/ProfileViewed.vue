@@ -1,7 +1,7 @@
 <template>
   <div class="mainContainer">
 
-		<div class="contentWrap" v-if="sortedElementsViewed.length > 0">
+		<div class="contentWrap" v-if="getCurrUser.user.watched_lectures.length">
 
 			<div class="topLine flexWrap">
 				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
@@ -11,9 +11,13 @@
 
 			<elements-list 
 				class="contentSubWrap"
-				:posts="sortedElementsViewed"
+				v-if="getCurrUser.user.watched_lectures"
+				:posts="getCurrUser.user.watched_lectures"
 			></elements-list>
 
+			<div class="contentSubWrap roller_box" v-else>
+				<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+			</div>
 			<!-- <bottom-line></bottom-line> -->
 			
 		</div>
@@ -77,7 +81,7 @@ export default {
 		...mapState({
 		}),
 		...mapGetters({
-			sortedElementsViewed: 'content/sortedElementsViewed',
+			getCurrUser: 'getCurrUser',
 		}),
 	},
 }

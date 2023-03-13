@@ -3,13 +3,16 @@
 		<div class="contentWrap">
 
 			<div class="topLine flexWrap">
-				<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent buttonBack" />
+				<a @click="$router.push('/')" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Наши лекторы</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			<div class="contentSubWrap">
+			<div class="contentSubWrap" v-if="teachersList.data">
 				<teacher-element class="the_element" v-for="teacher in teachersList.data" :key="teacher" :teacher="teacher" />
+			</div>
+			<div v-else class="roller_box">
+				<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 			</div>
 
 			<!-- <bottom-line></bottom-line> -->

@@ -22,7 +22,7 @@
 			<div class="contentSubWrap">
 
 				<div class="userinfo_wrap topWrap marginB12">
-					<div class="userinfo_alert flexWrap" v-if="!profileIsFill">
+					<div class="userinfo_alert flexWrap" v-if="!this.getCurrUser.user.name">
 						<span class="the_icon"></span>
 						<span class="the_title blockWrap fontFamilyEB alignCenter">Заполните профиль</span>
 						<p class="the_info blockWrap fontSize14 alignCenter">Это необходимо, чтобы пользоваться сервисом</p>
@@ -30,16 +30,25 @@
 					</div>
 					<div class="userinfo_box" v-else>
 						<div class="userinfo_card">
-							<!-- <span class="card_photo_wrap"></span> -->
-							<span class="card_photo_wrap filled" style=""></span>
+							<div v-if="this.getCurrUser.user.photo_small" class="card_photo_wrap filled">
+								<img :src="this.getCurrUser.user.photo_small" alt="profile_image">
+							</div>
+							<span v-else class="card_photo_wrap"></span>
 							<div class="card_info_wrap">
-								<span class="card_name">Екатерина</span>
-								<span class="card_status fontSize14" v-if="!this.yesBaby">Ваш срок — примерно 29 недель</span>
-								<span class="card_status fontSize14" v-else>Малыш родился</span>
+								<span class="card_name" v-if="this.getCurrUser.user.name">Привет, {{ this.getCurrUser.user.name }}!</span>
+								<div class="card_name" v-else>
+									<span class="the_value">Заполните профиль</span>
+									<span class="card_button theButton buttonTransparent buttonOptimal"></span>
+								</div>
+								<p v-if="!this.getCurrUser.user.name" class="the_info blockWrap fontSize14 alignCenter">Это необходимо, чтобы пользоваться сервисом</p>
+
+								<!-- <span class="card_name">Екатерина</span> -->
+								<span class="card_status fontSize14" v-if="!this.getCurrUser.user.baby_born && this.getCurrUser.user.name">Ваш срок — примерно {{ '29 недель' }} </span>
+								<span class="card_status fontSize14" v-if="this.getCurrUser.user.baby_born && this.getCurrUser.user.name">Малыш родился</span>
 							</div>
 							<router-link class="card_button theButton buttonTransparent buttonOptimal" to="/profile/edit" @click="setRouterAnimate"></router-link>
 						</div>
-						<button class="user_info_button theButton buttonPrimary fontSize16" v-if="!this.yesBaby" @click="celebrateBirthday">Отметить рождение малыша</button>
+						<button class="user_info_button theButton buttonPrimary fontSize16" v-if="!this.getCurrUser.user.baby_born && true" @click="celebrateBirthday">Отметить рождение малыша</button>
 					</div>
 				</div>
 
@@ -49,21 +58,21 @@
 							<span class="the_icon save_icon"></span>
 							<span class="the_title">Сохранённые лекции</span>
 						</div>
-						<span class="the_count">{{ sortedElementsSaved.length }}</span>
+						<span class="the_count">{{ this.getCurrUser.user.saved_lectures.length }}</span>
 					</router-link>
 					<router-link class="link_button" to="/profile/bought" @click="setRouterAnimate">
 						<div class="left_wrap">
 							<span class="the_icon buy_icon"></span>
 							<span class="the_title">Купленные лекции</span>
 						</div>
-						<span class="the_count">{{ sortedElementsBought.length }}</span>
+						<span class="the_count">{{ this.getCurrUser.user.purchased_lectures.length }}</span>
 					</router-link>
 					<router-link class="link_button" to="/profile/viewed" @click="setRouterAnimate">
 						<div class="left_wrap">
 							<span class="the_icon see_icon"></span>
 							<span class="the_title">Просмотренные лекции</span>
 						</div>
-						<span class="the_count">{{ sortedElementsViewed.length }}</span>
+						<span class="the_count">{{ this.getCurrUser.user.watched_lectures.length }}</span>
 					</router-link>
 				</div>
 
@@ -146,8 +155,8 @@ export default {
 	data(){
 		return{
 			thePopup: false,
-			profileIsFill: true,
-			yesBaby: false,
+			profileIsFill: false,
+			// yesBaby: false,
 			celebrateWrap: false,
 		}
 	},
@@ -193,6 +202,7 @@ export default {
 			// isAuth: state => state.isAuth,
 		}),
 		...mapGetters({
+			getCurrUser: 'getCurrUser',
 			sortedElementsBegin: 'content/sortedElementsBegin',
 			sortedElementsSaved: 'content/sortedElementsSaved',
 			sortedElementsBought: 'content/sortedElementsBought',
@@ -440,7 +450,7 @@ export default {
 
 			.celebrate_wrap{
 				background-color: #FFF;
-				padding: 16px 0px;
+				padding: 96px 0px;
 				width: 100%;
 				.the_img{
 					width: 56%;

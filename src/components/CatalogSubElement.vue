@@ -48,7 +48,7 @@ export default({
 		
 
 		routeToElement(){
-			router.push('/catalog/subcategory');
+			router.push('/catalog/' + this.subCategory.parent_slug + '/' + this.subCategory.slug);
 		},
 
 		handleMouseDown(event){

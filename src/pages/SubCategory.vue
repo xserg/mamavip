@@ -4,7 +4,7 @@
 		<div class="contentWrap">
 
 			<div class="topLine flexWrap">
-				<span class="theButton leftButton buttonTransparent buttonBack" @click="$router.go(-1), setRouterAnimate()"></span>
+				<span class="theButton leftButton buttonTransparent buttonBack" @click="$router.push('/catalog/' + this.currentSubCategory.parent_slug), setRouterAnimate()"></span>
 				<h1 class="theTitle alignCenter">{{ this.currentCategory.title }}</h1>
 				<span class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</span>
 			</div>
@@ -16,7 +16,8 @@
 						<span class="empty_icon"></span>
 					</div>
 					<span class="the_title fontSize20 fontFamilyEB">{{ this.currentSubCategory.title }}</span>
-					<span class="the_subtitle fontSize14">{{ this.currentSubCategory.description }}</span>
+					<span class="the_subtitle fontSize14 marginB12">{{ this.currentSubCategory.description }}</span>
+					<span class="theButton buttonPrimary buttonOptimal marginAuto marginB12" @click="$router.push('/category_prices/'), setRouterAnimate()">Купить от {{ this.currentSubCategory.prices[0].price_for_category }}₽</span>
 				</div>
 
 				<div class="bottomWrap content_box elements_box" v-if="currentSubCategoryList.data">

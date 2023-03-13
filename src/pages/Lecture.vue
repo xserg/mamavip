@@ -12,64 +12,72 @@
 			</div>
 
 			<div class="topLine flexWrap">
-				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
+				<a @click="$router.push('/catalog/' + this.currentSubCategory.parent_slug + '/' + this.currentSubCategory.slug), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Лекция</h1>
-				<button class="theButton rightButton buttonTransparent buttonFav fontFamilyB" :class="{active: !theFav}" @click="addToFav"></button>
+				<div class="buttons_wrap theButton rightButton flexWrap">
+					<button class="theButton rightButton buttonTransparent buttonWatched fontFamilyB" :class="{active: !this.getCurrUser.user.watched_lectures.find(item => item.id === getCurrentLecture.id )}" @click="addToWatched"></button>
+				<button class="theButton rightButton buttonTransparent buttonFav fontFamilyB" :class="{active: this.getCurrUser.user.saved_lectures.find(item => item.id === getCurrentLecture.id )}" @click="addToFav"></button>
+				</div>
+				
 			</div>
 
-			<div class="contentSubWrap">
+			<div class="contentSubWrap" v-if="!loadingStatus && getCurrentLecture.id"> 
 				<div class="topWrap content_box info_box marginB12">
 
-					<!-- <div class="video_wrap">
-						<img class="the_video" src="./../assets/images/video.jpg" alt="" />
-					</div> -->
-					<div class="notavailable_wrap topWrap ">
+					<div class="video_wrap" :class="{active: this.startLecture }">
+						<div class="video_starter" @click="startWatchLecture"></div>
+						<img class="video_preview" :v-if="getCurrentLecture.preview_picture" :src="getCurrentLecture.preview_picture" alt="preview" />
+						<div class="video_iframe"></div>
+					</div>
+					<!-- <div class="notavailable_wrap topWrap ">
 						<div class="message_wrap">
 							<span class="mess_icon"></span>
 							<span class="mess_title fontFamilyEB">График просмотра</span>
 							<span class="mess_desc">Вы уже выбрали лекцию на сегодня.<br>Следующая лекция доступна через<br>18 ч. 59 мин. 32 сек.</span>
 						</div>
-					</div>
+					</div> -->
 					
 					
-					<span class="the_status">Просмотрено</span>
-					<span class="the_title fontSize20 fontFamilyEB">Название лекции какое-нибудь длинное, чтобы занимало целых две строки или даже больше</span>
+					<span class="the_status" :class="{active: theWatched}">Просмотрено</span>
+					<span class="the_title fontSize20 fontFamilyEB">{{ getCurrentLecture.title }}</span>
 					<div class="buttons_wrap">
-						<span class="theButton buttonPrimary buttonOptimal marginAuto">Смотреть за 99₽</span>
+						<span class="theButton buttonPrimary buttonOptimal marginAuto" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices.price_by_category[0].price_for_lecture) }}₽</span>
 						<!-- <span class="theButton buttonPrimary buttonOptimal marginB12 marginAuto">199 ₽ — на 12 дней</span>
 						<span class="theButton buttonSecondary buttonOptimal marginAuto">99 ₽ — на 1 день</span> -->
 					</div>
 				</div>
 
 				<div class="midWrap desc_box content_box marginB12">
-					<div class="desc_subbox" :class="{active: moreDesc == true}">
-						<p>(Описание лекции идёт сюда) Идейные соображения высшего порядка, а также постоянное информационно-проп (Описание лекции идёт сюда) Идейные соображения высшего порядка, а также постоянное информационно-проп (Описание лекции идёт сюда) Идейные соображения высшего порядка, а также постоянное информационно-проп (Описание лекции идёт сюда) Идейные соображения высшего порядка, а также постоянное информационно-проп.</p>
+					<div class="desc_subbox" :class="{active: moreDesc == true, fixed_height: getCurrentLecture.description.length > 250}">
+						<p>{{ getCurrentLecture.description }}</p> 
 					</div>
-					<span class="show_more" @click="showMoreDesc">{{  moreDesc ? 'Скрыть' : 'Подробнее' }}</span>
+					<span v-show="getCurrentLecture.description.length > 250" class="show_more" @click="showMoreDesc">{{  moreDesc ? 'Скрыть' : 'Подробнее' }}</span>
 				</div>
 
 				<div class="userinfo_wrap topWrap marginB12">
-					<div class="userinfo_box">
-						<router-link class="userinfo_card" to="/speakers/speaker" @click="setRouterAnimate">
-							<!-- <span class="card_photo_wrap"></span> -->
-							<span class="card_photo_wrap filled" style=""></span>
+					<div class="userinfo_box" v-if="getCurrentLecture.lector">
+						<a class="userinfo_card" @click=" $router.push('/lectors/' + getCurrentLecture.lector.id ), setRouterAnimate">
+							<div class="card_photo_wrap" v-if="getCurrentLecture.lector.photo" :class="{filled: getCurrentLecture.lector.photo}">
+								<img :src="getCurrentLecture.lector.photo" alt="lector_photo">
+							</div>
 							<div class="card_info_wrap">
 								<!-- <span class="card_name">Заполните профиль</span> -->
-								<span class="card_name">Анна Ахматова</span>
+								<span class="card_name">{{ getCurrentLecture.lector.name }}</span>
 								<span class="card_status fontSize14">Лектор</span>
 								<span class="card_button theButton buttonTransparent buttonOptimal"></span>
 							</div>
 							
-						</router-link>
+						</a>
 					</div>
 				</div>
 
 
 				<div class="midWrap content_box elements_box marginB12">
 					<span class="the_subtitle fontSize14">Ещё в подборке</span>
-					<router-link class="the_title fontSize20 fontFamilyEB" to="/catalog/category" @click="setRouterAnimate">Беременность</router-link>
+					<a @click="$router.push('/catalog/' + this.currentSubCategory.parent_slug + '/' + this.currentSubCategory.slug), setRouterAnimate()" class="the_title fontSize20 fontFamilyEB">{{ currentSubCategory.title }}</a>
 					<elements-slider 
-						:posts="sortedElements"
+						v-if="sameLectures.length"
+						:posts="sameLectures"
 					/>
 				</div>
 
@@ -85,9 +93,9 @@
 						<span class="the_desc fontSize14">Попробуйте обновить страницу или поискать в другом месте</span>
 						<span class="theButton buttonTertiary buttonOptimal">Обновить</span>
 					</div>
-				</div> -->
+				</div> 
 
-				<!-- <div class="bottomWrap error_wrap">
+				<div class="bottomWrap error_wrap">
 					<div class="error_subwrap flexWrap">
 						<span class="the_toptitle fontSize20 fontFamilyEB">Лекции</span>
 						<img class="the_img" src="./../assets/images/noResponse.png" alt="img">
@@ -97,7 +105,15 @@
 					</div>
 				</div> -->
 
+				
 
+			</div>
+
+
+			<div class="contentSubWrap" v-else>
+				<div class="midWrap content_box info_box roller_box">
+					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+				</div>
 			</div>
 
 
@@ -110,7 +126,7 @@
 </template>
 
 
-<script>
+<script> 
 
 import ElementsSlider from '@/components/ElementsSlider';
 
@@ -127,10 +143,14 @@ export default({
 
 	data(){
 		return{
+			loadingStatus: false,
 			theFav: false,
+			theWatched: false,
 			moreDesc: false,
+			startLecture: false,
 			showNotification: false,
 			notificationMess: '',
+			sameLectures: [],
 			// post: {},
 		}
 	},
@@ -148,6 +168,12 @@ export default({
 				this.moreDesc = true;
 			}
 		},
+
+		startWatchLecture(){
+			this.startLecture = true;
+			console.log('Просмотр видео запущен');
+		},
+
 		addToFav(){
 			if(this.theFav == true){
 				this.theFav = false;
@@ -164,10 +190,44 @@ export default({
 			}, 3000);
 		},
 
+		addToWatched(){
+			if(this.theWatched == true){
+				this.theWatched = false;
+				this.notificationMess = 'Удалили из «Просмотренных»';
+			}else{
+				this.theWatched = true;
+				this.notificationMess = 'Добавили в «Просмотренные»';
+			}
+			setTimeout(() => {
+				this.showNotification = true;
+			}, 400);
+			setTimeout(() => {
+				this.showNotification = false;
+			}, 3000);
+		},
+
 		hideMessages(){
 			this.showNotification = false;
 		},
 
+
+		setLoadingStatus(bool){
+			this.loadingStatus = bool;
+		},
+		filterSameLectures(){
+			// try{}
+			// catch{}
+			this.sameLectures = this.currentSubCategoryList.data.filter(p => p.id !== this.getCurrentLecture.id);
+			this.setLoadingStatus(false);
+		},
+
+
+		// getCurrLector(){
+		// 	console.log('Запросили лектора');
+		// },
+		// getSameLectures(){
+		// 	console.log('Запросили похожие лекции');
+		// },
 	},
 
 	computed:{
@@ -175,9 +235,32 @@ export default({
 			heightLock: state => state.heightLock,
 		}),
 		...mapGetters({
-			sortedElements: 'content/sortedElements',
+			getCurrUser: 'getCurrUser',
+			// sortedElements: 'content/sortedElements',
 			currentSubCategory: 'content/currentSubCategory',
+			getCurrentLecture: 'content/getCurrentLecture',
+			currentSubCategoryList: 'content/currentSubCategoryList',
 		}),
+
+	},
+
+
+	mounted() { 
+		this.setLoadingStatus(true);
+		this.filterSameLectures();
+	// 	this.getCurrLector();
+	// 	this.getSameLectures();
+	},
+
+
+	watch:{
+		getCurrentLecture: {
+			handler(newVal){
+				this.setLoadingStatus(true);
+				this.filterSameLectures();
+			},
+			deep: true
+		},
 	},
 
 
@@ -200,6 +283,17 @@ export default({
 		background-color: #FFF;
 		overflow: scroll;
 		justify-content: flex-start;
+		.topLine{
+			.buttons_wrap{
+				justify-content: flex-end;
+				.theButton{
+					min-width: auto;
+				}
+				.theButton:first-of-type{
+					margin-right: 22px;
+				}
+			}
+		}
 		.notificationWrap{
 			bottom: 60px;
 		}
@@ -257,7 +351,42 @@ export default({
 					margin-bottom: 12px;
 					// border: 1px solid rgba(35, 41, 45, 0.1);
 					background-color: #FFEAEB;
-					.the_video{
+					.video_iframe{
+						width: 100%;
+						height: 100%;
+						position: absolute;
+						left: 0;
+						top: 0;
+						z-index: 5;
+						opacity: 0;
+						visibility: hidden;
+					}
+					.video_starter{
+						width: 100%;
+						height: 100%;
+						position: absolute;
+						left: 0;
+						top: 0;
+						z-index: 20;
+						cursor: pointer;
+						&::before{
+							position: absolute;
+							display: block;
+							top: 50%;
+							left: 50%;
+							transform: translate(-50%, -50%);
+							content: '';
+							width: 48px;
+							height: 48px;
+							border-radius: 50%;
+							background-repeat: no-repeat;
+							background-size: contain;
+							background-position: center;
+							background-image: url('./../assets/icons/play-a.png');
+							z-index: 15;
+						}
+					}
+					.video_preview{
 						width: 100%;
 						height: 100%;
 						position: absolute;
@@ -268,26 +397,24 @@ export default({
 						z-index: 10;
 						border: 1px solid rgba(35, 41, 45, 0.1);
 					}
-					&::before{
-						position: absolute;
-						display: block;
-						top: 50%;
-						left: 50%;
-						transform: translate(-50%, -50%);
-						content: '';
-						width: 48px;
-						height: 48px;
-						border-radius: 50%;
-						background-repeat: no-repeat;
-						background-size: contain;
-						background-position: center;
-						background-image: url('./../assets/icons/play-a.png');
-						z-index: 15;
+
+					&.active{
+						.video_preview{
+							display: none;
+						}
+						.video_starter{
+							display: none;
+						}
+						.video_iframe{
+							opacity: 1;
+							visibility: visible;
+						}
 					}
+					
 					
 				}
 				.the_title{
-					margin-bottom: 12px;
+					margin-bottom: 18px;
 					position: relative;
 					display: block;
 					padding: 0 16px;
@@ -295,12 +422,20 @@ export default({
 				.the_status{
 					color: #FD7C84;
 					padding: 0 16px;
-					margin-bottom: 4px;
+					// margin-bottom: 4px;
 					display: block;
 					font-size: 14px;
+					height: 0px;
+					opacity: 0;
+					transition: height .42s ease, opacity .22s ease;
+					&.active{
+						height: 22px;
+						opacity: 1;
+						transition: height .42s ease, opacity .82s ease;
+					}
 				}
 				.buttons_wrap{
-					padding: 0 16px 16px;
+					padding: 0 16px 28px;
 				}
 			}
 			
@@ -310,10 +445,12 @@ export default({
 				position: relative;
 				.desc_subbox{
 					height: auto;
-					max-height: 57px;
 					overflow: hidden;
 					transition: opacity .8s ease, max-height .66s cubic-bezier(0.09, 0.96, 0.83, 0.98);
 					font-size: 14px;
+					&.fixed_height{
+						max-height: 57px;
+					}
 					p{
 						line-height: 19px;
 					}
@@ -347,6 +484,7 @@ export default({
 						display: flex;
 						align-items: center;
 						position: relative;
+						cursor: pointer;
 						.card_photo_wrap{
 							min-width: 60px;
 							width: 60px;
@@ -359,9 +497,16 @@ export default({
 							margin-right: 12px;
 							background-image: url('../assets/icons/nophoto.svg');
 							background-size: 35%;
+							overflow: hidden;
 							&.filled{
-								background-image: url('../assets/images/profile.jpg');
-								background-size: cover;
+								// background-image: url('../assets/images/profile.jpg');
+								// background-size: cover;
+							}
+							img{
+								display: block;
+								width: 100%;
+								height: 100%;
+								object-fit: cover;
 							}
 						}
 						.card_info_wrap{
@@ -417,6 +562,7 @@ export default({
 					margin-bottom: 12px;
 					display: block;
 					position: relative;
+					cursor: pointer;
 					&::before{
 						content: '';
 						position: absolute;

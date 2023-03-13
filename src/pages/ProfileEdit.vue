@@ -34,9 +34,9 @@
 
 				<div class="topLine flexWrap">
 					
-					<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent">Отмена</a>
+					<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent">Назад</a>
 					<h1 class="theTitle alignCenter">Профиль</h1>
-					<button class="theButton rightButton buttonTransparent fontFamilyB">Готово</button>
+					<button class="theButton rightButton buttonTransparent fontFamilyB">Сохранить</button>
 				</div>
 
 				<div class="contentSubWrap profile_wrap">
@@ -62,29 +62,29 @@
 							<label class="inputWrap" :class="{notValid: errors.name }">
 								<span class="label">Как вас зовут?</span>
 								<div class="inputBox">
-									<Field name="name" placeholder="Имя" />
+									<Field name="name" placeholder="Имя" :value="this.getCurrUser.user.name" />
 								</div>
 								<ErrorMessage class="errorTitle" name="name" />
 							</label>
 
-							<label class="inputWrap" :class="{notValid: errors.burthday }">
+							<label class="inputWrap" :class="{notValid: errors.birthdate }">
 								<span class="label">Дата вашего рождения</span>
-								<div class="inputBox">
-									<Field name="burthday" type="date" placeholder="Выберите дату..." />
+								<div class="inputBox inputDate">
+									<Field name="birthdate" type="date" placeholder="Выберите дату..." :value="this.getCurrUser.user.birthdate" />
 								</div>
-								<ErrorMessage class="errorTitle" name="burthday" />
+								<ErrorMessage class="errorTitle" name="birthdate" />
 							</label>
 
-							<label class="inputWrap" :class="{notValid: errors.mobile }">
+							<label class="inputWrap" :class="{notValid: errors.phone }">
 								<span class="label">Номер телефона</span>
 								<div class="inputBox">
-									<Field name="mobile" type="tel" placeholder="+7" />
+									<Field name="phone" type="tel" placeholder="+7" :value="this.getCurrUser.user.phone" />
 									<!-- <Field v-model="mobile" name="mobile" v-slot="{ field }" type="tel" placeholder="+7">
 										<input v-bind="field">
 									</Field> -->
 									
 								</div>
-								<ErrorMessage class="errorTitle" name="mobile" />
+								<ErrorMessage class="errorTitle" name="phone" />
 							</label>
 							
 						</div>
@@ -95,24 +95,27 @@
 					<div class="more_wrap midWrap marginB12">
 						<span class="the_title marginB12 fontFamilyEB blockWrap">Выберите статус</span>
 						<div class="statuses_wrap">
-							<span class="the_status" :class="{active: this.born == false}" @click="bornFalse">Я беременна</span>
-							<span class="the_status" :class="{active: this.born == true}" @click="bornTrue">Я мама</span>
+							<span class="the_status" :class="{active: this.getCurrUser.user.is_mother == 0}" @click="switchBabyBornStatus()">Я беременна</span>
+							<span class="the_status" :class="{active: this.getCurrUser.user.is_mother == 1}" @click="switchBabyBornStatus()">Я мама</span>
+						</div>
+						<div class="hidden_inputs">
+							<Field name="is_mother" placeholder="Ребенок рожден" :value="this.getCurrUser.user.is_mother" />
 						</div>
 						<div class="formWrap">
 
-							<label class="inputWrap" :class="{ hiddenWrap: this.born == true, notValid: errors.baby_weeks }">
+							<label class="inputWrap" :class="{ hiddenWrap: this.getCurrUser.user.is_mother == 1, notValid: errors.pregnancy_weeks }">
 								<span class="label">Какой срок?</span>
 								<div class="inputBox">
-									<Field ref="bornFalse" name="baby_weeks" type="number" placeholder="В неделях" />
+									<Field ref="bornFalse" name="pregnancy_weeks" type="number" placeholder="В неделях" />
 								</div>
-								<ErrorMessage class="errorTitle" name="baby_weeks" />
+								<ErrorMessage class="errorTitle" name="pregnancy_weeks" />
 							</label>
-							<label class="inputWrap" :class="{ hiddenWrap: this.born == false, notValid: errors.baby_burthday }">
+							<label class="inputWrap" :class="{ hiddenWrap: this.getCurrUser.user.is_mother == 0, notValid: errors.baby_born }">
 								<span class="label">Когда родился малыш?</span>
 								<div class="inputBox">
-									<Field ref="bornTrue" name="baby_burthday" type="date" placeholder="Выберите дату..." />
+									<Field ref="bornTrue" name="baby_born" type="date" placeholder="Выберите дату..." :value="this.getCurrUser.user.baby_born" />
 								</div>
-								<ErrorMessage class="errorTitle" name="baby_burthday" />
+								<ErrorMessage class="errorTitle" name="baby_born" />
 							</label>
 							
 						</div>
@@ -155,6 +158,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+import {mapGetters, mapMutations} from 'vuex';
 // @ is an alias to /src
 // import DefaultLikes from '@/components/DefaultLikes.vue'
 import { Form, Field, ErrorMessage } from 'vee-validate';
@@ -170,19 +175,21 @@ export default {
 
 		const schema = yup.object().shape({
 			name: yup.string().required('Пожалуйста, заполните это поле').typeError('Поле обязателено').min(2, 'Поле должно содержать не менее 2 символов').label('Имя'),
-			burthday: yup.date().typeError('Введите дату рождения').max(new Date(), 'Выберете корректную дату').label('День рождения'),
-			baby_weeks: yup.number().min(1, 'Введите корректный срок').max(40, 'Введите корректный срок').typeError().label('Количество недель'),
-			baby_burthday: yup.date().typeError('Введите дату рождения малыша').max(new Date(), "Выберете корректную дату").label('День рождения'),
-			mobile: yup.string().when('mobile', {
+			birthdate: yup.date().typeError('Введите дату рождения').max(new Date(), 'Выберете корректную дату').label('День рождения'),
+			is_mother: yup.string().required('Пожалуйста, заполните это поле').typeError('Поле обязателено').min(1, 'Введите корректные данные').max(1, 'Введите корректные данные').label('Ребенок рожден'),
+			pregnancy_weeks: yup.number().min(1, 'Введите корректный срок').max(40, 'Введите корректный срок').typeError().label('Количество недель'),
+			baby_born: yup.date().typeError('Введите дату рождения малыша').max(new Date(), "Выберете корректную дату").label('День рождения'),
+			phone: yup.string().when('mobile', {
 				is: (value) => value?.length > 0,
 				then: yup.string().phone("", true, 'Введите корректный номер телефона'),
 				otherwise: yup.string(),
 			}),
+			
 
-			// mobile: yup.string().matches(phoneRegExp, 'Phone number is not valid')
+			// phone: yup.string().matches(phoneRegExp, 'Phone number is not valid')
 		},
 		[
-			['mobile', 'mobile'],
+			['phone', 'phone'],
 		]
 		);
 		return {
@@ -210,7 +217,23 @@ export default {
   },
 
 
+	computed:{
+		// ...mapState({
+		// 	// isAuth: state => state.isAuth,
+		// }),
+		...mapGetters({
+			getCurrUser: 'getCurrUser',
+		})
+	},
+
+
 	methods: {
+
+		...mapMutations({
+			changeUserData: 'changeUserData',
+			switchBabyBornStatus: 'switchBabyBornStatus',
+		}),
+		
 
 		// Удалить аккаунт
 		deleteAccountTrue(){
@@ -231,15 +254,52 @@ export default {
 		},
 
 		// Сохранение данных профиля
-		onSubmit(values){
-			console.log(JSON.stringify(values, null, 2));
-			setTimeout(() => {
-        this.showNotification = true;
-      }, 400);
-			setTimeout(() => {
-        this.showNotification = false;
-      }, 5000);
-		},
+		// onSubmit(values){
+		// 	console.log(JSON.stringify(values, null, 2));
+		// 	setTimeout(() => {
+    //     this.showNotification = true;
+    //   }, 400);
+		// 	setTimeout(() => {
+    //     this.showNotification = false;
+    //   }, 5000);
+		// },
+
+
+		onSubmit(user) {
+			// console.log('Данные на сохранение отправлены');
+			console.log(user);
+			try{
+				setTimeout( () => {
+					const response = 
+						axios.put('https://api.xn--80axb4d.online/v1/user/profile', user, {
+							headers: {
+								Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
+								'Content-Type': 'application/json',
+								'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
+  							'Access-Control-Allow-Origin': '*',
+							}
+						}
+					);
+					// console.log('Данные обработаны');
+					console.log(response);
+					// this.$router.push("/");
+					// this.setCurUserContent(response.data);
+
+					this.changeUserData(user);
+
+					setTimeout(() => {
+						this.showNotification = true;
+					}, 400);
+					setTimeout(() => {
+						this.showNotification = false;
+					}, 3000);
+
+
+				}, 500 );
+			} catch(e){
+				console.log(e);
+			} finally {}
+    },
 
 		// Скрыть уведомления любого типа
 		hideMessages(){
@@ -356,6 +416,13 @@ export default {
 			.more_wrap{
 				background-color: #FFF;
 				padding: 20px 16px;
+				position: relative;
+				.hidden_inputs{
+					// height: 0;
+					// opacity: 0;
+					// overflow: hidden;
+					// position: absolute;
+				}
 				.the_title{
 				}
 				.statuses_wrap{
@@ -396,7 +463,11 @@ export default {
 						min-height: 48px;
 						letter-spacing: .32px;
 					}
+					&.inputDate::before{
+						display: none;
+					}
 				}
+
 				.errorTitle{}
 			}
 				

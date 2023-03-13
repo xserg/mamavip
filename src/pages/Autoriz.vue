@@ -344,6 +344,7 @@ export default defineComponent({
 	methods:{
 
 		...mapMutations({
+			setInfos: 'setInfos',
 			setLogPage: 'setLogPage',
 			setAuthIn: 'setAuthIn',
 			setAuthOut: 'setAuthOut',
@@ -364,34 +365,39 @@ export default defineComponent({
 			try{
 				setTimeout( async () => {
 					const response = await axios.post('https://api.xn--80axb4d.online/v1/user/login', user);
-					console.log(response.data);
-					this.$router.push("/");
 					this.setAuthIn(response.data);
-					this.setCurUserContent(response.data);
+
+					setTimeout( async () => {
+						const responseInfos = await axios.get('https://api.xn--80axb4d.online/v1/app/info', {
+							headers: {
+								Authorization: response.data.token_type + ' ' + response.data.access_token,
+							}
+						});
+						this.setInfos(responseInfos.data);
+					}, 500 );
+					this.$router.push("/");
+					
+					// this.setCurUserContent(response.data);
 				}, 500 );
+
+				
+
+
+				// const responseInfos = axios.get('https://api.xn--80axb4d.online/v1/app/info', {
+				// 	headers: {
+				// 		Authorization: user.token_type + ' ' + user.access_token,
+				// 	}
+				// });
+				// console.log(responseInfos.data);
+				// state.infos = responseInfos.data;
 				
 			} catch(e){
 				console.log(e);
 			} finally {}
 
-
-
-      // this.$store.dispatch("auth/login", user).then(
-      //   () => {
-      //     this.$router.push("/profile");
-			// 		// this.setAuthIn();
-      //   },
-      //   (error) => {
-      //     this.loading = false;
-      //     this.message =
-      //       (error.response &&
-      //         error.response.data &&
-      //         error.response.data.message) ||
-      //       error.message ||
-      //       error.toString();
-      //   }
-      // );
     },
+
+		
 
 
 		loginStep(){
@@ -414,7 +420,7 @@ export default defineComponent({
 		},
 
 		onSubmit(values){
-			console.log(JSON.stringify(values, null, 2));
+			// console.log(JSON.stringify(values, null, 2));
 			// this.showErrors = true;
 			this.setRouterAnimate();
 			router.push('/');
@@ -424,7 +430,7 @@ export default defineComponent({
 
 		onSendCode(values){
 			this.curResetValues = values;
-			console.log(JSON.stringify(this.curResetValues, null, 2));
+			// console.log(JSON.stringify(this.curResetValues, null, 2));
 			setTimeout(() => {
 				this.showNotification = true;
 			}, 400);
@@ -455,14 +461,14 @@ export default defineComponent({
 
 
 		onResetPass(values){
-			console.log(JSON.stringify(values, null, 2));
+			// console.log(JSON.stringify(values, null, 2));
 			this.$refs.forgotCodeInput.reset();
 			// this.showErrors = true;
 			this.curStep = 'auth_newpass';
 		},
 
 		onSavePass(values){
-			console.log(JSON.stringify(values, null, 2));
+			// console.log(JSON.stringify(values, null, 2));
 			this.curStep = 'auth_login';
 			setTimeout(() => {
         this.showNotification = true;
@@ -485,9 +491,9 @@ export default defineComponent({
 			newReg: state => state.newReg,
 		}),
 
-		loggedIn() {
-      return this.$store.state.auth.status.loggedIn;
-    },
+		// loggedIn() {
+    //   return this.$store.state.auth.status.loggedIn;
+    // },
 
 	},
 

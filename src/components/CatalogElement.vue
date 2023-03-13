@@ -49,7 +49,7 @@ export default({
     }),
 
 		routeToElement(){
-			router.push('/catalog/category');
+			router.push('/catalog/' + this.post.slug);  
 		},
 
 		handleMouseDown(event){

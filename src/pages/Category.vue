@@ -12,7 +12,7 @@
 			<div class="contentSubWrap">
 				<div class="topWrap content_box preview_box">
 					<!-- <router-link class="theButton buttonBack theWhite" to="/catalog" /> -->
-					<a @click="$router.go(-1), setRouterAnimate()" class="theButton buttonBack theWhite" />
+					<a @click="$router.push('/catalog/'), setRouterAnimate()" class="theButton buttonBack theWhite" />
 					<!-- <img src="./../assets/images/category.jpg" alt=""> -->
 					<img :src="currentCategory.preview_picture" alt="category_image">
 					
@@ -29,7 +29,7 @@
 					:subCategory="subCategory"
 					/>
 				</div>
-				<div class="bottomWrap content_box categories_box roller_box" v-else >
+				<div class="bottomWrap content_box categories_box roller_box" v-else>
 					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 				</div>
 				<!-- <catalog-element 

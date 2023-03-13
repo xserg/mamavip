@@ -13,11 +13,15 @@ import ProfileEdit from '@/pages/ProfileEdit.vue'
 import Teachers from '@/pages/Teachers.vue'
 import Teacher from '@/pages/Teacher.vue'
 import ForView from '@/pages/ForView.vue'
+import Promopack from '@/pages/Promopack.vue'
 import Catalog from '@/pages/Catalog.vue'
 import Category from '@/pages/Category.vue'
 import SubCategory from '@/pages/SubCategory.vue'
 import Lecture from '@/pages/Lecture.vue'
 import Policy from '@/pages/Policy.vue'
+import Prices from '@/pages/Prices.vue'
+import CategoryPrices from '@/pages/CategoryPrices.vue'
+import Faq from '@/pages/Faq.vue'
 import NotFound from '@/pages/NotFound.vue'
 
 
@@ -39,22 +43,36 @@ const routes = [
     component: Policy
   },
 	{
+    path: '/prices/',
+    name: 'prices',
+    component: Prices
+  },
+	{
+    path: '/category_prices/',
+    name: 'category_prices',
+    component: CategoryPrices
+  },
+	{
+    path: '/profile/help/faq',
+    name: 'faq',
+    component: Faq
+  },
+	{
     path: '/catalog/',
     name: 'catalog',
     component: Catalog
   },
 	{
-    path: '/catalog/category/',
-    name: 'category',
+    path: '/catalog/:slug',
     component: Category
   },
 	{
-    path: '/catalog/subcategory/',
+    path: '/catalog/:parent_slug/:slug',
     name: 'subcategory',
     component: SubCategory
   },
 	{
-    path: '/catalog/lecture/',
+    path: '/videos/:id',
     name: 'lecture',
     component: Lecture
   },
@@ -95,19 +113,24 @@ const routes = [
   },
 
 	{
-    path: '/speakers/',
-    name: 'speakers',
+    path: '/lectors/',
+    name: 'lectors',
     component: Teachers
   },
 	{
-    path: '/speakers/speaker/',
-    name: 'speaker',
+    path: '/lectors/:id/',
+    name: 'lector',
     component: Teacher
   },
 	{
     path: '/forview/',
     name: 'forview',
     component: ForView
+  },
+	{
+    path: '/promopack/',
+    name: 'promopack',
+    component: Promopack
   },
 	{
 		path: "/:catchAll(.*)",
@@ -137,7 +160,7 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 	scrollBehavior(to, from, savedPosition) {
-		console.log(to.path);
+		// console.log(to.path);
       return {
 				top: 0,
         // el: '#homeContainer',

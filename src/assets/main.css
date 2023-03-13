@@ -312,7 +312,7 @@ body .marginAuto{
 	opacity: 1;
 	visibility: visible;
 	transition: all .2s ease;
-	background-image: url('../assets/icons/bookmark-active.svg');
+	background-image: url('../assets/icons/bookmark.svg');
 	background-position: right;
 	background-repeat: no-repeat;
 	background-size: contain;
@@ -328,7 +328,7 @@ body .marginAuto{
 	opacity: 0;
 	visibility: hidden;
 	transition: all .2s ease;
-	background-image: url('../assets/icons/bookmark.svg');
+	background-image: url('../assets/icons/bookmark-active.svg');
 	background-position: right;
 	background-repeat: no-repeat;
 	background-size: contain;
@@ -343,6 +343,65 @@ body .marginAuto{
 	/* background-image: url('../assets/icons/bookmark-active.svg'); */
 }
 .buttonFav.active::after{
+	opacity: 1;
+	visibility: visible;
+	/* background-image: url('../assets/icons/bookmark-active.svg'); */
+}
+
+
+/* ButtonWatched */
+.buttonWatched{
+	width: 24px;
+	min-width: 24px;
+	height: 24px;
+	position: relative;
+	/* background-position: right;
+	background-repeat: no-repeat;
+	background-size: contain;
+	position: relative;
+	background-image: url('../assets/icons/bookmark.svg'); */
+}
+.buttonWatched::before{
+	content: '';	
+	display: block;
+	width: 24px;
+	height: 24px;
+	opacity: 1;
+	visibility: visible;
+	transition: all .2s ease;
+	background-image: url('../assets/icons/viewed.svg');
+	/* filter: grayscale(0.5); */
+	opacity: .45;
+	background-position: right;
+	background-repeat: no-repeat;
+	background-size: contain;
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+.buttonWatched::after{
+	content: '';	
+	display: block;
+	width: 24px;
+	height: 24px;
+	opacity: 0;
+	visibility: hidden;
+	transition: all .2s ease;
+	background-image: url('../assets/icons/done2.svg');
+	background-position: right;
+	background-repeat: no-repeat;
+	background-size: contain;
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+
+.buttonWatched.active::before{
+	opacity: 0;
+	visibility: hidden;
+	/* background-image: url('../assets/icons/bookmark-active.svg'); */
+}
+.buttonWatched.active::after{
 	opacity: 1;
 	visibility: visible;
 	/* background-image: url('../assets/icons/bookmark-active.svg'); */

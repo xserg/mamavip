@@ -15,16 +15,17 @@
 				<div class="userinfo_wrap topWrap marginB12">
 					<div class="userinfo_box">
 						<router-link class="userinfo_card" to="/profile/edit" @click="setRouterAnimate">
-							<span class="card_photo_wrap" :class="{filled: this.getCurrUser.user.photo_small}"></span>
-							<!-- <span class="card_photo_wrap filled" style=""></span> -->
+							<div v-if="this.getCurrUser.user.photo_small" class="card_photo_wrap filled">
+								<img :src="this.getCurrUser.user.photo_small" alt="profile_image">
+							</div>
+							<span v-else class="card_photo_wrap"></span>
 							<div class="card_info_wrap">
 								<span class="card_name" v-if="this.getCurrUser.user.name">Привет, {{ this.getCurrUser.user.name }}!</span>
-								<span class="card_name" v-else>
+								<div class="card_name" v-else>
 									<span class="the_value">Заполните профиль</span>
 									<span class="card_button theButton buttonTransparent buttonOptimal"></span>
-								</span>
+								</div>
 								<span class="card_status fontSize14" v-if="!this.getCurrUser.user.name">Это необходимо, чтобы пользоваться сервисом</span>
-								
 								
 								<!-- <span class="card_status fontSize14">Ваш срок — примерно 29 недель</span> -->
 								<!-- <span class="card_status fontSize14">Вас уже можно поздравить?</span> -->
@@ -41,18 +42,37 @@
 				<div class="recommended_box midWrap marginB12" :class="{recommended_box: true, notavailable_box: false }">
 					<span class="the_title fontFamilyEB fontSize20 blockWrap">Рекомендуем</span>
 					<span class="the_subtitle marginB12 fontSize14 blockWrap">Не пропустите новые лекции!</span>
-					<div class="element_box" v-if="true">
+					<div class="element_box" v-if="getRecommended">
 						<element 
-						:post="recommendationElement"
+						v-if="getRecommended"
+						:post="getRecommended"
 						/>
 					</div>
-					<div class="message_wrap" v-else>
+					<div class="message_wrap" v-if="false">
 						<span class="mess_icon"></span>
 						<span class="mess_title fontFamilyEB">График просмотра</span>
 						<span class="mess_desc">Следующая лекция доступна через <br>18 ч. 59 мин. 32 сек.</span>
 					</div>
 				</div>
 				<!-- РЕКОМЕНДУЕМ END -->
+
+				<!-- ПРОМОПАК -->
+				<div class="videos_box midWrap marginB12">
+					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/promopack" @click="setRouterAnimate">Акции</router-link>
+					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
+					<div class="element_box" v-if="!promopackError && getPromopack.data">
+						<!-- <element 
+						:post="recommendationElement"
+						:key="recommendationElement.id"
+						/> -->
+						<elements-slider v-if="getPromopack.data" :posts="getPromopack.data"/>
+						
+					</div>
+					<div v-else class="roller_box">
+						<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+					</div>
+				</div>
+				<!-- НЕ ПРОСМОТРЕННЫЕ END -->
 
 
 				<!-- КАТАЛОГ -->
@@ -83,7 +103,7 @@
 
 				<!-- ЛЕКТОРЫ -->
 				<div class="teachers_box midWrap marginB12">
-					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/speakers" @click="setRouterAnimate">Наши лекторы</router-link>
+					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/lectors" @click="setRouterAnimate">Наши лекторы</router-link>
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
 					<div class="element_box">
 						<!-- <element 
@@ -149,13 +169,17 @@ export default {
 		...mapState({
 			heightLock: state => state.heightLock,
 			catalogError: state =>state.content.catalogError,
+			promopackError: state =>state.content.promopackError,
 		}),
 		...mapGetters({
-			getCurrUser: 'content/getCurrUser',
+			getCurrUser: 'getCurrUser',
 			recommendationElement: 'content/recommendationElement',
 			catalogList: 'content/catalogList',
+			getPromopack: 'content/getPromopack',
+			getRecommended: 'content/getRecommended',
 			teachersList: 'content/teachersList',
-			sortedElementsNotview: 'content/sortedElementsNotview',
+			sortedElementsNotview: 'sortedElementsNotview',
+			sortedElementsPromopack: 'content/sortedElementsPromopack',
 		}),
 	},
 
@@ -167,6 +191,8 @@ export default {
 		...mapActions({
       fetchLectors: 'content/fetchLectors',
 			fetchCatalog: 'content/fetchCatalog',
+			fetchPromopack: 'content/fetchPromopack',
+			fetchRecommended: 'content/fetchRecommended',
     }),
 	},
 
@@ -174,6 +200,8 @@ export default {
 	mounted() {
     this.fetchLectors();
 		this.fetchCatalog();
+		this.fetchPromopack();
+		this.fetchRecommended();
   },
 
 }
@@ -228,9 +256,15 @@ export default {
 							margin-right: 12px;
 							background-image: url('../assets/icons/nophoto.svg');
 							background-size: 35%;
+							overflow: hidden;
 							&.filled{
 								background-image: url('../assets/images/profile.jpg');
 								background-size: cover;
+							}
+							img{
+								width: 100%;
+								height: 100%;
+								object-fit: cover;
 							}
 						}
 						.card_info_wrap{

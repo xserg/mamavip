@@ -3,9 +3,9 @@
 	<div class="the_element marginB12" @mousedown="handleMouseDown" @click="handleClick">
 		<div class="info_line flexWrap">
 			<div class="icons flexWrap">
-				<span class="viewed blockWrap"></span>
-				<span class="bought blockWrap"></span>
-				<span class="premium blockWrap"></span>
+				<span class="viewed blockWrap" :class="{hiddenWrap: !getCurrUser.user.watched_lectures.find(item => item.id === post.id )}"></span>
+				<!-- <span class="bought blockWrap" :class="{hiddenWrap: !getCurrUser.user.purchased_lectures.find(item => item.id === post.id )}"></span> -->
+				<span class="premium blockWrap" :class="{hiddenWrap: !post.is_free }"></span>
 			</div>
 			<span class="play"></span>
 			<!-- <span @click="$emit('deleteElement', post)">Открыть</span> -->
@@ -13,6 +13,7 @@
 		<div class="the_element_box">
 			<!-- <img src="./../assets/images/element.jpg" alt="element"> -->
 			<img v-if="post.preview_picture" :src="post.preview_picture" alt="element">
+			<span class="star" :class="{active: post.is_promo == 1}"></span>
 		</div>
 		<span class="the_title fontSize16 fontFamilyEB">{{ post.title + ' ' + post.id}}</span>
 		<!-- <span class="the_title fontSize14 fontFamilyEB">Короткий заголовок у элемента</span> -->
@@ -23,7 +24,7 @@
 
 
 <script>
-import {mapMutations} from 'vuex';
+import {mapGetters, mapActions, mapMutations} from 'vuex';
 import router from "@/router/router"; 
 export default({
 
@@ -39,6 +40,7 @@ export default({
 	data(){
 		return{
 			startX: 0,
+			postLoaded: false,
 			// post: {},
 		}
 	},
@@ -47,10 +49,20 @@ export default({
 
 		...mapMutations({
       setRouterAnimate: 'setRouterAnimate',
+			// setCurrentLecture: 'content/setCurrentLecture',
     }),
+		...mapActions({
+			fetchCurrentLecture: 'content/fetchCurrentLecture',
+		}),
+
+		// goLoadPost(){
+		// 	setTimeout( async () => {
+		// 	this.postLoaded = true;
+		// 	}, 500);
+		// },
 
 		routeToElement(){
-			router.push('/catalog/lecture');
+			router.push('/videos/' + this.post.id);
 		},
 
 		handleMouseDown(event){
@@ -64,14 +76,25 @@ export default({
 				// console.log('Сработал свайп');
 			}else{
 				// console.log('Сработал клик');
+				// this.setCurrentLecture(this.post);
+				this.fetchCurrentLecture(this.post.id);
 				this.setRouterAnimate();
 				this.routeToElement();
 			}
 			this.startX = 0;
 		},
 
-
 	},
+
+	computed:{
+		...mapGetters({
+			getCurrUser: 'getCurrUser',
+		}),
+	},
+
+	// mounted(){
+	// 	this.goLoadPost();
+	// },
 
 });
 </script>
@@ -165,7 +188,7 @@ export default({
 					background-position: center;
 				}
 			}
-
+			
 		}
 		.play{
 			width: 40px;
@@ -205,6 +228,31 @@ export default({
 			height: 100%;
 			object-fit: cover;
 			display: block;
+		}
+		.star{
+			display: none !important;
+			width: 30px;
+			height: 30px;
+			position: absolute;
+			right: 0px;
+			bottom: 0px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			border-radius: 50%;
+			&.active{
+				display: block !important;
+			}
+			&::before{
+				display: block;
+				content: '';
+				width: 22px;
+				height: 22px;
+				background-image: url('../assets/icons/star.png');
+				background-size: contain;
+				background-repeat: no-repeat;
+				background-position: center;
+			}
 		}
 	}
 	.the_title{

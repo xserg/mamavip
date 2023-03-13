@@ -14,30 +14,6 @@ export const contentModule = {
 	state: () => ({
 
 		// currUser: '',
-		currUser: {
-			"user": {
-					"id": 22,
-					"name": null,
-					"email": "test@test.test",
-					"birthdate": null,
-					"phone": null,
-					"is_mother": 0,
-					"pregnancy_start": null,
-					"baby_born": null,
-					"photo": null,
-					"photo_small": null,
-					"to_delete": 0,
-					"free_lecture_watched": null,
-					"email_verified_at": null,
-					"created_at": "2023-03-04T10:23:30.000000Z",
-					"updated_at": "2023-03-04T10:23:30.000000Z",
-					"watched_lectures_count": 0,
-					"purchased_lectures_count": 0,
-					"saved_lectures_count": 0
-			},
-			"access_token": "8|dUtsnrE8LAyptzXGMb8TbjKDXNutCgv8eYXlUa2T",
-			"token_type": "Bearer"
-		},
 		
 		statusIsLoading: false,
 
@@ -60,59 +36,77 @@ export const contentModule = {
 			},
 		],
 
+		notViewPosts: [],
+
+		recommended: [],
+
 		// unknow
+		sertificatesStatus: false,
 		totalPages: '',
 
 		// Список Лекторов
-		teachersError: false,
 		teachers: [],
+		teachersError: false,
+
+		currentLector: {},
+		currentLectorError: false,
+
+		currentLectorElements:  [],
+		currentLectorElementsError: false,
 
 		// Список Каталога
-		catalogError: false,
 		catalog: [],
+		catalogError: false,
+
+		promopack: [],
+		promopackError: false,
 
 		// Текущая Активная Категория
-		currentCategoryError: false,
 		currentCategory:{},
+		currentCategoryError: false,
 
 		// Текущей Активной Категории - Подкатегории
-		currentCategoryElementsError: false,
 		currentCategoryElements: {
 			data: [],
 		},
+		currentCategoryElementsError: false,
 
 		// Текущая ПОДКАТЕГОРИЯ 
-		currentSubCategoryError: false,
 		currentSubCategory: {},
+		currentSubCategoryError: false,
 
-		currentSubCategoryElementsError: false,
 		currentSubCategoryElements: { 
 			data: [],
 		},
+		currentSubCategoryElementsError: false,
 
 
-		sertificates: [
-			{
-				id: '1',
-				title: 'Сертификат',
-				preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
-			},
-			{
-				id: '2',
-				title: 'Сертификат',
-				preview: 'https://images.unsplash.com/photo-1674581648641-6362c00ac9ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80'
-			},
-			{
-				id: '3',
-				title: 'Сертификат',
-				preview: 'https://images.unsplash.com/photo-1674581648641-6362c00ac9ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80'
-			},
-			{
-				id: '4',
-				title: 'Сертификат',
-				preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
-			},
-		],
+		currentLecture: {},
+		currentLectureError: {},
+
+
+		// sertificates: [
+		// 	{
+		// 		id: '1',
+		// 		title: 'Сертификат',
+		// 		preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
+		// 	},
+		// 	{
+		// 		id: '2',
+		// 		title: 'Сертификат',
+		// 		preview: 'https://images.unsplash.com/photo-1674581648641-6362c00ac9ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80'
+		// 	},
+		// 	{
+		// 		id: '3',
+		// 		title: 'Сертификат',
+		// 		preview: 'https://images.unsplash.com/photo-1674581648641-6362c00ac9ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80'
+		// 	},
+		// 	{
+		// 		id: '4',
+		// 		title: 'Сертификат',
+		// 		preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
+		// 	},
+		// ],
 
 
 		post: 
@@ -135,6 +129,10 @@ export const contentModule = {
 	}),
 	getters: {
 
+		getSertificatesStatus(state){
+			return state.sertificatesStatus;
+		},
+
 		getCurrUser(state){
 			return state.currUser;
 		},
@@ -148,6 +146,19 @@ export const contentModule = {
 			return state.posts;
 		},
 
+		getRecommended(state){
+			const recommend = state.recommended;
+			const recommendLengh = state.recommended.length;
+			if(recommendLengh >= 1){
+				const rand = Math.floor(1 + Math.random() * (recommend.length + 1 - 1));
+				const randEl = recommend[rand - 1];
+				return randEl;
+			}else{
+				const randEl = false;
+				return randEl;
+			}
+		},
+
 		// Лекции Пользователя (ФИЛЬТР)
 		sortedElementsSaved(state){
 			return state.posts;
@@ -158,7 +169,8 @@ export const contentModule = {
 		sortedElementsViewed(state){
 			return state.posts;
 		},
-		sortedElementsNotview(state){
+		
+		sortedElementsPromopack(state){
 			return state.posts;
 		},
 
@@ -176,10 +188,19 @@ export const contentModule = {
 		teachersList(state){
 			return state.teachers;
 		},
+		getCurrentLector(state){
+			return state.currentLector;
+		},
+		getCurrentLectorElements(state){
+			return state.currentLectorElements;
+		},
 
 		// Каталог Элементы(категории)
 		catalogList(state){
 			return state.catalog;
+		},
+		getPromopack(state){
+			return state.promopack;
 		},
 
 		// Текущая Категория
@@ -199,6 +220,10 @@ export const contentModule = {
 		currentSubCategoryList(state){
 			return state.currentSubCategoryElements;
 		},
+
+		getCurrentLecture(state){
+			return state.currentLecture;
+		},
 		
 
 
@@ -206,7 +231,7 @@ export const contentModule = {
 		sertificateslist(state){
 			return state.sertificates;
 		},
-
+		
 		
 		// sortedPosts(state){
 		// 	return [...state.posts].sort( (post1, post2) => {
@@ -219,17 +244,30 @@ export const contentModule = {
 	},
 	mutations: {
 
-		initialiseVuexContent(state) {
-			if (localStorage.getItem('currUserContent')) {
-				state.currUser = JSON.parse(localStorage.currUserContent)
-			}
-		},
+		// initialiseVuexContent(state) {
+		// 	if (localStorage.getItem('currentCategory')) {
+		// 		state.currentCategory = JSON.parse(localStorage.currentCategory)
+		// 	}
+		// 	if (localStorage.getItem('currentCategoryElements')) {
+		// 		state.currentCategoryElements = JSON.parse(localStorage.currentCategoryElements)
+		// 	}
+		// 	if (localStorage.getItem('currentSubCategory')) {
+		// 		state.currentSubCategory = JSON.parse(localStorage.currentSubCategory)
+		// 	}
+		// 	if (localStorage.getItem('currentSubCategoryElements')) {
+		// 		state.currentSubCategoryElements = JSON.parse(localStorage.currentSubCategoryElements)
+		// 	}
+		// },
 
-		setCurUserContent(state, user){
-			state.currUser = user;
-			// state.currUserToken = user.access_token;
-		},
 
+		// setCurUserContent(state, user){
+		// 	state.currUser = user;
+		// 	// state.currUserToken = user.access_token;
+		// },
+
+		setSertificatesStatus(state, bool) {
+			state.sertificatesStatus = bool
+		},
 		// Вкл/Выкл статус загрузки
 		setStatusLoading(state, bool) {
 			state.statusIsLoading = bool
@@ -243,6 +281,40 @@ export const contentModule = {
 		// Получить список лекторов (под axios запрос)
 		setLectors(state, lectors) {
 			state.teachers = lectors;
+		},
+		setCurrentLector(state, lector){
+			state.currentLector = lector;
+		},
+		setCurrentLectorError(state, bool){
+			state.currentLectorError = bool;
+		},
+		setEmptyCurrentLector(state){
+			state.currentLector = [];
+		},
+
+		setEmptyCurrentLectorElements(state){
+			state.currentLectorElements = [];
+		},
+		setCurrentLectorElements(state, elements){
+			state.currentLectorElements = elements;
+		},
+		setCurrentLectorElementsError(state, bool){
+			state.currentLectorElementsError = bool;
+		},
+
+
+		setEmptyPromopack(state){
+			state.promopack = [];
+		},
+		setPromopack(state, elements){
+			state.promopack = elements;
+		},
+		setPromopackError(state, bool){
+			state.promopackError = bool;
+		},
+
+		setRecommended(state, elements){
+			state.recommended = elements;
 		},
 
 		// Получить список каталога-категорий (под axios запрос)
@@ -287,6 +359,16 @@ export const contentModule = {
 			state.currentSubCategoryElementsError = bool;
 		},
 
+		setEmptyCurrentLecture(state){
+			state.currentLecture = {};
+		},
+		setCurrentLecture(state, lecture) {
+			state.currentLecture = lecture;
+		},
+		setCurrentLectureError(state, bool){
+			state.currentLectureError = bool;
+		},
+
 
 		// unknow
 		setTotalPages(state, totalPages) {
@@ -319,6 +401,60 @@ export const contentModule = {
 		},
 
 
+		async fetchCurrentLector({state, rootState, commit}, lectorId){
+			try{
+				// пишем коммит, так как работаем с экшеном,
+				// значением берем функцию setLoading из мутаций, вторым параметром передаем то, что хотим присвоить
+				commit('setStatusLoading', true);
+				commit('setSertificatesStatus', false);
+				commit('setEmptyCurrentLector');
+				commit('setEmptyCurrentLectorElements');
+				setTimeout( async () => {
+					const response = await axios.get('https://api.xn--80axb4d.online/v1/lector/' + lectorId, {
+						headers: {
+							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+						}
+					});
+					// commit('setTotalPages', Math.ceil(response.headers['x-total-count'] / state.limit));
+					commit('setCurrentLector', response.data);
+					commit('setStatusLoading', false);
+					commit('setSertificatesStatus', true);
+				}, 1000 )
+				
+			} catch(e){
+				console.log(e);
+				commit('setStatusLoading', false);
+			} finally {}
+		},
+
+
+		async fetchCurrentLectorElements({state, rootState, commit}, lectorId){
+			try{
+				// пишем коммит, так как работаем с экшеном,
+				// значением берем функцию setLoading из мутаций, вторым параметром передаем то, что хотим присвоить
+				commit('setStatusLoading', true);
+				commit('setSertificatesStatus', false);
+				commit('setEmptyCurrentLectorElements');
+				setTimeout( async () => {
+					const response = await axios.get('https://api.xn--80axb4d.online/v1/lectures?per_page=1000&page=1&filter%5Blector_id%5D=' + lectorId + '&sort=-created_at', {
+						headers: {
+							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+						}
+					});
+					// commit('setTotalPages', Math.ceil(response.headers['x-total-count'] / state.limit));
+					commit('setCurrentLectorElements', response.data);
+					commit('setStatusLoading', false);
+					commit('setSertificatesStatus', true);
+					commit('setCurrentLectorElementsError', false);
+				}, 1000 )
+				
+			} catch(e){
+				commit('setStatusLoading', false);
+				commit('setCurrentLectorElementsError', true);
+			} finally {}
+		},
+
+
 
 		async fetchCatalog({rootState, state, commit}){
 			try{
@@ -339,6 +475,29 @@ export const contentModule = {
 				commit('setCatalogError', true);
 			} finally {}
 		},
+
+		async fetchPromopack({state, rootState, commit}){
+			try{
+				commit('setStatusLoading', true);
+				commit('setEmptyPromopack');
+				setTimeout( async () => {
+					const response = await axios.get('https://api.xn--80axb4d.online/v1/promopack?per_page=8&page=1', {
+						headers: {
+							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+						}
+					});
+					commit('setPromopack', response.data);
+					commit('setStatusLoading', false);
+					commit('setPromopackError', false);
+				}, 1000 )
+				
+			} catch(e){
+				commit('setStatusLoading', false);
+				commit('setPromopackError', true);
+			} finally {}
+		},
+
+
 
 
 
@@ -384,6 +543,49 @@ export const contentModule = {
 				commit('setCurrentSubCategoryElementsError', true);
 			} finally {}
 		},
+
+
+		async fetchCurrentLecture({state, rootState, commit}, lectureId){
+			try{
+				commit('setStatusLoading', true);
+				commit('setEmptyCurrentLecture');
+				setTimeout( async () => {
+					const response = await axios.get('https://api.xn--80axb4d.online/v1/lecture/' + lectureId, {
+						headers: {
+							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+						}
+					});
+					commit('setCurrentLecture', response.data);
+					commit('setStatusLoading', false);
+					commit('setCurrentLectureError', false);
+				}, 1000 )
+				
+			} catch(e){
+				commit('setStatusLoading', false);
+				commit('setCurrentLectureError', true);
+			} finally {}
+		},
+
+
+		async fetchRecommended({state, rootState, commit}){
+			try{
+				commit('setStatusLoading', true);
+				setTimeout( async () => {
+					const response = await axios.get('https://api.xn--80axb4d.online/v1/lectures?per_page=30&page=1&filter%5Bwatched%5D=1&filter%5Brecommended%5D=1&sort=-created_at', {
+						headers: {
+							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+						}
+					});
+					commit('setRecommended', response.data.data);
+					commit('setStatusLoading', false);
+				}, 1000 )
+				
+			} catch(e){
+				commit('setStatusLoading', false);
+			} finally {}
+		},
+
+		
 
 		// async loadMorePosts({state, commit}) {
 		// 		try {

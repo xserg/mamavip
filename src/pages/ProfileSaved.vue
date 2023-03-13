@@ -1,7 +1,7 @@
 <template>
   <div class="mainContainer">
 
-		<div class="contentWrap" v-if="sortedElementsSaved.length > 0">
+		<div class="contentWrap" v-if="getCurrUser.user.saved_lectures.length">
 
 			<div class="topLine flexWrap">
 				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
@@ -11,8 +11,13 @@
 
 			<elements-list 
 				class="contentSubWrap"
-				:posts="sortedElementsSaved"
+				v-if="getCurrUser.user.saved_lectures"
+				:posts="getCurrUser.user.saved_lectures"
 			></elements-list>
+
+			<div class="contentSubWrap roller_box" v-else>
+				<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+			</div>
 
 			<!-- <bottom-line></bottom-line> -->
 			
@@ -79,7 +84,7 @@ export default {
 		...mapState({
 		}),
 		...mapGetters({
-			sortedElementsSaved: 'content/sortedElementsSaved',
+			getCurrUser: 'getCurrUser',
 		}),
 	},
 

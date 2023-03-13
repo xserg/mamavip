@@ -3,15 +3,15 @@
 		<div class="contentWrap" :class="{fixed: thePopup}">
 
 			<div class="topLine flexWrap">
-				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack"></a>
+				<a @click="$router.push('/lectors/'), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack"></a>
 				<h1 class="theTitle alignCenter">Лектор</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			<div class="popup_wrap" :class="{ghostWrap: !thePopup}">
+			<div class="popup_wrap" :class="{ghostWrap: !thePopup}" v-if="getCurrentLector.diplomas">
 				<div class="topLine flexWrap">
 					<span class="theButton leftButton buttonTransparent buttonClose" @click="showPopup(), unlockHeight()"></span>
-					<h1 class="theTitle alignCenter">{{ this.currSlide + 1 }}/{{ sertificateslist.length }}</h1>
+					<h1 class="theTitle alignCenter">{{ this.currSlide + 1 }}/{{ getCurrentLector.diplomas.length }}</h1>
 					<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 				</div>
 				<!-- @before-change="lockHeight()"
@@ -20,13 +20,14 @@
 					ref="sertificateSlider" 
 					@after-change="getCurSlide($refs.sertificateSlider.getCurrentSlide())" 
 					:options="sliderOptions2" 
+					:infinite="getCurrentLector.diplomas.length > 2 ? true : false" 
 					:speed="400" 
 					:throttleDelay="100" 
 					:swipeDistance="10" 
 					:timing="'ease-in-out'" 
 					:as-nav-for="asNavFor2" class="theSlider slider_wrap">
 					<div class="the_slide" 
-						v-for="(post, index) in sertificateslist"
+						v-for="(post, index) in getCurrentLector.diplomas"
 						:post="post"
 						:key="index"
 						:id="`popup_slide_${index}`"
@@ -38,7 +39,7 @@
 					<!-- @click="handleClickY($event)" -->
 						<div class="the_slide_box"
 						> 
-							<img :src="post.preview" alt="element">
+							<img :src="post.preview_picture" alt="element">
 						</div>
 					</div>
 				</agile>
@@ -46,42 +47,44 @@
 				<!-- <popup-slider class="slider_wrap" :posts="sertificateslist" /> -->
 			</div>
 
-			<div class="contentSubWrap">
+			<div class="contentSubWrap" v-if="!loadingStatus && getCurrentLector.id && !currLoadingStatus">
 
 				<div class="photo_wrap topWrap marginB12">
-					<!-- <span class="the_photo theButton buttonTransparent blockWrap" :class="{hiddenWrap: hasPhoto == true}" @click="hasPhotoTrue"></span> -->
-					<img class="the_photo blockWrap the_photo_has" src="./../assets/images/profile.jpg" >
-					<span class="the_title blockWrap fontFamilyB">Анна Ахматова</span>
-					<p class="the_desc fontSize12 marginB12">Акушер • стаж: 12 лет</p>
+					<img v-if="getCurrentLector.photo" class="the_photo blockWrap the_photo_has" :src="getCurrentLector.photo" >
+					<span v-else class="the_photo theButton buttonTransparent blockWrap"></span>
+					<span class="the_title blockWrap fontFamilyB">{{ getCurrentLector.name }}</span>
+					<p class="the_desc fontSize12 marginB12">{{ getCurrentLector.position }} • стаж: 12 лет</p>
 				</div> 
 
 				<div class="midWrap desc_box content_box marginB12">
 					<span class="the_title blockWrap fontFamilyEB fontSize20">О лекторе</span>
-					<div class="desc_subbox" :class="{active: moreDesc == true}">
-						<p>(Описание лекции идёт сюда) Идейные соображения высшего порядка, а также постоянное информационно-проп (Описание лекции идёт сюда) Идейные соображения высшего порядка, а также постоянное информационно-проп (Описание лекции идёт сюда) Идейные соображения высшего порядка, а также постоянное информационно-проп (Описание лекции идёт сюда) Идейные соображения высшего порядка, а также постоянное информационно-проп.</p>
+					<div class="desc_subbox" :class="{active: moreDesc == true, fixed_height: getCurrentLector.description.length > 250}">
+						<p>{{ getCurrentLector.description }}</p> 
 					</div>
-					<span class="show_more" @click="showMoreDesc">{{  moreDesc ? 'Скрыть' : 'Подробнее' }}</span>
+					<span v-show="getCurrentLector.description.length > 250" class="show_more" @click="showMoreDesc">{{  moreDesc ? 'Скрыть' : 'Подробнее' }}</span>
 				</div>
 
 				<div class="catalog_box midWrap marginB12">
 					<span class="the_title fontFamilyEB fontSize20 blockWrap marginB12">Дипломы и сертификаты</span>
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
-					<div class="element_box">
+					<div class="element_box" v-if="getCurrentLector.diplomas">
 						
 						<agile 
 							@before-change="lockHeight()"
 							@after-change=" unlockHeight(), getCurSlide($refs.sertificateSlider.getCurrentSlide())" 
 							ref="sertificatesSlider" 
-							:options="sliderOptions1" 
+							:options="sliderOptions1"
+							:infinite="getCurrentLector.diplomas.length > 2 ? true : false" 
 							:speed="400" 
 							:throttleDelay="100" 
 							:swipeDistance="10" 
 							:timing="'ease-in-out'" 
 							:as-nav-for="asNavFor1" 
 							class="theSlider"
+							:class="{active: listLoaded}"
 						>
 							<div class="the_element" 
-								v-for="(post, index) in sertificateslist"
+								v-for="(post, index) in getCurrentLector.diplomas"
 								:post="post"
 								:key="index"
 								:id="'serfs_slide_' + post.id"
@@ -89,7 +92,7 @@
 								@click="handleClick(index, $event)"
 							>
 								<div class="the_element_box"> 
-									<img :src="post.preview" alt="element">
+									<img :src="post.preview_picture" alt="element">
 								</div>
 							</div>
 						</agile>
@@ -98,21 +101,36 @@
 				</div>
 
 				<div class="recommended_box bottomWrap">
-					<span class="the_title fontFamilyEB fontSize20 blockWrap marginB12">Видео от лектора</span>
+
+					<span class="the_title fontFamilyEB fontSize20 blockWrap">Видео от лектора</span>
+					<elements-list 
+						class="contentSubWrap"
+						:posts="getCurrentLectorElements.data"
+					></elements-list>
+
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Не пропустите новые лекции!</span> -->
-					<div class="element_box">
+					<!-- <div class="element_box">
 						<element 
 						:post="recommendationElement"
 						:key="recommendationElement.id"
 						/>
-					</div>
+					</div> -->
 				</div>
 
 			</div>
 
+			<!-- <div class="contentSubWrap roller_box" v-else> -->
+				<div class="midWrap content_box info_box roller_box" v-else>
+					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+				</div>
+			<!-- </div> -->
+
 			<!-- <bottom-line></bottom-line> -->
 			
 		</div>
+
+
+		
 
 
 
@@ -125,31 +143,29 @@
 import { VueAgile } from 'vue-agile'
 
 import Element from '@/components/Element';
+import ElementsList from '@/components/ElementsList';
 // import SertificatesSlider from '@/components/SertificatesSlider';
 // import PopupSlider from '@/components/PopupSlider';
 
-import {mapState, mapMutations, mapGetters} from 'vuex';
+import {mapState, mapMutations, mapGetters, mapActions} from 'vuex';
 
 export default {
   name: 'Profile',
 
 
-	data(){
+	data(){ 
 		return{ 
+			listLoaded: false,
+			loadingStatus: false,
 			startX: 0,
-			// startY: 0,
 
 			moreDesc: false,
 			thePopup: false,
 
 			currSlide: 0,
 			totalSlide: 0,
-
-			slides: [
-				'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80',
-				'https://images.unsplash.com/photo-1674581648641-6362c00ac9ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80',
-				'https://images.unsplash.com/photo-1674581648641-6362c00ac9ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80',
-			],
+			
+			lectorElements: [],
 
 			asNavFor1: [],
 			asNavFor2: [],
@@ -158,17 +174,20 @@ export default {
 				dots: false,
 				navButtons: false,
 				slidesToShow: 1.6,
-				// infinite: false,
+
 				responsive: [
 				{
 						breakpoint: 350,
 						settings: {
+
 								slidesToShow: 2.25
+								
 						}
 					},
 					{
 						breakpoint: 550,
 						settings: {
+
 								slidesToShow: 3.2
 						}
 					},
@@ -214,18 +233,33 @@ export default {
 	components: {
 		agile: VueAgile,
 		Element,
+		ElementsList,
 		// SertificatesSlider,
 		// PopupSlider,
   },
 
 
 	methods: {
-
+ 
 		...mapMutations({
 			lockHeight: 'lockHeight',
 			unlockHeight: 'unlockHeight',
 			setRouterAnimate: 'setRouterAnimate',
 		}),
+
+		...mapActions({
+			fetchCurrentLectorElements: 'content/fetchCurrentLectorElements',
+		}),
+
+
+		goLoadList(){
+			if(this.getSertificatesStatus){
+				setTimeout( () => {
+				this.listLoaded = true;
+				}, 500);
+			}
+		},
+
 
 		showMoreDesc(){
 			if(this.moreDesc == true){
@@ -268,34 +302,26 @@ export default {
 			this.startX = 0;
 		},
 
+		setLoadingStatus(bool){
+			this.loadingStatus = bool;
+		},
 
-		// handleMouseDownY(event){
-    //   this.startY = event.screenY;
-    // },
+	
 
-		// handleClickY(event){
-		// 	// console.log(event.screenX);
-    // 	const delta = Math.abs(event.screenY - this.startY);
-		// 	// console.log(event.screenY);
-		// 	// console.log(this.startY);
-		// 	if (delta > 10) {
-		// 		console.log('Сработал свайп');
-		// 	}else{
-		// 		console.log('Типа клик');
-		// 	}
-		// 	this.startY = 0;
-		// },
-
-
-		// mousedown(event) {
-    //   // console.log( "mousedown" );
-		// 	this.startY = event;
-    // },
-    
-    // mouseup(event) {
-		// 	console.log( this.startY );
-    //   console.log( event );
-    // }
+		refreshLectorElements(){
+			// this.currentLectorElements.data.multiget(0,1,2,3,4,5)
+			if(this.getCurrentLector.id){
+				this.fetchCurrentLectorElements(this.getCurrentLector.id);
+				this.lectorElements = this.getCurrentLectorElements.data;
+			}
+			setTimeout( () => {
+				this.setLoadingStatus(false);
+			}, 100);
+			// setTimeout( async () => {
+			// 	this.listLoaded = true;
+			// }, 900);
+			
+		},
 
 
 	},
@@ -306,16 +332,41 @@ export default {
 			heightLock: state => state.heightLock,
 		}),
 		...mapGetters({
+			getSertificatesStatus: 'content/getSertificatesStatus',
+			currLoadingStatus: 'content/currLoadingStatus',
 			recommendationElement: 'content/recommendationElement',
 			sertificateslist: 'content/sertificateslist',
+			getCurrentLector: 'content/getCurrentLector',
+			getCurrentLectorElements: 'content/getCurrentLectorElements',
 		})
 	},
 
 
 	mounted () {
+		this.setLoadingStatus(true);
+		// this.lectorElements = [];
+		this.refreshLectorElements();
 		this.asNavFor1.push(this.$refs.sertificateSlider)
 		this.asNavFor2.push(this.$refs.sertificatesSlider)
-	}
+	},
+
+
+	watch:{
+		getCurrentLector: {
+			handler(newVal){
+				this.setLoadingStatus(true);
+				// this.lectorElements = [];
+				this.refreshLectorElements();
+			},
+			deep: true
+		},
+		getSertificatesStatus: {
+			handler(newVal){
+				this.goLoadList();
+			},
+			deep: true
+		},
+	},
 
 
 
@@ -388,7 +439,8 @@ export default {
 			}
 			.slider_wrap{
 				height: calc(100% - 45px - 45px);
-				width: 100%;
+				width: calc(100% - 20px);
+				// width: 100%;
 				display: flex;
 				justify-content: center;
 				align-items: center;
@@ -436,6 +488,12 @@ export default {
 			background-color: #F3F5F6;
 			
 			.theSlider{
+				// height: 245px;
+				transition: all .45s cubic-bezier(1, -0.15, 0.63, 0.99);
+				opacity: 0;
+				&.active{
+					opacity: 1;
+				}
 				.the_element{
 					padding: 0 6px;
 					display: block;
@@ -443,6 +501,7 @@ export default {
 					position: relative;
 					cursor: pointer;
 					transition: all .24s ease;
+					flex-grow: initial;
 					&:hover{
 						opacity: 1;
 					}
@@ -485,6 +544,11 @@ export default {
 					height: 62px;
 					content: '';
 				}
+				.contentSubWrap{
+					background-color: #FFF;
+					width: calc(100% + 16px);
+    			padding: 16px 0px 16px;
+				}
 			}
 			
 			.photo_wrap{
@@ -500,11 +564,12 @@ export default {
 					width: 150px;
 					height: 150px;
 					background-image: url('../assets/icons/nophoto.svg');
-					background-size: 40%;
+					background-size: 30%;
 					background-position: center;
 					background-repeat: no-repeat;
 					margin-bottom: 8px;
 					border-radius: 50%;
+					object-fit: cover;
 					&.the_photo_has{
 						margin-bottom: 12px;
 					}
@@ -534,11 +599,14 @@ export default {
 				}
 				.desc_subbox{
 					height: auto; 
-					max-height: 54px;
+					// max-height: 54px;
 					overflow: hidden;
 					// transition: opacity .8s ease, max-height .8s cubic-bezier(.08,1.1,.7,.98);
 					transition: opacity .8s ease, max-height .66s cubic-bezier(0.09, 0.96, 0.83, 0.98);
 					font-size: 14px;
+					&.fixed_height{
+						max-height: 54px;
+					}
 					p{
 						line-height: 19px;
 					}
