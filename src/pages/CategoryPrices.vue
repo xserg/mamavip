@@ -22,13 +22,13 @@
 					<p>Вы можете приобрести доступ ко всем видео из текущий подкатегории на необходимый вам промежуток времени.</p>
 					<br>
 					<br>
-					<a href="https://google.com" class="theButton buttonPrimary buttonOptimal marginAuto">Купить на день: {{ currentSubCategory.prices[0].price_for_category }}₽</a>
+					<span @click="buyCategory(1)" class="theButton buttonPrimary buttonOptimal marginAuto">Купить на день: {{ currentSubCategory.prices[0].price_for_category }}₽</span>
 					<br>
 					<br>
-					<a href="https://google.com" class="theButton buttonSecondary buttonOptimal marginAuto">Купить на неделю: {{ currentSubCategory.prices[1].price_for_category }}₽</a>
+					<span @click="buyCategory(14)" class="theButton buttonSecondary buttonOptimal marginAuto">Купить на неделю: {{ currentSubCategory.prices[1].price_for_category }}₽</span>
 					<br>
 					<br>
-					<a href="https://google.com" class="theButton buttonSecondary buttonOptimal marginAuto">Купить на месяц: {{ currentSubCategory.prices[2].price_for_category }}₽</a>
+					<span @click="buyCategory(30)" class="theButton buttonSecondary buttonOptimal marginAuto">Купить на месяц: {{ currentSubCategory.prices[2].price_for_category }}₽</span>
 					<br>
 					
 				</div>
@@ -46,7 +46,7 @@
 <script>
 // @ is an alias to /src
 // import DefaultLikes from '@/components/DefaultLikes.vue'
-
+import axios from 'axios';
 import {mapState, mapMutations, mapGetters} from 'vuex';
 
 export default {
@@ -66,8 +66,23 @@ export default {
 			setRouterAnimate: 'setRouterAnimate',
 		}),
 
-		methods: {
-		},
+
+			buyCategory(time){
+				try{
+					setTimeout( async () => {
+						const headers = { 
+							'Authorization': this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
+							'Content-Type': 'application/json',
+							'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
+							'Access-Control-Allow-Origin': '*',
+						};
+						const response = await axios.post('https://api.xn--80axb4d.online/v1/category/' + this.currentSubCategory.id + '/buy/' + time, {}, { headers });
+						window.open(response.data.link,"_self");
+					}, 500 );
+				} catch(e){
+					console.log(e);
+				} finally {}
+		}
 
 	},
 
@@ -76,6 +91,7 @@ export default {
 		...mapState({
 		}),
 		...mapGetters({
+			getCurrUser: 'getCurrUser',
 			currentSubCategory: 'content/currentSubCategory',
 		}),
 	},
@@ -118,6 +134,7 @@ export default {
 						bottom: 0;
 						z-index: 10;
 						border: 1px solid rgba(35, 41, 45, 0.1);
+						object-fit: cover;
 					}
 				}
 			}

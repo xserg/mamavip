@@ -52,7 +52,9 @@ export default({
 			// setCurrentLecture: 'content/setCurrentLecture',
     }),
 		...mapActions({
+			fetchSubCategoryElements: 'content/fetchSubCategoryElements',
 			fetchCurrentLecture: 'content/fetchCurrentLecture',
+			fetchCategoryAndSubcategory: 'content/fetchCategoryAndSubcategory',
 		}),
 
 		// goLoadPost(){
@@ -77,7 +79,10 @@ export default({
 			}else{
 				// console.log('Сработал клик');
 				// this.setCurrentLecture(this.post);
+				// console.log('клик по элементу, супкагория:' + this.post.category_id);
+				this.fetchCategoryAndSubcategory(this.post.category_slug);
 				this.fetchCurrentLecture(this.post.id);
+				this.fetchSubCategoryElements(this.post.category_id);
 				this.setRouterAnimate();
 				this.routeToElement();
 			}

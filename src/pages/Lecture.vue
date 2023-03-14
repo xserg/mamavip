@@ -15,7 +15,7 @@
 				<a @click="$router.push('/catalog/' + this.currentSubCategory.parent_slug + '/' + this.currentSubCategory.slug), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Лекция</h1>
 				<div class="buttons_wrap theButton rightButton flexWrap">
-					<button class="theButton rightButton buttonTransparent buttonWatched fontFamilyB" :class="{active: !this.getCurrUser.user.watched_lectures.find(item => item.id === getCurrentLecture.id )}" @click="addToWatched"></button>
+					<button class="theButton rightButton buttonTransparent buttonWatched fontFamilyB" :class="{active: this.getCurrUser.user.watched_lectures.find(item => item.id === getCurrentLecture.id )}" @click="addToWatched"></button>
 				<button class="theButton rightButton buttonTransparent buttonFav fontFamilyB" :class="{active: this.getCurrUser.user.saved_lectures.find(item => item.id === getCurrentLecture.id )}" @click="addToFav"></button>
 				</div>
 				
@@ -24,23 +24,31 @@
 			<div class="contentSubWrap" v-if="!loadingStatus && getCurrentLecture.id"> 
 				<div class="topWrap content_box info_box marginB12">
 
-					<div class="video_wrap" :class="{active: this.startLecture }">
+					<div class="video_wrap" :class="{active: this.startLecture }" v-if="getCurrUser.user.next_free_lecture_available == null || getAvailableTimer.isExpired">
 						<div class="video_starter" @click="startWatchLecture"></div>
 						<img class="video_preview" :v-if="getCurrentLecture.preview_picture" :src="getCurrentLecture.preview_picture" alt="preview" />
-						<div class="video_iframe"></div>
+						<div class="video_iframe">
+							<iframe src="https://kinescope.io/embed/203071367" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; encrypted-media;" allowfullscreen></iframe>
+							<!-- <kinescope-player
+								ref="kinescope"
+								:video-id="200702846"
+								@ready="handleReady"
+							></kinescope-player> -->
+						</div>
 					</div>
-					<!-- <div class="notavailable_wrap topWrap ">
+					<div class="notavailable_wrap topWrap" v-else>
 						<div class="message_wrap">
 							<span class="mess_icon"></span>
 							<span class="mess_title fontFamilyEB">График просмотра</span>
-							<span class="mess_desc">Вы уже выбрали лекцию на сегодня.<br>Следующая лекция доступна через<br>18 ч. 59 мин. 32 сек.</span>
+							<span class="mess_desc">Вы уже выбрали лекцию на сегодня.<br>Следующая лекция доступна через<br>{{ getAvailableTimer.hours }} ч. {{ getAvailableTimer.minutes }} мин. {{ getAvailableTimer.seconds }} сек.</span>
 						</div>
-					</div> -->
+					</div>
 					
 					
-					<span class="the_status" :class="{active: theWatched}">Просмотрено</span>
+					<span class="the_status" :class="{active: this.getCurrUser.user.watched_lectures.find(item => item.id === getCurrentLecture.id )}">Просмотрено</span>
 					<span class="the_title fontSize20 fontFamilyEB">{{ getCurrentLecture.title }}</span>
-					<div class="buttons_wrap">
+					
+					<div class="buttons_wrap" v-if="getCurrUser.user.next_free_lecture_available !== null || getCurrentLecture.is_free !== 1 || !getAvailableTimer.isExpired">
 						<span class="theButton buttonPrimary buttonOptimal marginAuto" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices.price_by_category[0].price_for_lecture) }}₽</span>
 						<!-- <span class="theButton buttonPrimary buttonOptimal marginB12 marginAuto">199 ₽ — на 12 дней</span>
 						<span class="theButton buttonSecondary buttonOptimal marginAuto">99 ₽ — на 1 день</span> -->
@@ -117,7 +125,19 @@
 			</div>
 
 
+			<!-- {{ timerCounter.minutes }}: {{ timerCounter.seconds }}
+			
+			{{ test }}
+
+			<br><br>
+
+			{{ testTimer }} -->
+
 			<!-- <bottom-line></bottom-line> -->
+
+		<!-- {{ getAvailableTimer.minutes }}:{{ getAvailableTimer.seconds }}
+
+		{{ getAvailableTimer.isExpired }} -->
 			
 		</div>
 	</div>
@@ -127,14 +147,18 @@
 
 
 <script> 
-
+// import KinescopePlayer from '@kinescope/vue-kinescope-player'; 
+import { defineComponent, watchEffect, onMounted, ref } from "vue";
+import axios from 'axios';
 import ElementsSlider from '@/components/ElementsSlider';
+// import { useTimer, useStopwatch, useTime } from 'vue-timer-hook';
 
 import {mapState, mapGetters, mapMutations} from 'vuex';
 
 
-export default({
+export default defineComponent({
 
+	
 	name: 'Lecture', 
 
 	components: {
@@ -144,6 +168,7 @@ export default({
 	data(){
 		return{
 			loadingStatus: false,
+			hasAccess: false,
 			theFav: false,
 			theWatched: false,
 			moreDesc: false,
@@ -151,7 +176,6 @@ export default({
 			showNotification: false,
 			notificationMess: '',
 			sameLectures: [],
-			// post: {},
 		}
 	},
 
@@ -159,7 +183,9 @@ export default({
 
 		...mapMutations({
       setRouterAnimate: 'setRouterAnimate',
+			setAvailableTimer: 'setAvailableTimer',
     }),
+
 
 		showMoreDesc(){
 			if(this.moreDesc == true){
@@ -170,8 +196,35 @@ export default({
 		},
 
 		startWatchLecture(){
-			this.startLecture = true;
-			console.log('Просмотр видео запущен');
+			// this.$refs.kinescope.player.play();
+			// console.log('Запрос на просмотр видео запущен');
+			// console.log(this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token);
+			try{
+				setTimeout( () => {
+
+					const headers = { 
+						"Authorization": this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
+						'Content-Type': 'application/json',
+						'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
+						'Access-Control-Allow-Origin': '*',
+					};
+					const response = axios.post('https://api.xn--80axb4d.online/v1/lecture/1/watch', {}, { headers }
+					);
+					
+					if(true){
+						// console.log('Запрос обработан нормально');
+						// console.log(response);
+						this.startLecture = true;
+					}else{
+						// console.log('Ошибка запроса');
+					}
+					
+					// this.setCurUserContent(response.data);
+				}, 500 );
+			} catch(e){
+				console.log(e);
+			} finally {}
+
 		},
 
 		addToFav(){
@@ -189,6 +242,13 @@ export default({
 				this.showNotification = false;
 			}, 3000);
 		},
+
+
+		// handleReady(){
+		// 	// this.startLecture = true;
+		// 	console.log('iframe запустился');
+		// },
+
 
 		addToWatched(){
 			if(this.theWatched == true){
@@ -215,9 +275,17 @@ export default({
 			this.loadingStatus = bool;
 		},
 		filterSameLectures(){
-			// try{}
-			// catch{}
-			this.sameLectures = this.currentSubCategoryList.data.filter(p => p.id !== this.getCurrentLecture.id);
+			try{
+				setTimeout( async () => {
+					this.sameLectures = this.currentSubCategoryList.data.filter(p => p.id !== this.getCurrentLecture.id);
+				}, 500);
+			}
+			catch{
+				// console.log('фильтр не сработал')
+			}
+			// if(this.currentSubCategoryList.data){
+				
+			// }
 			this.setLoadingStatus(false);
 		},
 
@@ -236,6 +304,7 @@ export default({
 		}),
 		...mapGetters({
 			getCurrUser: 'getCurrUser',
+			getAvailableTimer: 'getAvailableTimer',
 			// sortedElements: 'content/sortedElements',
 			currentSubCategory: 'content/currentSubCategory',
 			getCurrentLecture: 'content/getCurrentLecture',
@@ -243,9 +312,10 @@ export default({
 		}),
 
 	},
-
+ 
 
 	mounted() { 
+		this.setAvailableTimer();
 		this.setLoadingStatus(true);
 		this.filterSameLectures();
 	// 	this.getCurrLector();
@@ -304,6 +374,7 @@ export default({
 			background-color: #F3F5F6;
 			.content_box{
 				background-color: #FFF;
+				padding-bottom: 5px;
 				// margin-bottom: 12px;
 			}
 			.info_box{
@@ -346,7 +417,7 @@ export default({
 				}
 				.video_wrap{
 					width: 100%;
-					padding-top: 58%;
+					padding-top: 56.5%;
 					position: relative;
 					margin-bottom: 12px;
 					// border: 1px solid rgba(35, 41, 45, 0.1);
@@ -360,6 +431,10 @@ export default({
 						z-index: 5;
 						opacity: 0;
 						visibility: hidden;
+						iframe{
+							width: 100%;
+							height: 100%;
+						}
 					}
 					.video_starter{
 						width: 100%;
@@ -396,6 +471,7 @@ export default({
 						bottom: 0;
 						z-index: 10;
 						border: 1px solid rgba(35, 41, 45, 0.1);
+						object-fit: cover;
 					}
 
 					&.active{

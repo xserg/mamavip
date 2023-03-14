@@ -230,7 +230,7 @@ export default defineComponent({
 	components: {
 		// object, string, ref, 
 		Form,
-    Field,
+    Field, 
     ErrorMessage,
 	},
 

@@ -13,28 +13,10 @@ import axios from 'axios';
 export const contentModule = {
 	state: () => ({
 
-		// currUser: '',
-		
 		statusIsLoading: false,
 
 		// Отсюда сейчас идут "фильтры" по НЕПРОСМОТРЕННЫЕ, КУПЛЕННЫЕ, СОХРАНЕННЫЕ, ПРОСМОТРЕННЫЕ
-		posts: [
-			{
-				id: '10',
-				title: 'Компонент',
-				preview: 'https://images.unsplash.com/photo-1674581648641-6362c00ac9ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80'
-			},
-			{
-				id: '11',
-				title: 'Компонент',
-				preview: 'https://images.unsplash.com/photo-1674581648641-6362c00ac9ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80'
-			},
-			{
-				id: '12',
-				title: 'Компонент',
-				preview: 'https://images.unsplash.com/photo-1674581648641-6362c00ac9ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80'
-			},
-		],
+		posts: [],
 
 		notViewPosts: [],
 
@@ -84,31 +66,6 @@ export const contentModule = {
 		currentLecture: {},
 		currentLectureError: {},
 
-
-		// sertificates: [
-		// 	{
-		// 		id: '1',
-		// 		title: 'Сертификат',
-		// 		preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
-		// 	},
-		// 	{
-		// 		id: '2',
-		// 		title: 'Сертификат',
-		// 		preview: 'https://images.unsplash.com/photo-1674581648641-6362c00ac9ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80'
-		// 	},
-		// 	{
-		// 		id: '3',
-		// 		title: 'Сертификат',
-		// 		preview: 'https://images.unsplash.com/photo-1674581648641-6362c00ac9ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80'
-		// 	},
-		// 	{
-		// 		id: '4',
-		// 		title: 'Сертификат',
-		// 		preview: 'https://images.unsplash.com/photo-1673960508121-3407ffa4bb15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80'
-		// 	},
-		// ],
-
-
 		post: 
 			{
 				id: '10',
@@ -116,16 +73,6 @@ export const contentModule = {
 				preview: 'https://images.unsplash.com/photo-1674581648641-6362c00ac9ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80'
 			},
 
-		// isPostsLoading: true,
-		// selectedSort: '',
-		// searchQuery: '',
-		// page: 1,
-		// limit: 10,
-		// totalPages: 0,
-		// sortOptions: [
-		// 	{value: 'title', name: 'По названию'},
-		// 	{value: 'body', name: 'По содержанию'},
-		// ]
 	}),
 	getters: {
 
@@ -133,9 +80,7 @@ export const contentModule = {
 			return state.sertificatesStatus;
 		},
 
-		getCurrUser(state){
-			return state.currUser;
-		},
+
 		// Универсальный статус-состоние загрузки
 		currLoadingStatus(state){
 			return state.statusIsLoading;
@@ -259,11 +204,6 @@ export const contentModule = {
 		// 	}
 		// },
 
-
-		// setCurUserContent(state, user){
-		// 	state.currUser = user;
-		// 	// state.currUserToken = user.access_token;
-		// },
 
 		setSertificatesStatus(state, bool) {
 			state.sertificatesStatus = bool
@@ -585,6 +525,30 @@ export const contentModule = {
 			} finally {}
 		},
 
+
+
+		async fetchCategoryAndSubcategory({state, rootState, commit}, subcategory_id){
+			// console.log(subcategory_id);
+			try{
+				const emptyData = [];
+				commit('setStatusLoading', true);
+				// commit('setCurrentCategory', emptyData);
+				// commit('setCurrentSubCategory', emptyData);
+				setTimeout( async () => {
+					const response = await axios.get('https://api.xn--80axb4d.online/v1/category/' + subcategory_id, {
+						headers: {
+							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+						}
+					});
+					console.log(response);
+					// commit('setCurrentCategory', emptyData);
+					// commit('setCurrentSubCategory', emptyData);
+					commit('setStatusLoading', false);
+				}, 500 )
+			} catch(e){
+				commit('setStatusLoading', false);
+			} finally {}
+		},
 		
 
 		// async loadMorePosts({state, commit}) {

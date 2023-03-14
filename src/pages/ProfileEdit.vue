@@ -112,7 +112,7 @@
 							</label>
 							<label class="inputWrap" :class="{ hiddenWrap: this.getCurrUser.user.is_mother == 0, notValid: errors.baby_born }">
 								<span class="label">Когда родился малыш?</span>
-								<div class="inputBox">
+								<div class="inputBox babyBorned">
 									<Field ref="bornTrue" name="baby_born" type="date" placeholder="Выберите дату..." :value="this.getCurrUser.user.baby_born" />
 								</div>
 								<ErrorMessage class="errorTitle" name="baby_born" />
@@ -223,6 +223,7 @@ export default {
 		// }),
 		...mapGetters({
 			getCurrUser: 'getCurrUser',
+			getAvailableTimer: 'getAvailableTimer',
 		})
 	},
 
@@ -462,6 +463,9 @@ export default {
 						box-shadow: none;
 						min-height: 48px;
 						letter-spacing: .32px;
+					}
+					&.babyBorned::before{
+						display: none;
 					}
 					&.inputDate::before{
 						display: none;

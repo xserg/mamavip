@@ -1,10 +1,13 @@
 import { contentModule } from '@/store/contentModule'
+import { useTimer, useStopwatch, useTime } from 'vue-timer-hook'
 // import { auth } from "@/store/auth.module";
 import axios from 'axios';
 import { createStore } from 'vuex'
 
 export default createStore({
   state: {
+		availableTimer: '',
+
 		infos: [],
 		currUser: '',
 		// currUserToken: '',
@@ -18,6 +21,10 @@ export default createStore({
   },
 
   getters: {
+
+		getAvailableTimer(state){
+			return state.availableTimer;
+		},
 		curRouterAnimate(state){
 			return state.routerAnimation;
 		},
@@ -37,6 +44,16 @@ export default createStore({
   },
 
   mutations: {
+
+		setAvailableTimer(state){
+			const time = new Date();
+			const nextAvailable = state.currUser.user.next_free_lecture_available;
+			const timeDiff = Math.floor((new Date(nextAvailable) - new Date()) / 1000);
+			console.log(timeDiff); 
+			time.setSeconds(time.getSeconds() + timeDiff );
+			const timerCounter = useTimer(time);
+			state.availableTimer = timerCounter;
+		},
 
 		initialiseVuex(state) {
 			if (localStorage.getItem('infos')) {

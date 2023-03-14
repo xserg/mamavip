@@ -27,7 +27,7 @@
 								</div>
 								<span class="card_status fontSize14" v-if="!this.getCurrUser.user.name">Это необходимо, чтобы пользоваться сервисом</span>
 								
-								<!-- <span class="card_status fontSize14">Ваш срок — примерно 29 недель</span> -->
+								<span class="card_status fontSize14">Ваш срок — примерно 29 недель</span>
 								<!-- <span class="card_status fontSize14">Вас уже можно поздравить?</span> -->
 								
 							</div>
@@ -39,19 +39,21 @@
 
 
 				<!-- РЕКОМЕНДУЕМ -->
-				<div class="recommended_box midWrap marginB12" :class="{recommended_box: true, notavailable_box: false }">
-					<span class="the_title fontFamilyEB fontSize20 blockWrap">Рекомендуем</span>
-					<span class="the_subtitle marginB12 fontSize14 blockWrap">Не пропустите новые лекции!</span>
-					<div class="element_box" v-if="getRecommended">
-						<element 
-						v-if="getRecommended"
-						:post="getRecommended"
-						/>
+				<div class="recommended_box midWrap marginB12" :class="{recommended_box: getCurrUser.user.next_free_lecture_available == null || getAvailableTimer.isExpired, notavailable_box: getCurrUser.user.next_free_lecture_available !== null || !getAvailableTimer.isExpired }">
+					<div class="" v-if="getCurrUser.user.next_free_lecture_available == null || getAvailableTimer.isExpired">
+						<span class="the_title fontFamilyEB fontSize20 blockWrap">Рекомендуем</span>
+						<span class="the_subtitle marginB12 fontSize14 blockWrap">Не пропустите новые лекции!</span>
+						<div class="element_box" v-if="getRecommended">
+							<element 
+							v-if="getRecommended"
+							:post="getRecommended"
+							/>
+						</div>
 					</div>
-					<div class="message_wrap" v-if="false">
+					<div class="message_wrap" v-if="true">
 						<span class="mess_icon"></span>
 						<span class="mess_title fontFamilyEB">График просмотра</span>
-						<span class="mess_desc">Следующая лекция доступна через <br>18 ч. 59 мин. 32 сек.</span>
+						<span class="mess_desc">Следующая лекция доступна через <br>{{ getAvailableTimer.hours }} ч. {{ getAvailableTimer.minutes }} мин. {{ getAvailableTimer.seconds }} сек.</span>
 					</div>
 				</div>
 				<!-- РЕКОМЕНДУЕМ END -->
@@ -173,6 +175,7 @@ export default {
 		}),
 		...mapGetters({
 			getCurrUser: 'getCurrUser',
+			getAvailableTimer: 'getAvailableTimer',
 			recommendationElement: 'content/recommendationElement',
 			catalogList: 'content/catalogList',
 			getPromopack: 'content/getPromopack',
@@ -186,6 +189,7 @@ export default {
 
 	methods:{
     ...mapMutations({
+			setAvailableTimer: 'setAvailableTimer',
       setRouterAnimate: 'setRouterAnimate',
     }),
 		...mapActions({
@@ -198,6 +202,7 @@ export default {
 
 
 	mounted() {
+		this.setAvailableTimer();
     this.fetchLectors();
 		this.fetchCatalog();
 		this.fetchPromopack();
