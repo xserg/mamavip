@@ -1,60 +1,53 @@
 <template>
   <div class="mainContainer">
 
-		<div class="contentWrap" v-if="sortedElementsNotview.length">
-
-			<div class="topLine flexWrap">
-				<router-link class="theButton leftButton buttonTransparent buttonBack" to="/" @click="setRouterAnimate"></router-link>
-				<h1 class="theTitle alignCenter">Вы ещё не смотрели</h1>
-				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
-			</div>
-
-			<elements-list 
-				class="contentSubWrap"
-				v-if="sortedElementsNotview"
-				:posts="sortedElementsNotview"
-			></elements-list>
-			<div v-else class="roller_box">
+		<div class="contentWrap" v-if="currLoadingStatus || !this.getNotViewed">
+			<div class="contentSubWrap roller_box">
 				<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 			</div>
-
-			<!-- <bottom-line></bottom-line> -->
-			
 		</div>
 
-
-
-
-		<div class="contentWrap centered" v-else>
+		<div v-else class="contentWrap" :class="{centered: this.getNotViewed === 'e'}">
 
 			<div class="topLine flexWrap">
 				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Вы ещё не смотрели</h1>
-				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
+				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Готово</button>
 			</div>
 
-			<div class="contentSubWrap empty_wrap flexWrap">
+			<elements-list 
+				class="contentSubWrap"
+				v-if="this.getNotViewed && this.getNotViewed !== 'e' && this.getNotViewed !== undefined"
+				:posts="this.getNotViewed"
+			></elements-list>
+
+			<div class="contentSubWrap empty_wrap flexWrap" v-if=" this.getNotViewed == undefined || this.getNotViewed == '' " >
 				<img class="the_img" src="./../assets/images/emptyState.png" alt="img">
 				<span class="the_title fontFamilyEB">Нет лекций в разделе</span>
 				<!-- <p class="the_desc fontSize14">Сохраняйте лекции, чтобы вернуться к ним в любой момент</p> -->
-				<router-link class="theButton buttonPrimary buttonOptimal" to="/" @click="setHomeTab(), setRouterAnimate()">На главную</router-link>
+				<router-link class="theButton buttonPrimary buttonOptimal fontSize16" to="/" @click="setHomeTab(), setRouterAnimate()">Искать лекции</router-link>
 			</div>
 
-			<!-- <bottom-line></bottom-line> -->
+			<div class="element_box" v-if="this.getNotViewed == 'e'">
+				<img class="the_img" src="./../assets/images/noResponse.png">
+				<span class="info_title fontFamilyB">Данные не загрузились</span>
+				<span class="info_subtitle fontSize14">Попробуйте обновить страницу</span>
+				<span @click="this.fetchNotViewed(1000)" class="theButton buttonTertiary buttonOptimal">Обновить</span>
+			</div>
 
 		</div>
 
-
-
 	</div>
 </template>
+
+
 
 <script>
 // @ is an alias to /src
 // import DefaultLikes from '@/components/DefaultLikes.vue'
 import ElementsList from '@/components/ElementsList';
 
-import {mapState, mapMutations, mapGetters} from 'vuex';
+import {mapState, mapMutations, mapGetters, mapActions} from 'vuex';
 
 export default {
   name: 'MoreVideos',
@@ -70,6 +63,9 @@ export default {
 			setHomeTab: 'setHomeTab',
 			setRouterAnimate: 'setRouterAnimate',
 		}),
+		...mapActions({
+			fetchNotViewed: 'content/fetchNotViewed',
+		}),
 
 	},
 
@@ -82,10 +78,17 @@ export default {
 		...mapState({
 		}),
 		...mapGetters({
-			// sortedPosts: 'post/sortedPosts',
-			sortedElementsNotview: 'sortedElementsNotview',
+			currLoadingStatus: 'content/currLoadingStatus',
+			getNotViewed: 'content/getNotViewed',
 		}),
 	},
+
+
+	mounted(){
+		this.fetchNotViewed(1000);
+	},
+
+
 }
 </script>
 

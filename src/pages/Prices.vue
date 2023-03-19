@@ -22,13 +22,16 @@
 					<p>Вы можете приобрести доступ к этому видео на необходимый вам промежуток времени.</p>
 					<br>
 					<br>
-					<span @click="buyLecture(1)" class="theButton buttonPrimary buttonOptimal marginAuto">Купить на день: {{ Math.round(getCurrentLecture.prices.price_by_category[0].price_for_lecture) }}₽</span>
+					<span v-if="!getCurrentLecture.prices.price_by_promo && getCurrentLecture.prices.price_by_category" @click="buyLecture(1)" class="theButton buttonPrimary buttonOptimal marginAuto">Купить на день: {{ Math.round(getCurrentLecture.prices.price_by_category[0].price_for_lecture) }}₽</span>
+					<span v-if="getCurrentLecture.prices.price_by_promo" @click="buyLecture(1)" class="theButton buttonPrimary buttonOptimal marginAuto">Купить на день: {{ Math.round(getCurrentLecture.prices.price_by_promo[0].price_for_promo_lecture) }}₽</span>
 					<br>
 					<br>
-					<span @click="buyLecture(14)" class="theButton buttonSecondary buttonOptimal marginAuto">Купить на неделю: {{ Math.round(getCurrentLecture.prices.price_by_category[1].price_for_lecture) }}₽</span>
+					<span v-if="!getCurrentLecture.prices.price_by_promo && getCurrentLecture.prices.price_by_category" @click="buyLecture(14)" class="theButton buttonSecondary buttonOptimal marginAuto">Купить на неделю: {{ Math.round(getCurrentLecture.prices.price_by_category[1].price_for_lecture) }}₽</span>
+					<span v-if="getCurrentLecture.prices.price_by_promo" @click="buyLecture(14)" class="theButton buttonSecondary buttonOptimal marginAuto">Купить на неделю: {{ Math.round(getCurrentLecture.prices.price_by_promo[1].price_for_promo_lecture) }}₽</span>
 					<br>
 					<br>
-					<span @click="buyLecture(30)" class="theButton buttonSecondary buttonOptimal marginAuto">Купить на месяц: {{ Math.round(getCurrentLecture.prices.price_by_category[2].price_for_lecture) }}₽</span>
+					<span v-if="!getCurrentLecture.prices.price_by_promo && getCurrentLecture.prices.price_by_category" @click="buyLecture(30)" class="theButton buttonSecondary buttonOptimal marginAuto">Купить на месяц: {{ Math.round(getCurrentLecture.prices.price_by_category[2].price_for_lecture) }}₽</span>
+					<span v-if="getCurrentLecture.prices.price_by_promo" @click="buyLecture(30)" class="theButton buttonSecondary buttonOptimal marginAuto">Купить на месяц: {{ Math.round(getCurrentLecture.prices.price_by_promo[2].price_for_promo_lecture) }}₽</span>
 					<br>
 					
 				</div>

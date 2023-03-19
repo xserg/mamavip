@@ -8,14 +8,14 @@
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			<div class="contentSubWrap">
+			<div class="contentSubWrap" v-if="this.getInfos.data && this.getCurrUser">
 
 
 				<!-- ПРОФИЛЬ -->
 				<div class="userinfo_wrap topWrap marginB12">
 					<div class="userinfo_box">
 						<router-link class="userinfo_card" to="/profile/edit" @click="setRouterAnimate">
-							<div v-if="this.getCurrUser.user.photo_small" class="card_photo_wrap filled">
+							<div v-if="this.getCurrUser.user.photo_small" class="card_photo_wrap">
 								<img :src="this.getCurrUser.user.photo_small" alt="profile_image">
 							</div>
 							<span v-else class="card_photo_wrap"></span>
@@ -26,9 +26,10 @@
 									<span class="card_button theButton buttonTransparent buttonOptimal"></span>
 								</div>
 								<span class="card_status fontSize14" v-if="!this.getCurrUser.user.name">Это необходимо, чтобы пользоваться сервисом</span>
-								
-								<span class="card_status fontSize14">Ваш срок — примерно 29 недель</span>
-								<!-- <span class="card_status fontSize14">Вас уже можно поздравить?</span> -->
+
+								<span class="card_status fontSize14" v-if="this.getCurrUser.user.name && this.getCurrUser.user.is_mother == 0 && pregnancyWeeks < 39">Ваш срок — примерно {{ pregnancyWeeks }} недель(-и)</span>
+								<span class="card_status fontSize14" v-if="this.getCurrUser.user.is_mother == 0 && pregnancyWeeks >= 39">Вас уже можно поздравить?</span>
+								<span class="card_status fontSize14" v-if="this.getCurrUser.user.is_mother == 1">{{ babyAge }}</span>
 								
 							</div>
 							
@@ -37,50 +38,81 @@
 				</div>
 				<!-- ПРОФИЛЬ END -->
 
+				
 
 				<!-- РЕКОМЕНДУЕМ -->
-				<div class="recommended_box midWrap marginB12" :class="{recommended_box: getCurrUser.user.next_free_lecture_available == null || getAvailableTimer.isExpired, notavailable_box: getCurrUser.user.next_free_lecture_available !== null || !getAvailableTimer.isExpired }">
-					<div class="" v-if="getCurrUser.user.next_free_lecture_available == null || getAvailableTimer.isExpired">
-						<span class="the_title fontFamilyEB fontSize20 blockWrap">Рекомендуем</span>
-						<span class="the_subtitle marginB12 fontSize14 blockWrap">Не пропустите новые лекции!</span>
-						<div class="element_box" v-if="getRecommended">
+				<div v-if="currLoadingStatus || !getCurrUser.user || !getRecommended" class="recommended_box midWrap marginB12 roller_box">
+					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+				</div>
+
+				<div v-else class="recommended_box midWrap marginB12" :class="{recommended_box: getCurrUser.user.next_free_lecture_available == null || getAvailableTimer.isExpired, notavailable_box: getCurrUser.user.next_free_lecture_available !== null || !getAvailableTimer.isExpired, error_box: getRecommended === 'e' }">
+					<div v-if="!getAvailableTimer">
+						<span class="the_title fontFamilyEB fontSize20 blockWrap">{{ this.getInfos.data.app_info[0].recommended_title }}</span>
+						<span class="the_subtitle marginB12 fontSize14 blockWrap">{{ this.getInfos.data.app_info[0].recommended_subtitle }}</span>
+						<div class="element_box" v-if="getRecommended && getRecommended !== 'e' ">
 							<element 
 							v-if="getRecommended"
 							:post="getRecommended"
 							/>
+						</div> 
+						<div v-else class="roller_box">
+							<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 						</div>
 					</div>
-					<div class="message_wrap" v-if="true">
+					<div class="message_wrap" v-else>
 						<span class="mess_icon"></span>
 						<span class="mess_title fontFamilyEB">График просмотра</span>
 						<span class="mess_desc">Следующая лекция доступна через <br>{{ getAvailableTimer.hours }} ч. {{ getAvailableTimer.minutes }} мин. {{ getAvailableTimer.seconds }} сек.</span>
 					</div>
+					
+					<div class="element_box" v-if="getRecommended === 'e'">
+						<img class="the_img" src="./../assets/images/noResponse.png">
+						<span class="info_title fontFamilyB">Данные не загрузились</span>
+						<span class="info_subtitle fontSize14">Попробуйте обновить страницу</span>
+						<span @click="this.fetchRecommended()" class="theButton buttonTertiary buttonOptimal">Обновить</span>
+					</div>
+
 				</div>
 				<!-- РЕКОМЕНДУЕМ END -->
 
+
 				<!-- ПРОМОПАК -->
-				<div class="videos_box midWrap marginB12">
-					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/promopack" @click="setRouterAnimate">Акции</router-link>
-					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
-					<div class="element_box" v-if="!promopackError && getPromopack.data">
-						<!-- <element 
-						:post="recommendationElement"
-						:key="recommendationElement.id"
-						/> -->
-						<elements-slider v-if="getPromopack.data" :posts="getPromopack.data"/>
-						
-					</div>
-					<div v-else class="roller_box">
+				<div v-if="currLoadingStatus || !getPromopack.data" class="videos_box midWrap marginB12">
+					<div class="roller_box">
 						<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 					</div>
 				</div>
-				<!-- НЕ ПРОСМОТРЕННЫЕ END -->
+
+				<div class="videos_box midWrap marginB12" v-else :class="{error_box: getPromopack === 'e'}">
+					
+					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/promopack" @click="setRouterAnimate">Акции</router-link>
+					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
+					
+					<div class="element_box" v-if="getPromopack.data && getPromopack.data.length">
+						<elements-slider  
+							:posts="getPromopack.data"
+						/>
+					</div>
+					<div class="roller_box" v-else>
+						<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+					</div>
+
+					<div class="element_box" v-if="getPromopack === 'e'">
+						<img class="the_img" src="./../assets/images/noResponse.png">
+						<span class="info_title fontFamilyB">Данные не загрузились</span>
+						<span class="info_subtitle fontSize14">Попробуйте обновить страницу</span>
+						<span @click="this.fetchPromopack(6)" class="theButton buttonTertiary buttonOptimal">Обновить</span>
+					</div>
+
+				</div>
+
+				<!-- ПРОМОПАК END -->
 
 
 				<!-- КАТАЛОГ -->
 				<div class="midWrap marginB12" :class="{catalog_box: !catalogError, error_box: catalogError }" v-if="!catalogError">
-					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/catalog" @click="setRouterAnimate">Каталог лекций</router-link>
-					<span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span>
+					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/catalog" @click="setRouterAnimate">{{ this.getInfos.data.app_info[0].lectures_catalog_title }}</router-link>
+					<span class="the_subtitle marginB12 fontSize14 blockWrap">{{ this.getInfos.data.app_info[0].lectures_catalog_subtitle }}</span>
 					
 					<div class="element_box" v-if="!catalogError">
 						<calalog-slider 
@@ -96,7 +128,7 @@
 						<img class="the_img" src="./../assets/images/noResponse.png">
 						<span class="info_title fontFamilyB">Данные не загрузились</span>
 						<span class="info_subtitle fontSize14">Попробуйте обновить страницу</span>
-						<span class="theButton buttonTertiary buttonOptimal">Обновить</span>
+						<span @click="this.fetchCatalog()" class="theButton buttonTertiary buttonOptimal">Обновить</span>
 					</div>
 
 				</div>
@@ -105,7 +137,7 @@
 
 				<!-- ЛЕКТОРЫ -->
 				<div class="teachers_box midWrap marginB12">
-					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/lectors" @click="setRouterAnimate">Наши лекторы</router-link>
+					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/lectors" @click="setRouterAnimate">{{ this.getInfos.data.app_info[0].out_lectors_title }}</router-link>
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
 					<div class="element_box">
 						<!-- <element 
@@ -122,20 +154,31 @@
 
 
 				<!-- НЕ ПРОСМОТРЕННЫЕ -->
-				<div class="videos_box bottomWrap">
-					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/forview" @click="setRouterAnimate">Вы ещё не смотрели</router-link>
+				<div v-if="currLoadingStatus || !getCurrUser.user" class="videos_box bottomWrap">
+					<div class="roller_box">
+						<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+					</div>
+				</div>
+				<div v-if="!currLoadingStatus && getNotViewed && getNotViewed !== undefined" class="videos_box bottomWrap" :class="{error_box: getNotViewed.length}">
+					<router-link class="the_title fontFamilyEB fontSize20 blockWrap"  to="/forview" @click="setRouterAnimate">{{ this.getInfos.data.app_info[0].not_viewed_yet_title }}</router-link>
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
-					<div class="element_box">
+					<div class="element_box" v-if="getNotViewed !== 'e'">
 						<!-- <element 
 						:post="recommendationElement"
 						:key="recommendationElement.id"
 						/> -->
-						<elements-slider v-if="sortedElementsNotview" :posts="sortedElementsNotview"/>
-						<div v-else class="roller_box">
-							<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-						</div>
+						<elements-slider 
+							:posts="getNotViewed"
+						/>
+					</div>
+					<div class="element_box" v-else>
+						<img class="the_img" src="./../assets/images/noResponse.png">
+						<span class="info_title fontFamilyB">Данные не загрузились</span>
+						<span class="info_subtitle fontSize14">Попробуйте обновить страницу</span>
+						<span class="theButton buttonTertiary buttonOptimal">Обновить</span>
 					</div>
 				</div>
+				
 				<!-- НЕ ПРОСМОТРЕННЫЕ END -->
 
 
@@ -166,6 +209,14 @@ export default {
     // DefaultLikes,
   },
 
+	data(){
+		return{
+			loadingStatus: true,
+			pregnancyWeeks: 0,
+			babyAge: '',
+		}
+	},
+
 
 	computed:{
 		...mapState({
@@ -174,14 +225,15 @@ export default {
 			promopackError: state =>state.content.promopackError,
 		}),
 		...mapGetters({
+			currLoadingStatus: 'content/currLoadingStatus',
 			getCurrUser: 'getCurrUser',
+			getInfos: 'getInfos',
 			getAvailableTimer: 'getAvailableTimer',
-			recommendationElement: 'content/recommendationElement',
 			catalogList: 'content/catalogList',
 			getPromopack: 'content/getPromopack',
 			getRecommended: 'content/getRecommended',
 			teachersList: 'content/teachersList',
-			sortedElementsNotview: 'sortedElementsNotview',
+			getNotViewed: 'content/getNotViewed',
 			sortedElementsPromopack: 'content/sortedElementsPromopack',
 		}),
 	},
@@ -189,24 +241,87 @@ export default {
 
 	methods:{
     ...mapMutations({
-			setAvailableTimer: 'setAvailableTimer',
+			// setAvailableTimer: 'setAvailableTimer',
       setRouterAnimate: 'setRouterAnimate',
     }),
 		...mapActions({
+			fetchUserData: 'fetchUserData',
       fetchLectors: 'content/fetchLectors',
 			fetchCatalog: 'content/fetchCatalog',
 			fetchPromopack: 'content/fetchPromopack',
 			fetchRecommended: 'content/fetchRecommended',
+			fetchNotViewed: 'content/fetchNotViewed',
     }),
+
+		switchloadingStatus(bool){
+			this.loadingStatus = bool;
+		},
+
+		setPregnancyWeeks(){
+			if(this.getCurrUser.user.pregnancy_start){
+				const currentDate = new Date();
+				const startDate = new Date(this.getCurrUser.user.pregnancy_start);
+				const days = Math.floor((currentDate - startDate) /
+					(24 * 60 * 60 * 1000));
+				const convertToWeeks = Math.ceil(days / 7);
+				// console.log(convertToWeeks);
+				this.pregnancyWeeks = Number(convertToWeeks);
+			}
+		},
+
+		setBabyAge(){
+			if(this.getCurrUser.user.baby_born){
+				const currentDate = new Date();
+				const startDate = new Date(this.getCurrUser.user.baby_born);
+				const days = Math.floor((currentDate - startDate) /
+					(24 * 60 * 60 * 1000));
+				const convertToMonths = Math.round(days / 30);
+				if(convertToMonths < 1){
+					var currentAge = 'Малыш родился';
+				}else if(convertToMonths >= 1 && convertToMonths <= 11){
+					if(convertToMonths == 1){
+						var currentAge = 'Малышу примерно ' + convertToMonths + ' месяц';
+					}else if(convertToMonths == 2 || convertToMonths == 3 || convertToMonths == 4){
+						var currentAge = 'Малышу примерно ' + convertToMonths + ' месяца';
+					}else{
+						var currentAge = 'Малышу примерно ' + convertToMonths + ' месяцев';
+					}
+				}else if(convertToMonths >= 12){
+					if(convertToMonths >= 12 && convertToMonths <= 23){
+						var currentAge = 'Малышу примерно год';
+					}else if(convertToMonths >= 24 && convertToMonths <= 35){
+						const years = Math.floor(convertToMonths / 12);
+						var currentAge = 'Малышу примерно ' + years + ' года';
+					}else{
+						const years = Math.floor(convertToMonths / 12);
+						var currentAge = 'Малышу примерно ' + years + ' лет';
+					}
+				}
+				this.babyAge = currentAge;
+			}
+		},
+
 	},
 
 
 	mounted() {
-		this.setAvailableTimer();
-    this.fetchLectors();
-		this.fetchCatalog();
-		this.fetchPromopack();
+		this.fetchUserData();
+		this.setPregnancyWeeks();
+		this.setBabyAge();
+
 		this.fetchRecommended();
+		this.switchloadingStatus(false);
+
+		// this.setAvailableTimer();
+
+		this.fetchPromopack(6);
+
+		this.fetchCatalog();
+		
+    this.fetchLectors();
+		
+		this.fetchNotViewed(6);
+
   },
 
 }
@@ -316,6 +431,9 @@ export default {
 			.recommended_box{
 				background-color: #FFF;
 				padding: 16px;
+				&.error_box .the_title::before{
+					display: none;
+				}
 				.the_title{
 					margin-bottom: 4px;
 				}

@@ -6,6 +6,8 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
+
+		loadingStatus: false,
 		availableTimer: '',
 
 		infos: [],
@@ -18,6 +20,7 @@ export default createStore({
 		newReg: false,
 		curTab: 'home',
 		routerAnimation: '',
+		currentFaq: {},
   },
 
   getters: {
@@ -34,25 +37,43 @@ export default createStore({
 		getInfos(state){
 			return state.infos;
 		},
-
-		sortedElementsNotview(state){
-			// return state.notViewPosts;
-			return state.currUser.user.saved_lectures.filter(post => post.is_watched == 0)
+		getLoadingStatus(state){
+			return state.loadingStatus;
 		},
-		
+
+		getCurrentFaq(state){
+			return state.currentFaq;
+		},
+
+		getOldLecture(state){
+			return state.oldLecture;
+		},
 
   },
 
   mutations: {
 
-		setAvailableTimer(state){
+
+		setLoadingStatus(state, bool){
+			state.loadingStatus = bool;
+		},
+
+
+		setCurrentFaq(state, faq){
+			state.currentFaq = faq;
+		},
+
+		setAvailableTimer(state, timerYes){
 			const time = new Date();
-			const nextAvailable = state.currUser.user.next_free_lecture_available;
-			const timeDiff = Math.floor((new Date(nextAvailable) - new Date()) / 1000);
-			console.log(timeDiff); 
-			time.setSeconds(time.getSeconds() + timeDiff );
-			const timerCounter = useTimer(time);
-			state.availableTimer = timerCounter;
+			const timeDiff = Math.floor((new Date(timerYes) - new Date()) / 1000);
+			// console.log(timeDiff); 
+			if(timeDiff > 0){
+				time.setSeconds(time.getSeconds() + timeDiff );
+				const timerCounter = useTimer(time);
+				state.availableTimer = timerCounter;
+			}else{
+				state.availableTimer = false;
+			}
 		},
 
 		initialiseVuex(state) {
@@ -95,6 +116,10 @@ export default createStore({
 		},
 
 
+		setUserData(state, data){
+			state.currUser.user = data.data;
+		},
+
 		setLogPage(state){
 			state.newReg = false;
 			window.scrollTo(0,0);
@@ -128,11 +153,10 @@ export default createStore({
 		},
 
 		changeUserData(state, user){
-			// state.currUser.user = user;
-			state.currUser.user.name = user.name;
-			state.currUser.user.birthday = user.birthdate;
-			state.currUser.user.phone = user.phone;
-			state.currUser.user.baby_born = user.baby_born;
+			// state.currUser.user.name = user.name;
+			// state.currUser.user.birthday = user.birthdate;
+			// state.currUser.user.phone = user.phone;
+			// state.currUser.user.baby_born = user.baby_born;
 		},
 
 		setHomeTab(state){
@@ -165,6 +189,53 @@ export default createStore({
   actions: {
 
 
+		async fetchUserData({state, commit}){
+			try{
+				commit('setLoadingStatus', true);
+				setTimeout( async () => {
+					const response = await axios.get('https://api.xn--80axb4d.online/v1/user/profile', {
+						headers: {
+							Authorization: state.currUser.token_type + ' ' + state.currUser.access_token,
+						}
+					});
+					// console.log(response.data);
+					commit('setUserData', response.data);
+					// console.log(response.data);
+					if(response.data.data.next_free_lecture_available){
+						commit('setAvailableTimer', response.data.data.next_free_lecture_available)
+					}else{
+						commit('setAvailableTimer', false)
+					}
+					
+					
+					
+					commit('setLoadingStatus', false);
+				}, 50 )	
+			} 
+			catch(e){} 
+			finally {}
+
+			
+		},
+
+		async fetchInfos({state, commit}){
+			try{
+				commit('setLoadingStatus', true);
+				commit('setInfos', '');
+				setTimeout( async () => {
+					const response = await axios.get('https://api.xn--80axb4d.online/v1/app/info', {
+						headers: {
+							Authorization: state.currUser.token_type + ' ' + state.currUser.access_token,
+						}
+					});
+					commit('setInfos', response.data);
+					commit('setLoadingStatus', false);
+				}, 50 )
+				
+			} catch(e){
+				console.log(e);
+			} finally {}
+		},
 
 		// async fetchInfos({state, commit}){
 		// 	console.log('Запущен фетчинфос');

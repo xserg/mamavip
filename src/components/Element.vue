@@ -3,9 +3,9 @@
 	<div class="the_element marginB12" @mousedown="handleMouseDown" @click="handleClick">
 		<div class="info_line flexWrap">
 			<div class="icons flexWrap">
-				<span class="viewed blockWrap" :class="{hiddenWrap: !getCurrUser.user.watched_lectures.find(item => item.id === post.id )}"></span>
+				<span class="viewed blockWrap" :class="{hiddenWrap: post.list_watched !== 1 }"></span>
 				<!-- <span class="bought blockWrap" :class="{hiddenWrap: !getCurrUser.user.purchased_lectures.find(item => item.id === post.id )}"></span> -->
-				<span class="premium blockWrap" :class="{hiddenWrap: !post.is_free }"></span>
+				<span class="premium blockWrap" :class="{hiddenWrap: post.is_free == 1 }"></span>
 			</div>
 			<span class="play"></span>
 			<!-- <span @click="$emit('deleteElement', post)">Открыть</span> -->
@@ -52,9 +52,8 @@ export default({
 			// setCurrentLecture: 'content/setCurrentLecture',
     }),
 		...mapActions({
-			fetchSubCategoryElements: 'content/fetchSubCategoryElements',
+			// fetchCurrentSubCategoryElements: 'content/fetchCurrentSubCategoryElements',
 			fetchCurrentLecture: 'content/fetchCurrentLecture',
-			fetchCategoryAndSubcategory: 'content/fetchCategoryAndSubcategory',
 		}),
 
 		// goLoadPost(){
@@ -63,8 +62,9 @@ export default({
 		// 	}, 500);
 		// },
 
-		routeToElement(){
-			router.push('/videos/' + this.post.id);
+		routeToElement(){ 
+			this.$router.push('/videos/' + this.post.id);
+			// location.reload();
 		},
 
 		handleMouseDown(event){
@@ -80,9 +80,10 @@ export default({
 				// console.log('Сработал клик');
 				// this.setCurrentLecture(this.post);
 				// console.log('клик по элементу, супкагория:' + this.post.category_id);
-				this.fetchCategoryAndSubcategory(this.post.category_slug);
+
+
 				this.fetchCurrentLecture(this.post.id);
-				this.fetchSubCategoryElements(this.post.category_id);
+				// this.fetchCurrentSubCategoryElements(this.post.category_id);
 				this.setRouterAnimate();
 				this.routeToElement();
 			}

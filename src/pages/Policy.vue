@@ -1,6 +1,7 @@
 <template>
   <div class="mainContainer">
 
+
 		<div class="contentWrap">
 
 			<div class="topLine flexWrap">
@@ -9,23 +10,18 @@
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			<div class="contentSubWrap">
-				<div class="infoWrap">
-					<h2>Заголовок</h2>
-					<h3>Подзаголовок</h3>
-					<p>Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
-					<p>Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
-					<br>
-					<h3>Подзаголовок</h3>
-					<p>Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
-					<br>
-					<h3>Подзаголовок</h3>
-					<p>Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
-					<br>
-					<h3>Подзаголовок</h3>
-					<p>Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
+
+			<div v-if="getLoadingStatus || !this.getInfos.data" class="contentSubWrap">	
+				<div class="info_wrap roller_box">
+					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 				</div>
-				
+			</div>	
+
+			<div class="contentSubWrap" v-else>
+				<div class="infoWrap">
+					<h2>{{ this.getInfos.data.app_info[0].agreement_title }}</h2>
+					<p>{{ this.getInfos.data.app_info[0].agreement_text }}</p>
+				</div>
 			</div>
 
 			<!-- <bottom-line></bottom-line> -->
@@ -40,7 +36,7 @@
 // @ is an alias to /src
 // import DefaultLikes from '@/components/DefaultLikes.vue'
 
-import {mapState, mapMutations, mapGetters} from 'vuex';
+import {mapMutations, mapGetters, mapActions} from 'vuex';
 
 export default {
   name: 'Policy',
@@ -58,18 +54,21 @@ export default {
 		...mapMutations({
 			setRouterAnimate: 'setRouterAnimate',
 		}),
-
-		methods: {
-		},
+		...mapActions({
+			fetchInfos: 'fetchInfos',
+		}),
 
 	},
 
 
 	computed:{
-		...mapState({
-		}),
 		...mapGetters({
+			getInfos: 'getInfos',
 		}),
+	},
+
+	mounted(){
+		this.fetchInfos();
 	},
 
 }

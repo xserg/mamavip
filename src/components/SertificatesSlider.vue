@@ -8,7 +8,7 @@
 	:class="{active: listLoaded}"
 	>
 		<sertificate-element 
-			v-for="post in posts"
+			v-for="post in posts" 
 			:post="post"
 			:key="post.id"
 			@showElement="$emit('showElement', post)"

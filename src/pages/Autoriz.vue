@@ -14,7 +14,7 @@
 				</div>
 
 				<div class="errorWrap flexWrap fontSize14" :class="{ ghostWrap: !this.showErrors }">
-					<p>Неправильный логин/пароль. <br>Повторите попытку.</p>
+					<p>{{notificationErrorMess}}</p>
 					<div class="button_wrap">
 						<span class="separate"></span>
 						<span class="theButton close_button" @click="hideMessages"></span>
@@ -208,7 +208,7 @@
 
 	</div>
 </template>
-
+ 
 <script>
 // 1. Подключаем defineComponent, watchEffect, onMounted как просит того модуль vue-timer-hook
 // 2. Подключаем ref как в примерах для корректной работы обновления данных в setup
@@ -224,7 +224,7 @@ import * as yup from 'yup';
 // Все три функции что есть в модуля
 import { useTimer, useStopwatch, useTime } from 'vue-timer-hook';
 
-export default defineComponent({
+export default defineComponent({ 
 	name: 'autoriz',
 
 	components: {
@@ -330,8 +330,10 @@ export default defineComponent({
 			inputPassType: 'password',
 			showErrors: false,
 			showNotification: false,
+			notificationErrorMess: '',
 			resendCode: true,
 			curResetValues: '',
+			curResetCode: '',
 			// resendCode: false,
 			// loginForm: {
 			// 	email: '',
@@ -364,21 +366,32 @@ export default defineComponent({
 			// this.fetchAuth(user);
 			try{
 				setTimeout( async () => {
-					const response = await axios.post('https://api.xn--80axb4d.online/v1/user/login', user);
-					this.setAuthIn(response.data);
-
-					setTimeout( async () => {
+					const response = await axios.post('https://api.xn--80axb4d.online/v1/user/login', user).catch(function (error) { if (error.response){} });
+					if(response){
+						// console.log('Типо прошло');
+						this.setAuthIn(response.data);
+						setTimeout( async () => {
 						const responseInfos = await axios.get('https://api.xn--80axb4d.online/v1/app/info', {
-							headers: {
-								Authorization: response.data.token_type + ' ' + response.data.access_token,
-							}
-						});
-						this.setInfos(responseInfos.data);
-					}, 500 );
-					this.$router.push("/");
-					
+								headers: {
+									Authorization: response.data.token_type + ' ' + response.data.access_token,
+								}
+							});
+							this.setInfos(responseInfos.data);
+						}, 50 );
+						this.$router.push("/");
+						
+					}else{
+						this.notificationErrorMess = 'Неправильный логин/пароль. Повторите попытку.';
+						setTimeout(() => {
+						this.showErrors = true;
+						}, 400);
+						setTimeout(() => {
+							this.showErrors = false;
+						}, 3000);
+					}
+
 					// this.setCurUserContent(response.data);
-				}, 500 );
+				}, 50 );
 
 				
 
@@ -392,8 +405,11 @@ export default defineComponent({
 				// state.infos = responseInfos.data;
 				
 			} catch(e){
-				console.log(e);
-			} finally {}
+				// console.log('Ошибка');
+				// console.log(e);
+			} finally {
+				
+			}
 
     },
 
@@ -430,21 +446,81 @@ export default defineComponent({
 
 		onSendCode(values){
 			this.curResetValues = values;
+			// console.log(this.curResetValues);
+			try{
+				setTimeout( async () => {
+					// console.log('Запрос на КОД');
+					const response = await axios.post('https://api.xn--80axb4d.online/v1/password/forgot', this.curResetValues).catch(function (error) { if (error.response){} });
+					// console.log(response);
+					if(response){
+						setTimeout(() => {
+							this.showNotification = true;
+						}, 400);
+						setTimeout(() => {
+							this.showNotification = false;
+						}, 3000);
+
+						this.curStep = 'auth_code';
+						this.resendCode = false;
+						this.restartOne();
+					}else{
+						this.notificationErrorMess = 'Пользователя с таким email не существует.';
+						setTimeout(() => {
+						this.showErrors = true;
+						}, 400);
+						setTimeout(() => {
+							this.showErrors = false;
+						}, 3000);
+					}
+					
+
+				}, 50 );
+			} catch(e){
+				console.log(e);
+			} finally {}
+
 			// console.log(JSON.stringify(this.curResetValues, null, 2));
-			setTimeout(() => {
-				this.showNotification = true;
-			}, 400);
-			setTimeout(() => {
-				this.showNotification = false;
-			}, 3000);
+			
 			// this.showErrors = true;
 			// this.$refs.forgotEmailInput.reset();
-			this.curStep = 'auth_code';
-			this.resendCode = false;
-			this.restartOne();
+			
 		},
+
 		onResendCode(){
 			if(this.resendCode){
+					try{
+					setTimeout( async () => {
+						// console.log('Повторный запрос на КОД');
+						const response = 
+							await axios.post('https://api.xn--80axb4d.online/v1/password/forgot', this.curResetValues).catch(function (error) { if (error.response){} });
+						// console.log(response);
+						if(response){
+							setTimeout(() => {
+								this.showNotification = true;
+							}, 400);
+							setTimeout(() => {
+								this.showNotification = false;
+							}, 3000);
+
+							this.curStep = 'auth_code';
+							this.resendCode = false;
+							this.restartOne();
+						}else{
+							this.notificationErrorMess = 'Пользователя с таким email не существует.';
+							setTimeout(() => {
+							this.showErrors = true;
+							}, 400);
+							setTimeout(() => {
+								this.showErrors = false;
+							}, 3000);
+						}
+						
+
+					}, 50 );
+				} catch(e){
+					// console.log(e);
+				} finally {}
+
 				this.$refs.forgotCodeInput.reset();
 				setTimeout(() => {
 					this.showNotification = true;
@@ -461,21 +537,77 @@ export default defineComponent({
 
 
 		onResetPass(values){
+			// console.log(values);
 			// console.log(JSON.stringify(values, null, 2));
-			this.$refs.forgotCodeInput.reset();
-			// this.showErrors = true;
-			this.curStep = 'auth_newpass';
+			try{
+				setTimeout( async () => {
+					this.curResetCode = values.code;
+					// console.log('Отправка кода на сброс пароля');
+					const response = 
+						await axios.post('https://api.xn--80axb4d.online/v1/password/check', values).catch(function (error) { if (error.response){} });
+					// console.log(response);
+					if(response){
+						this.$refs.forgotCodeInput.reset();
+						// this.showErrors = true;
+						this.curStep = 'auth_newpass';
+					}else{
+						this.notificationErrorMess = 'Некорректный код.';
+						setTimeout(() => {
+						this.showErrors = true;
+						}, 400);
+						setTimeout(() => {
+							this.showErrors = false;
+						}, 3000);
+					}
+
+				}, 50 );
+			} catch(e){
+				console.log(e);
+			} finally {}
+			
 		},
 
 		onSavePass(values){
 			// console.log(JSON.stringify(values, null, 2));
-			this.curStep = 'auth_login';
-			setTimeout(() => {
-        this.showNotification = true;
-      }, 400);
-			setTimeout(() => {
-        this.showNotification = false;
-      }, 3000);
+			try{
+				setTimeout( async () => {
+					// console.log('Отправка нового пароля на обновление');
+					// console.log(values);
+
+					const params = {
+						code: this.curResetCode,
+						password: values.newpass,
+  					password_confirmation: values.confirm_newpass,
+					};
+					// console.log(params);
+
+					const response = 
+						await axios.post('https://api.xn--80axb4d.online/v1/password/check', params).catch(function (error) { if (error.response){} });
+					// console.log(response);
+					if(response){
+						this.curStep = 'auth_login';
+						setTimeout(() => {
+							this.showNotification = true;
+						}, 400);
+						setTimeout(() => {
+							this.showNotification = false;
+						}, 3000);
+					}else{
+						this.notificationErrorMess = 'Ошибка. Что-то пошло не так.';
+						setTimeout(() => {
+						this.showErrors = true;
+						}, 400);
+						setTimeout(() => {
+							this.showErrors = false;
+						}, 3000);
+					}
+					
+
+				}, 50 );
+			} catch(e){
+				console.log(e);
+			} finally {}
+
 		},
 
 		hideMessages(){
@@ -533,6 +665,7 @@ export default defineComponent({
 		.topLine{
 			background-color: #ffeaeba8;
 			border-bottom: none;
+			// position: fixed;
 		}
 
 		.contentSubWrap{

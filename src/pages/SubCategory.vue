@@ -1,11 +1,18 @@
 <template>
 
 	<div class="mainContainer catalogSubCategory">
-		<div class="contentWrap">
+
+		
+
+
+		<div class="contentWrap" v-if="currentSubCategory.title && !currLoadingStatus">
 
 			<div class="topLine flexWrap">
-				<span class="theButton leftButton buttonTransparent buttonBack" @click="$router.push('/catalog/' + this.currentSubCategory.parent_slug), setRouterAnimate()"></span>
-				<h1 class="theTitle alignCenter">{{ this.currentCategory.title }}</h1>
+				
+				<span class="theButton leftButton buttonTransparent buttonBack" @click="$router.go(-1), setRouterAnimate()"></span>
+				<!-- <span class="theButton leftButton buttonTransparent buttonBack" @click="$router.push('/catalog/' + this.currentSubCategory.parent_slug), setRouterAnimate()"></span> -->
+				
+				<h1 class="theTitle alignCenter">{{ this.currentSubCategory.title }}</h1>
 				<span class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</span>
 			</div>
 
@@ -22,16 +29,14 @@
 
 				<div class="bottomWrap content_box elements_box" v-if="currentSubCategoryList.data">
 					<span class="the_title fontSize20 fontFamilyEB">Лекции</span>
-					<span class="the_subtitle fontSize14">Всего: {{ this.currentSubCategoryList.data.length ? this.currentSubCategoryList.data.length : '-' }} • Просмотрено: 5</span>
+					<span class="the_subtitle fontSize14">Всего: {{ this.currentSubCategoryList.data.length ? this.currentSubCategoryList.data.length : '-' }} • Просмотрено: {{viewedLectures}}</span>
 					<elements-list 
 						v-if="currentSubCategoryList.data.length > 0"
 						class="elements_list"
 						:posts="currentSubCategoryList.data" 
 					/>
 				</div>
-				<div class="bottomWrap content_box elements_box roller_box" v-else >
-					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-				</div>
+				
 
 				<!-- <div class="bottomWrap empty_wrap">
 					<div class="empty_subwrap flexWrap">
@@ -55,11 +60,20 @@
 
 			</div>
 
+			
+
 
 
 			<!-- <bottom-line></bottom-line> -->
 			
 		</div>
+
+		<div class="contentWrap" v-else>
+			<div class="bottomWrap content_box elements_box roller_box">
+				<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+			</div>
+		</div>
+
 	</div>
 	
 	
@@ -70,7 +84,7 @@
 
 import ElementsList from '@/components/ElementsList';
 
-import {mapState, mapGetters, mapMutations} from 'vuex';
+import {mapState, mapGetters, mapMutations, mapActions} from 'vuex';
 
 
 export default({
@@ -90,6 +104,7 @@ export default({
 
 	data(){
 		return{
+			viewedLectures: 0,
 			// post: {},
 		}
 	},
@@ -98,6 +113,22 @@ export default({
     ...mapMutations({
       setRouterAnimate: 'setRouterAnimate',
     }),
+		...mapActions({
+			fetchCurrentSubCategoryAndElements: 'content/fetchCurrentSubCategoryAndElements',
+    }), 
+		
+
+		setViewedLectures(){
+			if(this.currentSubCategoryList.data){
+				const viewedLecturesArray = this.currentSubCategoryList.data.filter(p => p.list_watched == 1);
+				if(viewedLecturesArray.length){
+					this.viewedLectures = viewedLecturesArray.length
+				}else{
+					this.viewedLectures = 0;
+				}
+			}
+			// this.currentSubCategoryList.data.length
+		}
 	},
 
 
@@ -105,13 +136,27 @@ export default({
 		...mapState({
 		}),
 		...mapGetters({
+			currLoadingStatus: 'content/currLoadingStatus',
 			sortedElements: 'content/sortedElements',
-			currentCategory: 'content/currentCategory',
 			currentSubCategory: 'content/currentSubCategory',
 			currentSubCategoryList: 'content/currentSubCategoryList',
 		}),
 	},
+ 
 
+	mounted(){
+		// console.log(this.$route.params);
+		this.fetchCurrentSubCategoryAndElements(this.$route.params.slug);
+		this.setViewedLectures();
+	},
+
+	watch:{
+		getCurrentLecture: {
+			handler(newVal){
+				this.setViewedLectures();
+			}
+		}
+	},
 
 
 });

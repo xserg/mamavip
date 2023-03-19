@@ -3,9 +3,10 @@
 	<div class="the_element marginB12" @mousedown="handleMouseDown" @click="handleClick">
 		<div class="the_element_box">
 			<!-- <img src="./../assets/images/element.jpg" alt="element"> -->
-			<img v-if="teacher.photo" :src="teacher.photo" alt="element">
+			<img v-if="filterTeacher.photo" :src="filterTeacher.photo" alt="element">
 		</div>
-		<span class="teacher_title fontFamilyB fontSize14">{{ teacher.name }}</span>
+		<!-- <h5 class="new_title">{{ teacher.name }}</h5> -->
+		<div class="teacher_title fontFamilyB fontSize14" style="font-size:14px !important;">{{ filterTeacher.name }}</div> 
 		<!-- <span class="the_title fontFamilyB">{{ teacher.title }}</span> -->
 		<!-- <span class="the_title fontSize14 fontFamilyEB">Короткий заголовок у элемента</span> -->
 	</div>
@@ -21,7 +22,7 @@ import router from "@/router/router";
 export default({
 
 	name: 'TeacherElement', 
-
+ 
 	props: {
 		teacher: {
 			type: Object,
@@ -32,6 +33,7 @@ export default({
 	data(){
 		return{
 			startX: 0,
+			filterTeacher: {},
 			// post: {},
 		}
 	},
@@ -48,6 +50,10 @@ export default({
 
 		routeToElement(){
 			router.push('/lectors/' + this.teacher.id); 
+		},
+
+		setTeacher(){
+			this.filterTeacher = this.teacher;
 		},
 
 		handleMouseDown(event){
@@ -71,6 +77,10 @@ export default({
 
 
 	},
+
+	mounted(){
+		this.setTeacher();
+	}
 
 });
 </script>
@@ -119,6 +129,9 @@ export default({
 			display: block;
 		}
 	}
+	.new_title{
+		font-size: 14px;
+	}
 	.teacher_title{
 		display: block;
 		width: 100%;
@@ -165,9 +178,9 @@ export default({
 
 .the_element{
 	.teacher_title{
-		// max-height: 2.26rem;
-		// line-height: 1.13rem;
-		// font-size: .79rem;
+			max-height: 2.66rem;
+			line-height: 1.33rem;
+			font-size: 0.88rem !important;
 	}
 }
 

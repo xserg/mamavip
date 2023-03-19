@@ -8,15 +8,29 @@
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			<div class="contentSubWrap">
+			<div v-if="getLoadingStatus" class="contentSubWrap">	
+				<div class="roller_box">
+					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+				</div>
+			</div>	
+
+			<div class="contentSubWrap" v-if="this.getInfos.data && !getLoadingStatus">
 
 				<div class="tabsinfo_wrap midWrap marginB12 fontSize16">
-					<router-link class="link_button" to="/profile">
+
+					<!-- {{ this.getInfos.data }} -->
+					<div v-for="faq_link in this.getInfos.data.app_help_page" :key="faq_link" class="link_button" @click="goToFaq(faq_link)">
+						<div class="left_wrap">
+							<span class="the_icon help_icon"></span>
+							<span class="the_title">{{faq_link.title}}</span>
+						</div>
+					</div>
+
+					<!-- <router-link class="link_button" to="/profile">
 						<div class="left_wrap">
 							<span class="the_icon help_icon"></span>
 							<span class="the_title">Как делать то?</span>
 						</div>
-						<!-- <span class="the_count">12</span> -->
 					</router-link>
 					<router-link class="link_button" to="/profile">
 						<div class="left_wrap">
@@ -35,7 +49,7 @@
 							<span class="the_icon help_icon"></span>
 							<span class="the_title">Не понимаю вот это</span>
 						</div>
-					</router-link>
+					</router-link> -->
 				</div>
 
 			</div>
@@ -52,7 +66,7 @@
 
 <script>
 // @ is an alias to /src
-import {mapMutations} from 'vuex';
+import {mapActions, mapGetters, mapMutations} from 'vuex';
 
 export default {
   name: 'ProfileHelp',
@@ -61,16 +75,35 @@ export default {
 		return{
 		}
 	},
+	components:{},
 
 	methods:{
 		...mapMutations({
 			setRouterAnimate: 'setRouterAnimate',
+			setCurrentFaq: 'setCurrentFaq',
 		}),
+		...mapActions({
+			fetchInfos: 'fetchInfos',
+		}),
+
+		goToFaq(faq){
+			this.setCurrentFaq(faq)
+			this.$router.push('/profile/help/question');
+		},
 
 	},
 
-  components: {
+  computed: {
+		...mapGetters({
+			getLoadingStatus: 'getLoadingStatus',
+			getInfos: 'getInfos',
+		}),
   },
+
+
+	mounted(){
+		this.fetchInfos();
+	},
 
 
 }

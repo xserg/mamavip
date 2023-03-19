@@ -7,7 +7,6 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "@kinescope/vue-kinescope-player": "^1.0.3",
     "axios": "^1.2.3",
     "core-js": "^3.8.3",
     "vee-validate": "^4.7.3",

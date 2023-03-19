@@ -2,9 +2,6 @@
   <div class="mainContainer">
 		<div class="contentWrap" :class="{hiddenWrap: deleteAccount}">
 
-			<Form @submit="onSubmit" v-slot="{ errors }" :validation-schema="schema">
-
-
 				<div class="notificationWrap flexWrap fontSize14" :class="{ ghostWrap: !this.showNotification }">
 					<p>Изменения сохранены</p>
 					<div class="button_wrap">
@@ -29,6 +26,15 @@
 					</div>
 				</div>
 
+
+				<div class="notificationWrap flexWrap fontSize14" :class="{ ghostWrap: !this.showNotificationPhoto }">
+					<p>Новая фотография сохранена.</p>
+					<div class="button_wrap">
+						<span class="separate"></span>
+						<span class="theButton close_button" @click="hideMessages"></span>
+					</div>
+				</div>
+
 				<!-- motorstate.com.ua-Volvo-APCI_PTT-2.8+PTT-2.7 -->
 
 
@@ -36,94 +42,93 @@
 					
 					<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent">Назад</a>
 					<h1 class="theTitle alignCenter">Профиль</h1>
-					<button class="theButton rightButton buttonTransparent fontFamilyB">Сохранить</button>
+					<button class="theButton rightButton buttonTransparent fontFamilyB" @click="this.$refs.mainSubmitButton.click()">Сохранить</button>
 				</div>
 
 				<div class="contentSubWrap profile_wrap">
+
 					
-					<div class="photo_wrap topWrap marginB12"> 
-
-						<span class="the_photo theButton buttonTransparent blockWrap" :class="{hiddenWrap: hasPhoto == true}" @click="hasPhotoTrue"></span>
-						<img class="the_photo blockWrap the_photo_has" src="./../assets/images/profile.jpg" :class="{hiddenWrap: hasPhoto == false}">
-
-						<span class="the_title blockWrap fontFamilyB" :class="{hiddenWrap: hasPhoto == true}">Загрузите фото</span>
-						<p class="the_desc fontSize12 marginB12" :class="{hiddenWrap: hasPhoto == true}">JPEG или PNG не более 10 Мб</p>
-
-						<div class="buttons_wrap flexWrap" :class="{hiddenWrap: hasPhoto == false}">
-							<span class="theButton buttonTertiary buttonOptimal" @click="hasPhotoFalse">Удалить</span>
-							<span class="theButton buttonSecondary buttonOptimal" @click="hasPhotoFalse">Заменить</span>
-						</div>
-
+					<div class="photo_wrap topWrap marginB12">
+						<FileUpload :maxSize="10" accept="png,jpg,jpeg" @file-uploaded="getUploadedData" />
 					</div>
 
-					<div class="info_wrap midWrap marginB12">
-						<div class="formWrap">
+					
+					<Form @submit="onSubmit" v-slot="{ errors }" :validation-schema="schema">
 
-							<label class="inputWrap" :class="{notValid: errors.name }">
-								<span class="label">Как вас зовут?</span>
-								<div class="inputBox">
-									<Field name="name" placeholder="Имя" :value="this.getCurrUser.user.name" />
-								</div>
-								<ErrorMessage class="errorTitle" name="name" />
-							</label>
+						<div class="info_wrap midWrap marginB12">
+							<div class="formWrap">
 
-							<label class="inputWrap" :class="{notValid: errors.birthdate }">
-								<span class="label">Дата вашего рождения</span>
-								<div class="inputBox inputDate">
-									<Field name="birthdate" type="date" placeholder="Выберите дату..." :value="this.getCurrUser.user.birthdate" />
-								</div>
-								<ErrorMessage class="errorTitle" name="birthdate" />
-							</label>
+								<label class="inputWrap" :class="{notValid: errors.name }">
+									<span class="label">Как вас зовут?</span>
+									<div class="inputBox">
+										<Field name="name" placeholder="Имя" v-model="this.getCurrUser.user.name" />
+									</div>
+									<ErrorMessage class="errorTitle" name="name" />
+								</label>
 
-							<label class="inputWrap" :class="{notValid: errors.phone }">
-								<span class="label">Номер телефона</span>
-								<div class="inputBox">
-									<Field name="phone" type="tel" placeholder="+7" :value="this.getCurrUser.user.phone" />
-									<!-- <Field v-model="mobile" name="mobile" v-slot="{ field }" type="tel" placeholder="+7">
-										<input v-bind="field">
-									</Field> -->
-									
-								</div>
-								<ErrorMessage class="errorTitle" name="phone" />
-							</label>
+								<label class="inputWrap" :class="{notValid: errors.birthdate }">
+									<span class="label">Дата вашего рождения</span>
+									<div class="inputBox inputDate">
+										<Field name="birthdate" type="date" placeholder="Выберите дату..." v-model="this.getCurrUser.user.birthdate" />
+									</div>
+									<ErrorMessage class="errorTitle" name="birthdate" />
+								</label>
+
+								<label class="inputWrap" :class="{notValid: errors.phone }">
+									<span class="label">Номер телефона</span>
+									<div class="inputBox">
+										<Field name="phone" type="tel" placeholder="+7" v-model="this.getCurrUser.user.phone" />
+										<!-- <Field v-model="mobile" name="mobile" v-slot="{ field }" type="tel" placeholder="+7">
+											<input v-bind="field">
+										</Field> -->
+										
+									</div>
+									<ErrorMessage class="errorTitle" name="phone" />
+								</label>
+								
+							</div>
 							
 						</div>
-						
-					</div>
 
 
-					<div class="more_wrap midWrap marginB12">
-						<span class="the_title marginB12 fontFamilyEB blockWrap">Выберите статус</span>
-						<div class="statuses_wrap">
-							<span class="the_status" :class="{active: this.getCurrUser.user.is_mother == 0}" @click="switchBabyBornStatus()">Я беременна</span>
-							<span class="the_status" :class="{active: this.getCurrUser.user.is_mother == 1}" @click="switchBabyBornStatus()">Я мама</span>
-						</div>
-						<div class="hidden_inputs">
-							<Field name="is_mother" placeholder="Ребенок рожден" :value="this.getCurrUser.user.is_mother" />
-						</div>
-						<div class="formWrap">
+						<div class="more_wrap midWrap marginB12">
+							<span class="the_title marginB12 fontFamilyEB blockWrap">Выберите статус</span>
+							<div class="statuses_wrap">
+								<span class="the_status" :class="{active: this.getCurrUser.user.is_mother == 0}" @click="switchBabyBornStatus()">Я беременна</span>
+								<span class="the_status" :class="{active: this.getCurrUser.user.is_mother == 1}" @click="switchBabyBornStatus()">Я мама</span>
+							</div>
+							<div class="hidden_inputs">
+								<Field ref="isMotherStatus" name="is_mother" placeholder="Ребенок рожден" v-model="this.getCurrUser.user.is_mother" />
+							</div>
+							<div class="formWrap">
 
-							<label class="inputWrap" :class="{ hiddenWrap: this.getCurrUser.user.is_mother == 1, notValid: errors.pregnancy_weeks }">
-								<span class="label">Какой срок?</span>
-								<div class="inputBox">
-									<Field ref="bornFalse" name="pregnancy_weeks" type="number" placeholder="В неделях" />
-								</div>
-								<ErrorMessage class="errorTitle" name="pregnancy_weeks" />
-							</label>
-							<label class="inputWrap" :class="{ hiddenWrap: this.getCurrUser.user.is_mother == 0, notValid: errors.baby_born }">
-								<span class="label">Когда родился малыш?</span>
-								<div class="inputBox babyBorned">
-									<Field ref="bornTrue" name="baby_born" type="date" placeholder="Выберите дату..." :value="this.getCurrUser.user.baby_born" />
-								</div>
-								<ErrorMessage class="errorTitle" name="baby_born" />
-							</label>
+								<label class="inputWrap" :class="{ hiddenWrap: this.getCurrUser.user.is_mother == 1, notValid: errors.pregnancy_weeks }">
+									<span class="label">Какой срок?</span>
+									<div class="inputBox">
+										<Field ref="bornFalse" name="pregnancy_weeks" type="number" placeholder="В неделях" v-model="pregnancyWeeks" />
+									</div>
+									<ErrorMessage class="errorTitle" name="pregnancy_weeks" />
+								</label>
+								<label class="inputWrap" :class="{ hiddenWrap: this.getCurrUser.user.is_mother == 0, notValid: errors.baby_born }">
+									<span class="label">Когда родился малыш?</span>
+									<div class="inputBox babyBorned">
+										<Field ref="bornTrue" name="baby_born" type="date" placeholder="Выберите дату..." v-model="this.getCurrUser.user.baby_born" />
+									</div>
+									<ErrorMessage class="errorTitle" name="baby_born" />
+								</label>
+								
+							</div>
 							
 						</div>
-						
-					</div>
+
+						<button ref="mainSubmitButton" class="profileSubmitButton">Отправить</button>
+
+
+					</Form>
+			
 
 					<div class="delete_wrap bottomWrap">
-						<span class="theButton buttonTransparent fontSize16" @click="deleteAccountTrue">Удалить мой аккаунт</span>
+						<span class="theButton buttonTransparent fontSize16" @click="popupToDeleteAccount('true')">Удалить мой аккаунт</span>
 					</div>
 
 
@@ -131,15 +136,14 @@
 
 				<!-- <bottom-line></bottom-line> -->
 
-			</Form>
 			
 		</div>
 
 
-		<div class="contentWrap finish_delete_container" :class="{hiddenWrap: !this.deleteAccount}">
+		<div class="contentWrap finish_delete_container" :class="{hiddenWrap: this.popupToDelete == 'false'}">
 
 			<div class="topLine flexWrap">
-				<span class="theButton leftButton buttonTransparent" @click="deleteAccountFalse">Отмена</span>
+				<span class="theButton leftButton buttonTransparent" @click="popupToDeleteAccount('false')">Отмена</span>
 				<h1 class="theTitle alignCenter">Удаление профиля</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
@@ -148,7 +152,7 @@
 				<img src="./../assets/images/delete.png" alt="delete-account" class="the_img">
 				<span class="the_title blockWrap fontFamilyEB marginB12">Подтвердите заявку на удаление профиля</span>
 				<p class="the_desc blockWrap fontSize14 marginB12">Ваш профиль будет удалён окончательно и безвозвратно. Все ваши покупки, закладки и все данные будут потеряны.</p>
-				<span class="theButton buttonPrimary buttonOptimal fontSize16" @click="deleteAccountConfirm">Подтвердить</span>
+				<span class="theButton buttonPrimary buttonOptimal fontSize16" @click="requestDeleteProfile">Подтвердить</span>
 			</div>
 
 		</div>
@@ -159,9 +163,10 @@
 
 <script>
 import axios from 'axios';
-import {mapGetters, mapMutations} from 'vuex';
+import {mapActions, mapGetters, mapMutations} from 'vuex';
 // @ is an alias to /src
 // import DefaultLikes from '@/components/DefaultLikes.vue'
+import FileUpload from "@/components/FileUpload.vue";
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as yup from 'yup';
 import "yup-phone";
@@ -177,7 +182,7 @@ export default {
 			name: yup.string().required('Пожалуйста, заполните это поле').typeError('Поле обязателено').min(2, 'Поле должно содержать не менее 2 символов').label('Имя'),
 			birthdate: yup.date().typeError('Введите дату рождения').max(new Date(), 'Выберете корректную дату').label('День рождения'),
 			is_mother: yup.string().required('Пожалуйста, заполните это поле').typeError('Поле обязателено').min(1, 'Введите корректные данные').max(1, 'Введите корректные данные').label('Ребенок рожден'),
-			pregnancy_weeks: yup.number().min(1, 'Введите корректный срок').max(40, 'Введите корректный срок').typeError().label('Количество недель'),
+			pregnancy_weeks: yup.number().min(0, 'Введите корректный срок').max(40, 'Введите корректный срок').typeError().label('Количество недель'),
 			baby_born: yup.date().typeError('Введите дату рождения малыша').max(new Date(), "Выберете корректную дату").label('День рождения'),
 			phone: yup.string().when('mobile', {
 				is: (value) => value?.length > 0,
@@ -200,12 +205,15 @@ export default {
 
 	data(){
 		return{
+			file: {},
 			hasPhoto: false,
 			born: false,
 			showErrors: false,
 			showNotification: false,
 			showNotificationDelete: false,
-			deleteAccount: false,
+			showNotificationPhoto: false,
+			popupToDelete: 'false',
+			pregnancyWeeks: 0,
 		}
 	},
 
@@ -214,6 +222,7 @@ export default {
 		Form,
     Field,
     ErrorMessage,
+		FileUpload,
   },
 
 
@@ -234,41 +243,87 @@ export default {
 			changeUserData: 'changeUserData',
 			switchBabyBornStatus: 'switchBabyBornStatus',
 		}),
+
+		...mapActions({
+			fetchUserData: 'fetchUserData',
+		}),
+
+		getUploadedData(file) {
+      this.file = file;
+			setTimeout(() => {
+				this.showNotificationPhoto = true;
+			}, 400);
+			setTimeout(() => {
+				this.showNotificationPhoto = false;
+			}, 3000);
+    },
 		
 
-		// Удалить аккаунт
-		deleteAccountTrue(){
-			this.deleteAccount = true;
-		},
-		deleteAccountFalse(){
-			this.deleteAccount = false;
-		},
-		// Подтвердить удаление аккаунта
-		deleteAccountConfirm(){
-			this.deleteAccount = false;
-			setTimeout(() => {
-        this.showNotificationDelete = true;
-      }, 400);
-			setTimeout(() => {
-        this.showNotificationDelete = false;
-      }, 5000);
+		setPregnancyWeeks(){
+			if(this.getCurrUser.user.pregnancy_start){
+				const currentDate = new Date();
+				const startDate = new Date(this.getCurrUser.user.pregnancy_start);
+				const days = Math.floor((currentDate - startDate) /
+					(24 * 60 * 60 * 1000));
+				const convertToWeeks = Math.ceil(days / 7);
+				// console.log(convertToWeeks);
+				this.pregnancyWeeks = convertToWeeks;
+			}else{
+				this.pregnancyWeeks = 0;
+			}
+			
 		},
 
-		// Сохранение данных профиля
-		// onSubmit(values){
-		// 	console.log(JSON.stringify(values, null, 2));
-		// 	setTimeout(() => {
-    //     this.showNotification = true;
-    //   }, 400);
-		// 	setTimeout(() => {
-    //     this.showNotification = false;
-    //   }, 5000);
-		// },
+		// Удалить аккаунт
+		popupToDeleteAccount(bool){
+			// console.log('Попап на удаление');
+			this.popupToDelete = bool;
+			// console.log(this.popupToDelete);
+		},
+
+
+
+		requestDeleteProfile() {
+			
+			try{
+				setTimeout( async () => {
+					const response = await axios.delete('https://api.xn--80axb4d.online/v1/user', {
+						headers: {
+							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
+							'Content-Type': 'application/json',
+							'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
+							'Access-Control-Allow-Origin': '*',
+						}
+					});
+					// console.log(response);
+					if(response){
+						// console.log(response);
+						window.scrollTo(0,0);
+						this.popupToDelete = 'false';
+						setTimeout(() => {
+							this.showNotificationDelete = true;
+						}, 400);
+						setTimeout(() => {
+							this.showNotificationDelete = false;
+						}, 3000);
+					}
+					
+				}, 500 );
+
+			} catch(e){
+				console.log(e);
+			} finally {}
+
+    },
+
 
 
 		onSubmit(user) {
-			// console.log('Данные на сохранение отправлены');
-			console.log(user);
+			if(user.pregnancy_weeks){
+				user.pregnancy_weeks = Math.round(user.pregnancy_weeks);
+			}else{
+				user.pregnancy_weeks = 0;
+			}
 			try{
 				setTimeout( () => {
 					const response = 
@@ -282,11 +337,10 @@ export default {
 						}
 					);
 					// console.log('Данные обработаны');
-					console.log(response);
-					// this.$router.push("/");
-					// this.setCurUserContent(response.data);
+					// console.log(response);
 
-					this.changeUserData(user);
+					// this.changeUserData(user);
+					this.fetchUserData();
 
 					setTimeout(() => {
 						this.showNotification = true;
@@ -319,6 +373,12 @@ export default {
 			this.$refs.bornTrue.reset();
 		},
 
+
+		// switchBabyBornStatus(el){
+		// 	this.$refs.isMotherStatus.reset();
+		// },
+
+
 		// Состояние фото профиля
 		hasPhotoTrue(){
 			this.hasPhoto = true;
@@ -327,6 +387,23 @@ export default {
 			this.hasPhoto = false;
 		},
 
+	},
+
+
+	mounted(){
+		this.fetchUserData();
+		this.setPregnancyWeeks();
+	},
+
+
+	watch:{
+		getCurrUser: {
+			handler(newVal){
+				this.setPregnancyWeeks();
+				// console.log('Новое значение: ' + newVal);
+			},
+			deep: true
+		}
 	},
 
 }
@@ -355,12 +432,20 @@ export default {
 		.notificationWrap{
 			bottom: 60px;
 		}
+
 	
 		.contentSubWrap.profile_wrap{
 			width: 100%;
 			padding: 16px 0;
 			padding: 0;
 			background-color: #F3F5F6;
+			.profileSubmitButton{
+				width: 0;
+				height: 0;
+				opacity: 0;
+				position: absolute;
+				overflow: hidden;
+			}
 			
 			.photo_wrap{
 				background-color: #FFF;
@@ -419,10 +504,10 @@ export default {
 				padding: 20px 16px;
 				position: relative;
 				.hidden_inputs{
-					// height: 0;
-					// opacity: 0;
-					// overflow: hidden;
-					// position: absolute;
+					height: 0;
+					opacity: 0;
+					overflow: hidden;
+					position: absolute;
 				}
 				.the_title{
 				}
@@ -486,6 +571,13 @@ export default {
 		justify-content: center;
 		padding-left: 10px;
 		padding-right: 10px;
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 100;
+		width: 100%;
+		margin: 0 auto;
+		max-width: none;
 		.contentSubWrap.finish_delete_wrap{
 			max-width: 480px;
 			width: 100%;
@@ -523,6 +615,18 @@ export default {
 
 	.mainContainer{
 		.contentWrap{
+			.topLine{
+				.theTitle{
+					width: 40%;
+					max-width: 40%;
+					min-width: 40%;
+				}
+				.theButton{
+					width: 30%;
+					max-width: 30%;
+					min-width: 30%;
+				}
+			}
 			&.stepRegSecond{
 				margin-bottom: 0px;
 			}

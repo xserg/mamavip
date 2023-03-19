@@ -1,50 +1,41 @@
 <template>
   <div class="mainContainer">
 
-		<div class="contentWrap" v-if="getCurrUser.user.purchased_lectures.length">
+		<div class="contentWrap" v-if="currLoadingStatus || !this.getPurchased">
+			<div class="contentSubWrap roller_box">
+				<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+			</div>
+		</div>
+
+		<div v-else class="contentWrap" :class="{centered: this.getPurchased === 'e'}">
 
 			<div class="topLine flexWrap">
 				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Купленные</h1>
-				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
+				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Готово</button>
 			</div>
 
 			<elements-list 
 				class="contentSubWrap"
-				v-if="getCurrUser.user.purchased_lectures"
-				:posts="getCurrUser.user.purchased_lectures"
+				v-if="this.getPurchased && this.getPurchased !== 'e' && this.getPurchased !== undefined"
+				:posts="this.getPurchased"
 			></elements-list>
 
-			<div class="contentSubWrap roller_box" v-else>
-				<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-			</div>
-			<!-- <bottom-line></bottom-line> -->
-			
-		</div>
-
-
-
-
-		<div class="contentWrap centered" v-else>
-
-			<div class="topLine flexWrap">
-				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack"/>
-				<h1 class="theTitle alignCenter">Купленные</h1>
-				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
-			</div>
-
-			<div class="contentSubWrap empty_wrap flexWrap">
+			<div class="contentSubWrap empty_wrap flexWrap" v-if=" this.getPurchased == undefined || this.getPurchased == '' " >
 				<img class="the_img" src="./../assets/images/emptyState.png" alt="img">
 				<span class="the_title fontFamilyEB">Нет купленных лекций</span>
 				<!-- <p class="the_desc fontSize14">Сохраняйте лекции, чтобы вернуться к ним в любой момент</p> -->
 				<router-link class="theButton buttonPrimary buttonOptimal fontSize16" to="/" @click="setHomeTab(), setRouterAnimate()">Искать лекции</router-link>
 			</div>
 
-			<!-- <bottom-line></bottom-line> -->
+			<div class="element_box" v-if="this.getPurchased == 'e'">
+				<img class="the_img" src="./../assets/images/noResponse.png">
+				<span class="info_title fontFamilyB">Данные не загрузились</span>
+				<span class="info_subtitle fontSize14">Попробуйте обновить страницу</span>
+				<span @click="this.fetchPurchased(1000)" class="theButton buttonTertiary buttonOptimal">Обновить</span>
+			</div>
 
 		</div>
-
-
 
 	</div>
 </template>
@@ -53,7 +44,7 @@
 // @ is an alias to /src
 // import DefaultLikes from '@/components/DefaultLikes.vue'
 
-import {mapState, mapMutations, mapGetters} from 'vuex';
+import {mapState, mapMutations, mapGetters, mapActions} from 'vuex';
 
 import ElementsList from '@/components/ElementsList';
 
@@ -71,6 +62,9 @@ export default {
 			setHomeTab: 'setHomeTab',
 			setRouterAnimate: 'setRouterAnimate',
 		}),
+		...mapActions({
+			fetchPurchased: 'content/fetchPurchased',
+		}),
 
 	},
 
@@ -83,9 +77,14 @@ export default {
 		...mapState({
 		}),
 		...mapGetters({
+			currLoadingStatus: 'content/currLoadingStatus',
 			getCurrUser: 'getCurrUser',
-			// sortedElementsBought: 'content/sortedElementsBought',
+			getPurchased: 'content/getPurchased',
 		}),
+	},
+
+	mounted(){
+		this.fetchPurchased(1000);
 	},
 
 

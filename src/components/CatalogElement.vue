@@ -1,13 +1,13 @@
 <template>
 
-	<div class="the_element marginB12" @mousedown="handleMouseDown" @click="handleClick">  
+	<div class="the_element catalog_element marginB12" @mousedown="handleMouseDown" @click="handleClick">  
 		<!-- @mousedown="handleMouseDown(event)" -->
 		<div class="the_element_box">
 			<!-- <img src="./../assets/images/element.jpg" alt="element"> -->
-			<img v-if="post.preview_picture" :src="post.preview_picture" alt="element">
+			<img v-if="filterCatalogElement.preview_picture" :src="filterCatalogElement.preview_picture" alt="element">
 			<span class="post_noimg" v-else ></span>
 		</div>
-		<span class="the_title fontSize16 fontFamilyEB">{{ post.title }}</span>
+		<div class="the_title fontSize16 fontFamilyEB" style="font-size:16px !important;">{{ filterCatalogElement.title }}</div> 
 		<!-- <span class="the_title fontSize14 fontFamilyEB">Короткий заголовок у элемента</span> -->
 	</div>
 	
@@ -33,6 +33,7 @@ export default({
 	data(){
 		return{
 			startX: 0,
+			filterCatalogElement: {},
 			// post: {},
 		}
 	},
@@ -44,9 +45,13 @@ export default({
 			setCurrentCategory: 'content/setCurrentCategory',
 			setCurrentCategoryElements: 'content/setCurrentCategoryElements',
 		}),
-		...mapActions({
-      fetchCategoryElements: 'content/fetchCategoryElements',
-    }),
+		// ...mapActions({
+    //   fetchCategoryElements: 'content/fetchCategoryElements',
+    // }),
+
+		setCatalogElement(){
+			this.filterCatalogElement = this.post;
+		},
 
 		routeToElement(){
 			router.push('/catalog/' + this.post.slug);  
@@ -67,8 +72,9 @@ export default({
 				setTimeout(() => {
 					this.routeToElement();
 				}, 50);
-				this.setCurrentCategory(this.post);
-				this.fetchCategoryElements(this.post.slug);
+				// this.setCurrentCategory(this.post);
+				//ПОКАТЕГОИИИИИИИИ
+				// this.fetchCategoryElements(this.post.slug);
 				// this.setCurrentCategoryElements($post.slug);
 				// console.log(this.post);
 			}
@@ -79,13 +85,17 @@ export default({
 
 	},
 
+	mounted(){
+		this.setCatalogElement();
+	},
+
 });
 </script>
 
 
 <style lang="scss" scoped>
 
-.the_element{
+.the_element.catalog_element{
 	display: block;
 	width: 100%;
 	position: relative;
@@ -127,6 +137,7 @@ export default({
 	.the_title{
 		display: block;
 		color: #23292D;
+		font-size: 1.06rem !important;
 	}
 }
 
@@ -134,8 +145,15 @@ export default({
 
 /* -------- @media ----------- */
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 550px) {
 
+	.the_element.catalog_element{
+		.the_title{
+			max-height: 2.66rem;
+			line-height: 1.33rem;
+			font-size: 0.93rem !important;
+		}
+	}
 }
 
 

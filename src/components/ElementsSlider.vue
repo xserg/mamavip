@@ -41,6 +41,7 @@ export default({
 		return{
 			sliderLoaded: false, 
 			sliderOptions: {
+				infinite: false,
 				dots: false,
 				navButtons: false,
 				slidesToShow: 1.5,
@@ -100,6 +101,7 @@ export default({
 		opacity: 1;
 	}
 	.the_element{
+		max-width: 50%;
 		padding: 0 6px;
 		.top_line{
 			padding: 8px 16px;
@@ -113,9 +115,13 @@ export default({
 
 /* -------- @media ----------- */
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 600px) {
 
-
+	.theSlider{
+		.the_element{
+			max-width: 67%;
+		}
+	}
 }
 
 </style>

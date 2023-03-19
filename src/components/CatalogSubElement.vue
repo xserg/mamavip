@@ -39,12 +39,12 @@ export default({
 	methods:{
     ...mapMutations({
       setRouterAnimate: 'setRouterAnimate',
-			setCurrentSubCategory: 'content/setCurrentSubCategory',
-			setCurrentCategorySubElements: 'content/setCurrentSubCategoryElements',
+			// setCurrentSubCategory: 'content/setCurrentSubCategory',
+			// setCurrentCategorySubElements: 'content/setCurrentSubCategoryElements',
     }),
-		...mapActions({
-      fetchSubCategoryElements: 'content/fetchSubCategoryElements',
-    }), 
+		// ...mapActions({
+    //   fetchSubCategoryElements: 'content/fetchSubCategoryElements',
+    // }), 
 		
 
 		routeToElement(){
@@ -67,9 +67,8 @@ export default({
 					this.routeToElement();
 				}, 50);
 				// console.log('Кликнули по подкатегории');
-				this.setCurrentSubCategory(this.subCategory);
-				this.fetchSubCategoryElements(this.subCategory.id); 
-				// this.setCurrentCategoryElements($post.slug);
+				// this.setCurrentSubCategory(this.subCategory);
+				// this.fetchSubCategoryElements(this.subCategory.id); 
 				// console.log(this.subCategory); 
 			}
 			this.startX = 0;

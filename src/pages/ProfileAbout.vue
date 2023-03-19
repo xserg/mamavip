@@ -2,33 +2,62 @@
   <div class="mainContainer">
 		<div class="contentWrap">
 
+			<div class="notificationWrap flexWrap fontSize14" :class="{ ghostWrap: !this.showNotification }">
+					<p>{{ notificationMess }}</p>
+					<div class="button_wrap">
+						<span class="separate"></span>
+						<span class="theButton close_button" @click="hideMessages"></span>
+					</div>
+				</div>
+
 			<div class="topLine flexWrap">
 				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">О приложении</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			<div class="contentSubWrap">
+
+			<div class="topLine flexWrap popupWrap" v-if="popupInfo && !getLoadingStatus && this.getInfos.data">
+				<a @click="switchPopupInfo(false)" class="theButton leftButton buttonTransparent buttonBack" />
+				<h1 class="theTitle alignCenter">{{ this.getInfos.data.app_info[0].app_show_qr_title }}</h1>
+				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
+			</div> 
+
+			<div class="contentSubWrap popupWrap" v-if="popupInfo && !getLoadingStatus && this.getInfos.data">
+				<div class="infoWrap">
+					<!-- <h2>{{ this.getCurrentFaq.title }}</h2> -->
+					<img :src="this.getInfos.data.app_info[0].app_show_qr_link"/>
+				</div>
+			</div>
+
+
+			<div v-if="getLoadingStatus" class="contentSubWrap">	
+				<div class="info_wrap roller_box">
+					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+				</div>
+			</div>	
+
+			<div class="contentSubWrap" v-if="!getLoadingStatus && this.getInfos.data">
 				<div class="title_wrap topWrap marginB12 flexWrap">
-					<span class="the_title fontSize20 fontFamilyEB">Школа мам и пап</span>
-					<span class="the_subtitle fontSize32 fontFamilyEB">«Нежность»</span>
+					<!-- <span class="the_title fontSize20 fontFamilyEB">{{ this.getInfos.data.app_info[0].app_title }}</span> -->
+					<span class="the_subtitle fontSize32 fontFamilyEB">{{ this.getInfos.data.app_info[0].app_title }}</span>
 				</div>
 				<div class="info_wrap marginB12 midWrap">
-					<p>(Описание приложения идёт сюда) Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
-					<p>(Описание приложения идёт сюда) Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
+					<p>{{ this.getInfos.data.app_info[0].about_app }}</p>
 				</div>
 				<div class="author_wrap marginB12 midWrap">
 					<span class="the_title fontSize14">Автор</span>
-					<span class="the_value fontFamilyEB">Сергей Тарасов</span>
+					<span class="the_value fontFamilyEB">{{ this.getInfos.data.app_info[0].app_author_name }}</span>
 				</div>
 				<div class="links_wrap bottomWrap">
 					<div class="link_wrap" @click="copyLink">
-						<span class="the_title fontSize14">Поделиться ссылкой</span>
-						<span class="the_value fontFamilyEB">www.google.com</span>
+						<span class="the_title fontSize14">{{ this.getInfos.data.app_info[0].app_link_share_title }}</span>
+						<span id="linkforcopy" class="the_value fontFamilyEB">{{ this.getInfos.data.app_info[0].app_link_share_link }}</span>
 					</div>
-					<div class="link_wrap the_qr" @click="copyLink">
-						<span class="the_title fontSize14">Показать QR-код</span>
-						<span class="the_value fontFamilyEB">www.google.com</span>
+					<!-- this.getInfos.data.app_info[0].app_link_share_link -->
+					<div class="link_wrap the_qr" @click="switchPopupInfo(true)">
+						<span class="the_title fontSize14">{{ this.getInfos.data.app_info[0].app_show_qr_title }}</span>
+						<span class="the_value fontFamilyEB">{{ this.getInfos.data.app_info[0].app_link_share_link }}</span>
 					</div>
 				</div>
 			</div>
@@ -41,13 +70,17 @@
 
 <script>
 // @ is an alias to /src
-import {mapMutations} from 'vuex';
+import {mapGetters, mapMutations, mapActions} from 'vuex';
 
 export default {
   name: 'ProfileAbout',
 
 	data(){
 		return{
+			message: '',
+			popupInfo: false,
+			showNotification: false,
+			notificationMess: '',
 		}
 	},
 
@@ -56,15 +89,45 @@ export default {
 		...mapMutations({
 			setRouterAnimate: 'setRouterAnimate',
 		}),
+		...mapActions({
+			fetchInfos: 'fetchInfos',
+		}),
 
 		copyLink(){
-			console.log('Скопировано');
+			const copyText = document.getElementById("linkforcopy").textContent;
+      navigator.clipboard.writeText(copyText);
+			setTimeout(() => {
+				this.showNotification = true;
+				this.notificationMess = 'Скопировано'
+			}, 400);
+			setTimeout(() => {
+				this.showNotification = false;
+			}, 3000);
+
+		},
+		switchPopupInfo(bool){
+			this.popupInfo = bool;
+		},
+
+		hideMessages(){
+			this.showNotification = false;
 		},
 
 	},
 
   components: {
   },
+
+	computed: {
+		...mapGetters({
+			getLoadingStatus: 'getLoadingStatus',
+			getInfos: 'getInfos',
+		}),
+  },
+
+	mounted(){
+		this.fetchInfos();
+	},
 
 
 }
@@ -80,7 +143,37 @@ export default {
 		padding-bottom: 48px;
 		background-color: #FFF;
 		justify-content: flex-start;
+		position: relative;
+		.notificationWrap{
+			bottom: 60px;
+		}
+		.topLine.popupWrap{
+			background-color: #FFF;
+			width: 100%;
+			z-index: 110;
+			position: fixed;
+			left: 0;
+			top: 0;
+		}
+		.contentSubWrap.popupWrap{
+			min-height: calc(100vh - 45px);
+			width: 100%;
+			z-index: 105;
+			position: absolute;
+			left: 0; 
+			top: 45px;
+			// height: calc(100% - 45px);
+			padding: 8px 16px;
+			padding-bottom: 58px;
+			background-color: #FFF;
+			img{
+				display: block;
+				width: 100%;
+				max-width: 320px;
+				margin: 16px auto;
 
+			}
+		}
 		.contentSubWrap{
 			width: 100%;
 			padding: 16px 0px;
@@ -93,8 +186,12 @@ export default {
 				flex-direction: column;
 				align-items: center;
 				justify-content: center;
+				text-align: center;
+				padding-top: 18px;
+				padding-bottom: 18px;
 				.the_title, .the_subtitle{
 					color: #23292D;
+					text-align: center;
 				}
 			}
 			.info_wrap{

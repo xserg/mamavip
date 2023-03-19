@@ -1,19 +1,17 @@
 import axios from 'axios';
 
-// export const HTTP = axios.create({
-//   baseURL: `https://api.xn--80axb4d.online/v1/`,
-// 	// baseURL: 'http://jsonplaceholder.typicode.com/',
-// 	// headers: { X-XSRF-TOKEN: `${token}`}, 
-// 	headers: {
-//     Authorization: 'Bearer ' + '1|S5UQcrN2vnXSUfc8KoNh5xgEeipB2gyobh5Ms7IO',
-//   }
-// })
-
 
 export const contentModule = {
 	state: () => ({
 
 		statusIsLoading: false,
+
+		lectureAccess: '',
+
+		savedLecturs: [],
+		purchasedLecturs: [],
+		watchedLecturs: [],
+		notViewedLecturs: [],
 
 		// Отсюда сейчас идут "фильтры" по НЕПРОСМОТРЕННЫЕ, КУПЛЕННЫЕ, СОХРАНЕННЫЕ, ПРОСМОТРЕННЫЕ
 		posts: [],
@@ -60,6 +58,9 @@ export const contentModule = {
 		currentSubCategoryElements: { 
 			data: [],
 		},
+		currentSubCategorySameElements: { 
+			data: [],
+		},
 		currentSubCategoryElementsError: false,
 
 
@@ -75,6 +76,11 @@ export const contentModule = {
 
 	}),
 	getters: {
+
+
+		getLectureAccess(state){
+			return state.lectureAccess;
+		},
 
 		getSertificatesStatus(state){
 			return state.sertificatesStatus;
@@ -104,30 +110,24 @@ export const contentModule = {
 			}
 		},
 
-		// Лекции Пользователя (ФИЛЬТР)
-		sortedElementsSaved(state){
-			return state.posts;
+		getSaved(state){
+			return state.savedLecturs;
 		},
-		sortedElementsBought(state){
-			return state.posts;
+		getPurchased(state){
+			return state.purchasedLecturs;
 		},
-		sortedElementsViewed(state){
-			return state.posts;
+		getWatched(state){
+			return state.watchedLecturs;
+		},
+		getNotViewed(state){
+			return state.notViewedLecturs;
 		},
 		
+	
 		sortedElementsPromopack(state){
 			return state.posts;
 		},
 
-		// unknow
-		sortedElementsBegin(state){
-			return state.posts;
-		},
-
-		// Рекомендованное: ЭЛЕМЕНТ
-		recommendationElement(state){
-			return state.post;
-		},
 
 		// Лекторы Элементы
 		teachersList(state){
@@ -166,44 +166,30 @@ export const contentModule = {
 			return state.currentSubCategoryElements;
 		},
 
+		currentSubCategoryListFilter(state, rootState){
+			if(state.currentSubCategoryElements.data){
+				return state.currentSubCategorySameElements = state.currentSubCategoryElements.data.filter(p => p.id !== rootState.getCurrentLecture.id);
+			}else{
+				return state.currentSubCategorySameElements = [];
+			}
+			
+		},
+
 		getCurrentLecture(state){
 			return state.currentLecture;
 		},
-		
-
 
 		// Временный вывод сертификатов (ПЕРЕДЕЛАТЬ ПОД ТЕКУЩЕГО ЛЕКТОРА)
 		sertificateslist(state){
 			return state.sertificates;
 		},
 		
-		
-		// sortedPosts(state){
-		// 	return [...state.posts].sort( (post1, post2) => {
-		// 		return post1[state.selectedSort]?.localeCompare(post2[state.selectedSort])
-		// 	} );
-		// },
-		// sortedAndSearchedPosts(state, getters){
-		// 	return getters.sortedPosts.filter(post => post.title.toLowerCase().includes(state.searchQuery))
-		// }
 	},
 	mutations: {
 
-		// initialiseVuexContent(state) {
-		// 	if (localStorage.getItem('currentCategory')) {
-		// 		state.currentCategory = JSON.parse(localStorage.currentCategory)
-		// 	}
-		// 	if (localStorage.getItem('currentCategoryElements')) {
-		// 		state.currentCategoryElements = JSON.parse(localStorage.currentCategoryElements)
-		// 	}
-		// 	if (localStorage.getItem('currentSubCategory')) {
-		// 		state.currentSubCategory = JSON.parse(localStorage.currentSubCategory)
-		// 	}
-		// 	if (localStorage.getItem('currentSubCategoryElements')) {
-		// 		state.currentSubCategoryElements = JSON.parse(localStorage.currentSubCategoryElements)
-		// 	}
-		// },
-
+		setLectureAccess(state, currLectureId) {
+			state.lectureAccess = currLectureId;
+		},
 
 		setSertificatesStatus(state, bool) {
 			state.sertificatesStatus = bool
@@ -257,6 +243,20 @@ export const contentModule = {
 			state.recommended = elements;
 		},
 
+		setSaved(state, elements){
+			state.savedLecturs = elements;
+		},
+		setPurchased(state, elements){
+			state.purchasedLecturs = elements;
+		},
+		setWatched(state, elements){
+			state.watchedLecturs = elements;
+		},
+		setNotViewed(state, elements){
+			state.notViewedLecturs = elements;
+		},
+
+
 		// Получить список каталога-категорий (под axios запрос)
 		setCatalog(state, categories) {
 			state.catalog = categories;
@@ -272,9 +272,7 @@ export const contentModule = {
 		setCurrentCategoryError(state, bool){
 			state.currentCategoryError = bool;
 		},
-		setEmptyCurrentCategoryElements(state){
-			state.currentCategoryElements = [];
-		},
+
 		setCurrentCategoryElements(state, categories){
 			state.currentCategoryElements = categories;
 		},
@@ -283,15 +281,13 @@ export const contentModule = {
 		},
 
 		// Обновить текущую Активную подкатегорию + ее элементы
-		setCurrentSubCategory(state, categories){
-			state.currentSubCategory = categories;
+		setCurrentSubCategory(state, category){
+			state.currentSubCategory = category;
 		},
 		setCurrentSubCategoryError(state, bool){
 			state.currentSubCategoryError = bool;
 		},
-		setEmptyCurrentSubCategoryElements(state){
-			state.currentSubCategoryElements = [];
-		},
+
 		setCurrentSubCategoryElements(state, categories){
 			state.currentSubCategoryElements = categories;
 		},
@@ -319,10 +315,31 @@ export const contentModule = {
 	},
 	actions: {
 
+
+		async checkLectureAccess({state, rootState, commit}, lectureId){
+			try{
+				commit('setStatusLoading', true);
+				commit('setLectureAccess', '');
+				setTimeout( async () => {
+					const response = await axios.post('https://api.xn--80axb4d.online/v1/lecture/1/watch', {}, {
+					// const response = await axios.post('https://api.xn--80axb4d.online/v1/lecture/' + lectureId + '/watch', {}, {
+						headers: {
+							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+						}
+					});
+					console.log(response.data.data);
+					commit('setLectureAccess', response.data.data);
+					commit('setStatusLoading', false);
+				}, 50 )
+				
+			} catch(e){
+				console.log(e);
+			} finally {}
+		},
+
+
 		async fetchLectors({state, rootState, commit}){
 			try{
-				// пишем коммит, так как работаем с экшеном,
-				// значением берем функцию setLoading из мутаций, вторым параметром передаем то, что хотим присвоить
 				commit('setStatusLoading', true);
 				setTimeout( async () => {
 					const response = await axios.get('https://api.xn--80axb4d.online/v1/lectors', {
@@ -330,10 +347,9 @@ export const contentModule = {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
 					});
-					// commit('setTotalPages', Math.ceil(response.headers['x-total-count'] / state.limit));
 					commit('setLectors', response.data);
 					commit('setStatusLoading', false);
-				}, 1000 )
+				}, 50 )
 				
 			} catch(e){
 				console.log(e);
@@ -343,8 +359,6 @@ export const contentModule = {
 
 		async fetchCurrentLector({state, rootState, commit}, lectorId){
 			try{
-				// пишем коммит, так как работаем с экшеном,
-				// значением берем функцию setLoading из мутаций, вторым параметром передаем то, что хотим присвоить
 				commit('setStatusLoading', true);
 				commit('setSertificatesStatus', false);
 				commit('setEmptyCurrentLector');
@@ -355,11 +369,10 @@ export const contentModule = {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
 					});
-					// commit('setTotalPages', Math.ceil(response.headers['x-total-count'] / state.limit));
 					commit('setCurrentLector', response.data);
 					commit('setStatusLoading', false);
 					commit('setSertificatesStatus', true);
-				}, 1000 )
+				},50 )
 				
 			} catch(e){
 				console.log(e);
@@ -370,8 +383,6 @@ export const contentModule = {
 
 		async fetchCurrentLectorElements({state, rootState, commit}, lectorId){
 			try{
-				// пишем коммит, так как работаем с экшеном,
-				// значением берем функцию setLoading из мутаций, вторым параметром передаем то, что хотим присвоить
 				commit('setStatusLoading', true);
 				commit('setSertificatesStatus', false);
 				commit('setEmptyCurrentLectorElements');
@@ -381,19 +392,17 @@ export const contentModule = {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
 					});
-					// commit('setTotalPages', Math.ceil(response.headers['x-total-count'] / state.limit));
 					commit('setCurrentLectorElements', response.data);
 					commit('setStatusLoading', false);
 					commit('setSertificatesStatus', true);
 					commit('setCurrentLectorElementsError', false);
-				}, 1000 )
+				}, 50 )
 				
 			} catch(e){
 				commit('setStatusLoading', false);
 				commit('setCurrentLectorElementsError', true);
 			} finally {}
 		},
-
 
 
 		async fetchCatalog({rootState, state, commit}){
@@ -408,7 +417,7 @@ export const contentModule = {
 					commit('setCatalog', response.data);
 					commit('setStatusLoading', false);
 					commit('setCatalogError', false);
-				}, 1000 )
+				}, 50 )
 				
 			} catch(e){
 				commit('setStatusLoading', false);
@@ -416,90 +425,185 @@ export const contentModule = {
 			} finally {}
 		},
 
-		async fetchPromopack({state, rootState, commit}){
+
+		async fetchRecommended({state, rootState, commit}){
 			try{
+				const emptyData = '';
 				commit('setStatusLoading', true);
-				commit('setEmptyPromopack');
+				commit('setRecommended', emptyData);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.xn--80axb4d.online/v1/promopack?per_page=8&page=1', {
+					const response = await axios.get('https://api.xn--80axb4d.online/v1/lectures?per_page=30&page=1&filter%5Brecommended%5D=1', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
-					});
-					commit('setPromopack', response.data);
-					commit('setStatusLoading', false);
-					commit('setPromopackError', false);
-				}, 1000 )
-				
+					}).catch(function (error) { if (error.response.status !== 404){  commit('setRecommended', 'e')  } });
+					if(response){
+						commit('setRecommended', response.data.data);
+					}
+				}, 50 )
 			} catch(e){
-				commit('setStatusLoading', false);
-				commit('setPromopackError', true);
-			} finally {}
+				setTimeout( () => {
+					commit('setStatusLoading', false);
+				}, 50);
+			} finally {
+				setTimeout( () => {
+					commit('setStatusLoading', false);
+				}, 50);
+			}
 		},
 
 
 
 
-
-		async fetchCategoryElements({state, rootState, commit}, slug){
+		// ПОЛУЧЕНИЕ КАТЕГОРИИ 
+		fetchCurrentCategory({state, rootState, commit}, slug){
 			try{
-				commit('setStatusLoading', true);
-				commit('setEmptyCurrentCategoryElements');
-				setTimeout( async () => {
-					const response = await axios.get('https://api.xn--80axb4d.online/v1/category/' + slug, {
-						headers: {
-							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
-						}
-					});
-					commit('setCurrentCategoryElements', response.data);
-					commit('setStatusLoading', false);
-					commit('setCurrentCategoryElementsError', false);
-				}, 1000 )
+				if(slug){
+					commit('setStatusLoading', true);
+					commit('setCurrentCategory', []);
+					setTimeout( async () => {
+						const response = await axios.get('https://api.xn--80axb4d.online/v1/category/' + slug, {
+							headers: {
+								Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+							}
+						});
+						// console.log(response.data.data.data);
+						// console.log(response.data);
+						commit('setCurrentCategory', response.data.category);
+						commit('setStatusLoading', false);
+					}, 50 )
+				}
 			} catch(e){
 				commit('setStatusLoading', false);
-				commit('setCurrentCategoryElementsError', true);
 			} finally {}
 		},
 
 
-
-		async fetchSubCategoryElements({state, rootState, commit}, categoryId){
-			try{
-				commit('setStatusLoading', true);
-				commit('setEmptyCurrentSubCategoryElements');
-				setTimeout( async () => {
-					const response = await axios.get('https://api.xn--80axb4d.online/v1/lectures?per_page=15&filter%5Bcategory_id%5D=' + categoryId, {
-						headers: {
-							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
-						}
-					});
-					commit('setCurrentSubCategoryElements', response.data);
+		// Получение Элементов Категорий (ТО есть Подкатегории)
+		async fetchCurrentCategoryElements({state, rootState, commit}, slug){
+				try{
+					if(slug){
+						commit('setStatusLoading', true);
+						commit('setCurrentCategoryElements', []);
+						setTimeout( async () => {
+							const response = await axios.get('https://api.xn--80axb4d.online/v1/category/' + slug, {
+								headers: {
+									Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+								}
+							});
+							commit('setCurrentCategoryElements', response.data.data);
+							commit('setStatusLoading', false);
+							commit('setCurrentCategoryElementsError', false);
+						}, 50 )
+					}
+				} catch(e){
 					commit('setStatusLoading', false);
-					commit('setCurrentCategoryElementsError', false);
-				}, 1000 )
-				
+					commit('setCurrentCategoryElementsError', true);
+				} finally {}
+		},
+ 
+ 
+
+		//Подгрузка ПодкатегориИ
+		fetchCurrentSubCategory({state, rootState, commit}, slug){
+				try{
+					if(slug){
+						commit('setStatusLoading', true);
+						commit('setCurrentSubCategory', '');
+						setTimeout( async () => {
+							const response = await axios.get('https://api.xn--80axb4d.online/v1/category/' + slug, {
+								headers: {
+									Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+								}
+							});
+							// console.log(response.data);
+							commit('setCurrentSubCategory', response.data.category);
+							commit('setStatusLoading', false);
+						}, 50 )
+					}
+				} catch(e){
+					commit('setStatusLoading', false);
+				} finally {}
+		},
+
+		// Подгрузка ЭЛЕМЕНТОВ Подкатегории
+		async fetchCurrentSubCategoryElements({state, rootState, commit}, categoryId){
+				try{
+					if(categoryId){
+						commit('setStatusLoading', true);
+						commit('setCurrentSubCategoryElements', '');
+						setTimeout( async () => {
+						const response = await axios.get('https://api.xn--80axb4d.online/v1/lectures?per_page=1000&page=1&filter%5Bcategory_id%5D=' + categoryId, {
+							headers: {
+								Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+							}
+						});
+						commit('setCurrentSubCategoryElements', response.data);
+						commit('setStatusLoading', false);
+						commit('setCurrentCategoryElementsError', false);
+					}, 50 )
+				}
+					
+				} catch(e){
+					commit('setStatusLoading', false);
+					commit('setCurrentSubCategoryElementsError', true);
+				} finally {}
+		},
+
+
+
+		fetchCurrentSubCategoryAndElements({state, rootState, commit}, slug){
+			try{
+				if(slug){
+					commit('setStatusLoading', true);
+					commit('setCurrentSubCategory', '');
+					setTimeout( async () => {
+						const response = await axios.get('https://api.xn--80axb4d.online/v1/category/' + slug, {
+							headers: {
+								Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+							}
+						});
+						commit('setCurrentSubCategory', response.data.category);
+						commit('setCurrentSubCategoryElements', '');
+						setTimeout( async () => {
+							const responseElems = await axios.get('https://api.xn--80axb4d.online/v1/lectures?per_page=1000&page=1&filter%5Bcategory_id%5D=' + response.data.category.id, {
+								headers: {
+									Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+								}
+							});
+							commit('setCurrentSubCategoryElements', responseElems.data);
+
+							commit('setStatusLoading', false);
+							commit('setCurrentCategoryElementsError', false);
+							
+						}, 50 )
+					}, 50 )
+				}
+
 			} catch(e){
 				commit('setStatusLoading', false);
-				commit('setCurrentSubCategoryElementsError', true);
 			} finally {}
-		},
+	},
+
 
 
 		async fetchCurrentLecture({state, rootState, commit}, lectureId){
 			try{
-				commit('setStatusLoading', true);
-				commit('setEmptyCurrentLecture');
-				setTimeout( async () => {
-					const response = await axios.get('https://api.xn--80axb4d.online/v1/lecture/' + lectureId, {
-						headers: {
-							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
-						}
-					});
-					commit('setCurrentLecture', response.data);
-					commit('setStatusLoading', false);
-					commit('setCurrentLectureError', false);
-				}, 1000 )
-				
+				if(lectureId){
+					commit('setStatusLoading', true);
+					commit('setEmptyCurrentLecture');
+					setTimeout( async () => {
+						const response = await axios.get('https://api.xn--80axb4d.online/v1/lecture/' + lectureId, {
+							headers: {
+								Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+							}
+						});
+						commit('setCurrentLecture', response.data);
+						commit('setStatusLoading', false);
+						commit('setCurrentLectureError', false);
+
+					}, 50 )
+				}
 			} catch(e){
 				commit('setStatusLoading', false);
 				commit('setCurrentLectureError', true);
@@ -507,156 +611,151 @@ export const contentModule = {
 		},
 
 
-		async fetchRecommended({state, rootState, commit}){
+
+		async fetchSaved({state, rootState, commit}, count){
 			try{
+				const emptyData = '';
 				commit('setStatusLoading', true);
+				commit('setSaved', emptyData);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.xn--80axb4d.online/v1/lectures?per_page=30&page=1&filter%5Bwatched%5D=1&filter%5Brecommended%5D=1&sort=-created_at', {
+					const response = await axios.get('https://api.xn--80axb4d.online/v1/lectures?per_page=' + count + '&page=1&filter%5Bsaved%5D=1', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
-					});
-					commit('setRecommended', response.data.data);
-					commit('setStatusLoading', false);
-				}, 1000 )
-				
+					}).catch(function (error) { if (error.response.status !== 404){  commit('setSaved', 'e')  } });
+					if(response){
+						commit('setSaved', response.data.data);
+					}
+				}, 50 )
+				 
 			} catch(e){
-				commit('setStatusLoading', false);
-			} finally {}
+				setTimeout( () => {
+					commit('setStatusLoading', false);
+				}, 50);
+			} finally {
+				setTimeout( () => {
+					commit('setStatusLoading', false);
+				}, 50);
+			}
 		},
 
 
-
-		async fetchCategoryAndSubcategory({state, rootState, commit}, subcategory_id){
-			// console.log(subcategory_id);
+		async fetchWatched({state, rootState, commit}, count){
 			try{
-				const emptyData = [];
+				const emptyData = '';
 				commit('setStatusLoading', true);
-				// commit('setCurrentCategory', emptyData);
-				// commit('setCurrentSubCategory', emptyData);
+				commit('setWatched', emptyData);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.xn--80axb4d.online/v1/category/' + subcategory_id, {
+					const response = await axios.get('https://api.xn--80axb4d.online/v1/lectures?per_page=' + count + '&page=1&filter%5Blist-watched%5D=1', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
-					});
-					console.log(response);
-					// commit('setCurrentCategory', emptyData);
-					// commit('setCurrentSubCategory', emptyData);
-					commit('setStatusLoading', false);
-				}, 500 )
+					}).catch(function (error) { if (error.response.status !== 404){  commit('setWatched', 'e')  } });
+					if(response){
+						commit('setWatched', response.data.data);
+					}
+				}, 50 )
+				 
 			} catch(e){
-				commit('setStatusLoading', false);
-			} finally {}
+				setTimeout( () => {
+					commit('setStatusLoading', false);
+				}, 50);
+			} finally {
+				setTimeout( () => {
+					commit('setStatusLoading', false);
+				}, 50);
+			}
 		},
-		
-
-		// async loadMorePosts({state, commit}) {
-		// 		try {
-		// 				commit('setPage', state.page + 1)
-		// 				const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
-		// 						params: {
-		// 								_page: state.page,
-		// 								_limit: state.limit
-		// 						}
-		// 				});
-		// 				commit('setTotalPages', Math.ceil(response.headers['x-total-count'] / state.limit))
-		// 				commit('setPosts', [...state.posts, ...response.data]);
-		// 		} catch (e) {
-		// 				console.log(e)
-		// 		}
-		// },
 
 
+		async fetchPurchased({state, rootState, commit}, count){
+			try{
+				const emptyData = '';
+				commit('setStatusLoading', true);
+				commit('setPurchased', emptyData);
+				setTimeout( async () => {
+					const response = await axios.get('https://api.xn--80axb4d.online/v1/lectures?per_page=' + count + '&page=1&filter%5Bpurchased%5D=1', {
+						headers: {
+							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+						}
+					}).catch(function (error) { if (error.response.status !== 404){  commit('setPurchased', 'e')  } });
+					if(response){
+						commit('setPurchased', response.data.data);
+					}
+				}, 50 )
+				 
+			} catch(e){
+				setTimeout( () => {
+					commit('setStatusLoading', false);
+				}, 50);
+			} finally {
+				setTimeout( () => {
+					commit('setStatusLoading', false);
+				}, 50);
+			}
+		},
 
 
-		// async fetchPosts({state, commit}){
-		// 	try{
-		// 		// пишем коммит, так как работаем с экшеном,
-		// 		// значением берем функцию setLoading из мутаций, вторым параметром передаем то, что хотим присвоить
-		// 		commit('setStatusLoading', true);
-		// 		// this.isPostsLoading = true;
-		// 		setTimeout( async () => {
-		// 			const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
-		// 				params: {
-		// 					// пишем state.page потому что это просто значения, не функции мутаций
-		// 					_page: state.page,
-		// 					_limit: state.limit,
-		// 				}
-		// 			});
-		// 			// this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit);
-		// 			commit('setTotalPages', Math.ceil(response.headers['x-total-count'] / state.limit));
-					
-		// 			// this.posts = response.data;
-		// 			commit('setPosts', response.data);
-					
-		// 			// this.isPostsLoading = false;
-		// 			commit('setStatusLoading', false);
-		// 		}, 1000 )
+		async fetchNotViewed({state, rootState, commit}, count){
+			try{
+				// if(rootState.currUser.user.saved_lectures_count > 0 && rootState.currUser.user.watched_lectures_count > 0){}
+					const emptyData = '';
+					commit('setStatusLoading', true);
+					commit('setNotViewed', emptyData);
+					setTimeout( async () => {
+						const response = await axios.get('https://api.xn--80axb4d.online/v1/lectures?per_page=' + count + '&page=1&filter%5Bsaved%5D=1&filter%5Bnot_watched%5D=1', {
+							headers: {
+								Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+							}
+						}).catch(function (error) { if (error.response.status !== 404){  commit('setNotViewed', 'e')  } });
+						
+						if(response){
+							commit('setNotViewed', response.data.data);
+						}
+					}, 50 )
+				// }
+			} catch(e){
+				setTimeout( () => {
+					commit('setStatusLoading', false);
+				}, 50);
+			} finally {
+				setTimeout( () => {
+					commit('setStatusLoading', false);
+				}, 50);
+			}
+		},
+
+
+		async fetchPromopack({state, rootState, commit}, count){
+			try{
+				const emptyData = '';
+				commit('setStatusLoading', true);
+				commit('setPromopack', emptyData);
+				setTimeout( async () => {
+					const response = await axios.get('https://api.xn--80axb4d.online/v1/promopack?per_page=' + count + '&page=1', {
+						headers: {
+							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+						}
+					}).catch(function (error) { if (error.response.status !== 404){  commit('setPromopack', 'e')  } });
+					if(response){
+						commit('setPromopack', response.data);
+					}
+				}, 50 )
 				
-		// 	} catch(e){
-		// 		console.log(e);
-		// 	} finally {}
-		// },
+			} catch(e){
+				setTimeout( () => {
+					commit('setStatusLoading', false);
+					commit('setPromopackError', true);
+				}, 50);
+			} finally {
+				setTimeout( () => {
+					commit('setStatusLoading', false);
+					commit('setPromopackError', false);
+				}, 50);
+			}
+		},
 
 
-
-		// async fetchLectors({state, commit}){
-		// 	try{
-		// 		// пишем коммит, так как работаем с экшеном,
-		// 		// значением берем функцию setLoading из мутаций, вторым параметром передаем то, что хотим присвоить
-		// 		commit('setStatusLoading', true);
-		// 		setTimeout( async () => {
-		// 			const response = await HTTP.get('/lectors', {
-		// 			});
-		// 			// commit('setTotalPages', Math.ceil(response.headers['x-total-count'] / state.limit));
-				
-		// 			commit('setLectors', response.data);
-					
-		// 			commit('setStatusLoading', false);
-		// 		}, 1000 )
-				
-		// 	} catch(e){
-		// 		console.log(e);
-		// 	} finally {}
-		// },
-
-
-		// axios.create({
-		// 	baseURL: `https://api.xn--80axb4d.online/v1/`,
-		// 	// baseURL: 'http://jsonplaceholder.typicode.com/',
-		// 	// headers: { X-XSRF-TOKEN: `${token}`}, 
-		// 	headers: {
-		// 		Authorization: 'Bearer ' + '1|S5UQcrN2vnXSUfc8KoNh5xgEeipB2gyobh5Ms7IO',
-		// 	}
-
-
-		
-		// async loadMorePosts({state, commit}){
-		// 	try{
-		// 		setTimeout( async () => {
-					
-		// 			// this.page += 1;
-		// 			commit('setPage', state.page += 1);
-
-		// 			const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
-		// 				params: {
-		// 					_page: state.page,
-		// 					_limit: state.limit,
-		// 				}
-		// 			});
-		// 			// this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit)
-		// 			commit('setTotalPages', Math.ceil(response.headers['x-total-count'] / state.limit));
-					
-		// 			// this.posts = [...this.posts, ...response.data];
-		// 			commit('setPosts', [...state.posts, ...response.data] );
-		// 		}, 10 )
-				
-		// 	} catch(e){
-		// 		// alert('Ошибка');
-		// 		console.log(e);
-		// 	} finally {}
-		// },
 
 	},
 	namespaced: true,

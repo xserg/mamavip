@@ -53,7 +53,7 @@ const routes = [
     component: CategoryPrices
   },
 	{
-    path: '/profile/help/faq',
+    path: '/profile/help/question',
     name: 'faq',
     component: Faq
   },
@@ -68,13 +68,14 @@ const routes = [
   },
 	{
     path: '/catalog/:parent_slug/:slug',
+		// props: {id: id},
     name: 'subcategory',
     component: SubCategory
   },
 	{
     path: '/videos/:id',
     name: 'lecture',
-    component: Lecture
+    component: Lecture,
   },
 	{
     path: '/profile/',

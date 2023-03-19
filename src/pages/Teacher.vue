@@ -3,7 +3,9 @@
 		<div class="contentWrap" :class="{fixed: thePopup}">
 
 			<div class="topLine flexWrap">
-				<a @click="$router.push('/lectors/'), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack"></a>
+				
+				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack"></a>
+				<!-- <a @click="$router.push('/lectors/'), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack"></a> -->
 				<h1 class="theTitle alignCenter">Лектор</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
@@ -47,27 +49,27 @@
 				<!-- <popup-slider class="slider_wrap" :posts="sertificateslist" /> -->
 			</div>
 
-			<div class="contentSubWrap" v-if="!loadingStatus && getCurrentLector.id && !currLoadingStatus">
+			<div class="contentSubWrap" v-if="!loadingStatus && getCurrentLector.id && !currLoadingStatus && this.getInfos">
 
 				<div class="photo_wrap topWrap marginB12">
 					<img v-if="getCurrentLector.photo" class="the_photo blockWrap the_photo_has" :src="getCurrentLector.photo" >
 					<span v-else class="the_photo theButton buttonTransparent blockWrap"></span>
 					<span class="the_title blockWrap fontFamilyB">{{ getCurrentLector.name }}</span>
-					<p class="the_desc fontSize12 marginB12">{{ getCurrentLector.position }} • стаж: 12 лет</p>
+					<p class="the_desc fontSize12 marginB12">{{ getCurrentLector.position }} • стаж: {{ lectorYears }} лет</p>
 				</div> 
 
 				<div class="midWrap desc_box content_box marginB12">
-					<span class="the_title blockWrap fontFamilyEB fontSize20">О лекторе</span>
+					<span class="the_title blockWrap fontFamilyEB fontSize20">{{this.getInfos.data.app_info[0].about_lector_title}}</span>
 					<div class="desc_subbox" :class="{active: moreDesc == true, fixed_height: getCurrentLector.description.length > 250}">
 						<p>{{ getCurrentLector.description }}</p> 
 					</div>
 					<span v-show="getCurrentLector.description.length > 250" class="show_more" @click="showMoreDesc">{{  moreDesc ? 'Скрыть' : 'Подробнее' }}</span>
 				</div>
 
-				<div class="catalog_box midWrap marginB12">
-					<span class="the_title fontFamilyEB fontSize20 blockWrap marginB12">Дипломы и сертификаты</span>
+				<div class="catalog_box midWrap marginB12"  v-if="getCurrentLector.diplomas.length">
+					<span class="the_title fontFamilyEB fontSize20 blockWrap marginB12">{{this.getInfos.data.app_info[0].diplomas_title}}</span>
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
-					<div class="element_box" v-if="getCurrentLector.diplomas">
+					<div class="element_box">
 						
 						<agile 
 							@before-change="lockHeight()"
@@ -100,9 +102,9 @@
 					</div>
 				</div>
 
-				<div class="recommended_box bottomWrap">
+				<div class="recommended_box videos_box bottomWrap">
 
-					<span class="the_title fontFamilyEB fontSize20 blockWrap">Видео от лектора</span>
+					<span class="the_title fontFamilyEB fontSize20 blockWrap">{{this.getInfos.data.app_info[0].lectors_videos}}</span>
 					<elements-list 
 						class="contentSubWrap"
 						:posts="getCurrentLectorElements.data"
@@ -155,6 +157,8 @@ export default {
 
 	data(){ 
 		return{ 
+			lectorYears: '-',
+
 			listLoaded: false,
 			loadingStatus: false,
 			startX: 0,
@@ -252,6 +256,19 @@ export default {
 		}),
 
 
+		setLectorYears(){
+			if(this.getCurrentLector.career_start){
+				const currentDate = new Date();
+				const startDate = new Date(this.getCurrentLector.career_start);
+				const years = Math.floor((currentDate - startDate) /
+					(24 * 60 * 60 * 1000));
+				const convertToYears = Math.ceil(years / 365);
+				// console.log(convertToWeeks);
+				this.lectorYears = convertToYears;
+			}
+		},
+
+
 		goLoadList(){
 			if(this.getSertificatesStatus){
 				setTimeout( () => {
@@ -332,6 +349,7 @@ export default {
 			heightLock: state => state.heightLock,
 		}),
 		...mapGetters({
+			getInfos: 'getInfos',
 			getSertificatesStatus: 'content/getSertificatesStatus',
 			currLoadingStatus: 'content/currLoadingStatus',
 			recommendationElement: 'content/recommendationElement',
@@ -344,10 +362,11 @@ export default {
 
 	mounted () {
 		this.setLoadingStatus(true);
+		this.setLectorYears();
 		// this.lectorElements = [];
 		this.refreshLectorElements();
-		this.asNavFor1.push(this.$refs.sertificateSlider)
-		this.asNavFor2.push(this.$refs.sertificatesSlider)
+		this.asNavFor1.push(this.$refs.sertificateSlider);
+		this.asNavFor2.push(this.$refs.sertificatesSlider);
 	},
 
 
@@ -355,8 +374,13 @@ export default {
 		getCurrentLector: {
 			handler(newVal){
 				this.setLoadingStatus(true);
+				this.setLectorYears();
 				// this.lectorElements = [];
 				this.refreshLectorElements();
+
+				this.asNavFor1.push(this.$refs.sertificateSlider);
+				this.asNavFor2.push(this.$refs.sertificatesSlider);
+
 			},
 			deep: true
 		},
@@ -367,7 +391,6 @@ export default {
 			deep: true
 		},
 	},
-
 
 
 }
@@ -533,7 +556,7 @@ export default {
 			}
 
 
-			.recommended_box{
+			.recommended_box.videos_box{
 				background-color: #FFF;
 				padding: 16px;
 				padding-bottom: 48px;
@@ -546,7 +569,7 @@ export default {
 				}
 				.contentSubWrap{
 					background-color: #FFF;
-					width: calc(100% + 16px);
+					width: calc(100);
     			padding: 16px 0px 16px;
 				}
 			}

@@ -7,7 +7,7 @@
 					<span class="the_title blockWrap fontSize16 alignCenter marginB12 fontFamilyB">Вы уверены, что хотите выйти?</span>
 					<div class="buttons_wrap flexWrap">
 						<span class="theButton buttonPrimary" @click="showPopup">Отмена</span>
-						<span class="theButton buttonTertiary" @click="this.setAuthOut(), this.setLogPage()">Да, выйти</span>
+						<span class="theButton buttonTertiary" @click="goLogout">Да, выйти</span>
 					</div>
 				</div>
 				<!-- <popup-slider class="slider_wrap" :posts="sertificateslist" /> -->
@@ -19,7 +19,7 @@
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			<div class="contentSubWrap">
+			<div class="contentSubWrap" v-if="!getLoadingStatus && this.getCurrUser">
 
 				<div class="userinfo_wrap topWrap marginB12">
 					<div class="userinfo_alert flexWrap" v-if="!this.getCurrUser.user.name">
@@ -31,7 +31,7 @@
 					<div class="userinfo_box" v-else>
 						<div class="userinfo_card">
 							<div v-if="this.getCurrUser.user.photo_small" class="card_photo_wrap filled">
-								<img :src="this.getCurrUser.user.photo_small" alt="profile_image">
+								<img :src="this.getCurrUser.user.photo_small  + '?' + Date.now()" alt="profile_image">
 							</div>
 							<span v-else class="card_photo_wrap"></span>
 							<div class="card_info_wrap">
@@ -43,12 +43,27 @@
 								<p v-if="!this.getCurrUser.user.name" class="the_info blockWrap fontSize14 alignCenter">Это необходимо, чтобы пользоваться сервисом</p>
 
 								<!-- <span class="card_name">Екатерина</span> -->
-								<span class="card_status fontSize14" v-if="!this.getCurrUser.user.baby_born && this.getCurrUser.user.name">Ваш срок — примерно {{ '29 недель' }} </span>
-								<span class="card_status fontSize14" v-if="this.getCurrUser.user.baby_born && this.getCurrUser.user.name">Малыш родился</span>
+								<span class="card_status fontSize14" v-if="this.getCurrUser.user.is_mother == 0 && this.getCurrUser.user.name && pregnancyWeeks < 39">Ваш срок — примерно {{ pregnancyWeeks }} недель(-и) </span>
+								<span class="card_status fontSize14" v-if="this.getCurrUser.user.is_mother == 0 && this.getCurrUser.user.name && pregnancyWeeks >= 39">Вас уже можно поздравить?</span>
+								<span class="card_status fontSize14" v-if="this.getCurrUser.user.is_mother == 1 && this.getCurrUser.user.name">{{ babyAge }}</span>
 							</div>
 							<router-link class="card_button theButton buttonTransparent buttonOptimal" to="/profile/edit" @click="setRouterAnimate"></router-link>
 						</div>
-						<button class="user_info_button theButton buttonPrimary fontSize16" v-if="!this.getCurrUser.user.baby_born && true" @click="celebrateBirthday">Отметить рождение малыша</button>
+
+						<div class="">
+							<Form @submit="celebrateBirthday" :validation-schema="schema">
+								<div class="hiddenForm">
+									<Field name="name" placeholder="Имя" v-model="this.getCurrUser.user.name" />
+									<Field name="birthdate" type="date" placeholder="Выберите дату..." v-model="this.getCurrUser.user.birthdate" />
+									<Field name="phone" type="tel" placeholder="+7" v-model="this.getCurrUser.user.phone" />
+									<Field ref="isMotherStatus" name="is_mother" placeholder="Ребенок родился" v-model="babyWasBorn" />
+									<Field ref="bornFalse" name="pregnancy_weeks" type="number" placeholder="В неделях" v-model="pregnancyWeeks" />
+									<Field ref="bornTrue" name="baby_born" type="date" placeholder="Выберите дату..." v-model="this.getCurrUser.user.baby_born" />
+								</div>
+								<button class="user_info_button theButton buttonPrimary fontSize16" v-if="this.getCurrUser.user.is_mother == 0 && pregnancyWeeks >= 39">Отметить рождение малыша</button>
+							</Form>
+						</div>
+						
 					</div>
 				</div>
 
@@ -58,21 +73,21 @@
 							<span class="the_icon save_icon"></span>
 							<span class="the_title">Сохранённые лекции</span>
 						</div>
-						<span class="the_count">{{ this.getCurrUser.user.saved_lectures.length }}</span>
+						<span class="the_count">{{ this.getCurrUser.user.saved_lectures_count }}</span>
 					</router-link>
 					<router-link class="link_button" to="/profile/bought" @click="setRouterAnimate">
 						<div class="left_wrap">
 							<span class="the_icon buy_icon"></span>
 							<span class="the_title">Купленные лекции</span>
 						</div>
-						<span class="the_count">{{ this.getCurrUser.user.purchased_lectures.length }}</span>
+						<span class="the_count">{{ this.getCurrUser.user.purchased_lectures_count }}</span>
 					</router-link>
 					<router-link class="link_button" to="/profile/viewed" @click="setRouterAnimate">
 						<div class="left_wrap">
 							<span class="the_icon see_icon"></span>
 							<span class="the_title">Просмотренные лекции</span>
 						</div>
-						<span class="the_count">{{ this.getCurrUser.user.watched_lectures.length }}</span>
+						<span class="the_count">{{ this.getCurrUser.user.list_watched_lectures_count }}</span>
 					</router-link>
 				</div>
 
@@ -95,12 +110,15 @@
 
 			</div>
 
-			<div class="contentSubWrap">
+			<div v-else class="roller_box">
+				<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+			</div>
+
+			<div class="contentSubWrap" v-if="!getLoadingStatus && this.getCurrUser">
 				<div class="logutinfo_wrap bottomWrap">
 					<button class="theButton buttonTertiary fontFamilyB marginAuto buttonOptimal fontSize16" @click="showPopup">Выйти из аккаунта</button>
 				</div>
 			</div>
-
 			<!-- <bottom-line></bottom-line> -->
 			
 		</div>
@@ -124,9 +142,9 @@
 					<div class="videoSliderWrap">
 
 						<span class="the_title">Посмотрите лекции из подборки</span>
-						<span class="the_subtitle marginB12 fontFamilyEB">Уход за новорждённым</span>
+						<span class="the_subtitle marginB12 fontFamilyEB">Рекомендованное</span>
 
-						<elements-slider :posts="sortedElementsBegin"/>
+						<elements-slider v-if="getPromopack.data" :posts="getPromopack.data"/>
 
 						<span class="theButton buttonTertiary buttonOptimal" @click="finishSelebrate">Позже</span>
 
@@ -134,8 +152,10 @@
 				</div>
 			</div>
 
-			</div>
+		</div>
 
+
+		
 
 
 	</div>
@@ -144,12 +164,42 @@
 <script>
 // @ is an alias to /src
 // import Element from '@/components/Element';
+import axios from 'axios';
 
 import ElementsSlider from '@/components/ElementsSlider';
-import {mapState, mapMutations, mapGetters} from 'vuex';
+import {mapState, mapMutations, mapGetters, mapActions} from 'vuex';
+
+import { Form, Field, ErrorMessage } from 'vee-validate';
+import * as yup from 'yup';
+import "yup-phone";
 
 export default {
   name: 'Profile',
+
+
+	setup(){
+		// const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+		const schema = yup.object().shape({
+			name: yup.string().required('Пожалуйста, заполните это поле').typeError('Поле обязателено').min(2, 'Поле должно содержать не менее 2 символов').label('Имя'),
+			birthdate: yup.date().typeError('Введите дату рождения').max(new Date(), 'Выберете корректную дату').label('День рождения'),
+			is_mother: yup.string().required('Пожалуйста, заполните это поле').typeError('Поле обязателено').min(1, 'Введите корректные данные').max(1, 'Введите корректные данные').label('Ребенок рожден'),
+			pregnancy_weeks: yup.number().min(0, 'Введите корректный срок').max(40, 'Введите корректный срок').typeError().label('Количество недель'),
+			baby_born: yup.date().typeError('Введите дату рождения малыша').max(new Date(), "Выберете корректную дату").label('День рождения'),
+			phone: yup.string().when('mobile', {
+				is: (value) => value?.length > 0,
+				then: yup.string().phone("", true, 'Введите корректный номер телефона'),
+				otherwise: yup.string(),
+			}),
+			// phone: yup.string().matches(phoneRegExp, 'Phone number is not valid')
+		},
+		[
+			['phone', 'phone'],
+		]
+		);
+		return {
+			schema, 
+		}
+	},
 
 
 	data(){
@@ -158,12 +208,18 @@ export default {
 			profileIsFill: false,
 			// yesBaby: false,
 			celebrateWrap: false,
+			pregnancyWeeks: 0,
+			babyAge: '',
+			babyWasBorn: 1,
 		}
 	},
 
 
+
 	components: {
 		ElementsSlider,
+		Form,
+    Field,
   },
 
 
@@ -175,12 +231,85 @@ export default {
 			setRouterAnimate: 'setRouterAnimate',
 			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
+		...mapActions({
+			fetchUserData: 'fetchUserData',
+			fetchPromopack: 'content/fetchPromopack',
+		}),
+
+
+		celebrateBirthday(user) {
+			if(user.pregnancy_weeks){
+				user.pregnancy_weeks = Math.round(user.pregnancy_weeks);
+			}else{
+				user.pregnancy_weeks = 0;
+			}
+			try{
+				setTimeout( () => {
+					const response = 
+						axios.put('https://api.xn--80axb4d.online/v1/user/profile', user, {
+							headers: {
+								Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
+								'Content-Type': 'application/json',
+								'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
+  							'Access-Control-Allow-Origin': '*',
+							}
+						}
+					);
+					this.fetchUserData();
+					this.celebrateWrap = true;
+				}, 500 );
+			} catch(e){
+				console.log(e);
+			} finally {}
+    },
+
+
+		setPregnancyWeeks(){
+			const currentDate = new Date();
+			const startDate = new Date(this.getCurrUser.user.pregnancy_start);
+			const days = Math.floor((currentDate - startDate) /
+        (24 * 60 * 60 * 1000));
+			const convertToWeeks = Math.ceil(days / 7);
+			// console.log(convertToWeeks);
+			this.pregnancyWeeks = convertToWeeks;
+		},
+
+		setBabyAge(){
+			const currentDate = new Date();
+			const startDate = new Date(this.getCurrUser.user.baby_born);
+			const days = Math.floor((currentDate - startDate) /
+        (24 * 60 * 60 * 1000));
+			const convertToMonths = Math.round(days / 30);
+			if(convertToMonths < 1){
+				var currentAge = 'Малыш родился';
+			}else if(convertToMonths >= 1 && convertToMonths <= 11){
+				if(convertToMonths == 1){
+					var currentAge = 'Малышу примерно ' + convertToMonths + ' месяц';
+				}else if(convertToMonths == 2 || convertToMonths == 3 || convertToMonths == 4){
+					var currentAge = 'Малышу примерно ' + convertToMonths + ' месяца';
+				}else{
+					var currentAge = 'Малышу примерно ' + convertToMonths + ' месяцев';
+				}
+			}else if(convertToMonths >= 12){
+				if(convertToMonths >= 12 && convertToMonths <= 23){
+					var currentAge = 'Малышу примерно год';
+				}else if(convertToMonths >= 24 && convertToMonths <= 35){
+					const years = Math.floor(convertToMonths / 12);
+					var currentAge = 'Малышу примерно ' + years + ' года';
+				}else{
+					const years = Math.floor(convertToMonths / 12);
+					var currentAge = 'Малышу примерно ' + years + ' лет';
+				}
+			}
+			this.babyAge = currentAge;
+		},
+
 
 		// Показать экран поздравлений и поменять статус ребенка
-		celebrateBirthday(){
-			this.yesBaby = true;
-			this.celebrateWrap = true;
-		},
+		// celebrateBirthday(){
+		// 	this.yesBaby = true;
+		// 	this.celebrateWrap = true;
+		// },
 		// Закрыть экран поздравления
 		finishSelebrate(){
 			this.celebrateWrap = false;
@@ -194,6 +323,34 @@ export default {
 			}
 		},
 
+
+
+
+		goLogout(){
+			try{
+				setTimeout( () => {
+					// console.log('Запустили выход из системы');
+					const response = 
+						axios.delete('https://api.xn--80axb4d.online/v1/user/logout', {
+							headers: {
+								Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
+								'Content-Type': 'application/json',
+								'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
+  							'Access-Control-Allow-Origin': '*',
+							}
+						}
+					);
+					// console.log(response);
+
+					this.setAuthOut(), 
+					this.setLogPage()
+
+				}, 500 );
+			} catch(e){
+				console.log(e);
+			} finally {}
+    },
+
 	},
 
 
@@ -203,14 +360,28 @@ export default {
 		}),
 		...mapGetters({
 			getCurrUser: 'getCurrUser',
-			sortedElementsBegin: 'content/sortedElementsBegin',
-			sortedElementsSaved: 'content/sortedElementsSaved',
-			sortedElementsBought: 'content/sortedElementsBought',
-			sortedElementsViewed: 'content/sortedElementsViewed',
-
+			getLoadingStatus: 'getLoadingStatus',
+			getPromopack: 'content/getPromopack',
 		})
 	},
 
+	mounted(){
+		this.fetchUserData();
+		this.fetchPromopack(9);
+		this.setPregnancyWeeks();
+		this.setBabyAge();
+	},
+
+	watch:{
+		getCurrUser: {
+			handler(newVal){
+				this.setPregnancyWeeks();
+				this.setBabyAge();
+				// console.log('Новое значение: ' + newVal);
+			},
+			deep: true
+		}
+	},
 
 }
 </script>
@@ -221,6 +392,16 @@ export default {
 .mainContainer{
 	height: 100vh;
 	position: relative;
+	.hiddenForm{
+		position: absolute;
+		height: 0;
+		opacity: 0;
+		overflow: hidden;
+		top: 0;
+		left: 0;
+		width: 0;
+		z-index: 1;
+	}
 	.contentWrap.ghostWrap{
 		position: absolute;
 		top: 0;
@@ -391,10 +572,17 @@ export default {
 							margin-right: 12px;
 							background-image: url('../assets/icons/nophoto.svg');
 							background-size: 35%;
+							overflow: hidden;
 							&.filled{
-								background-image: url('../assets/images/profile.jpg');
-								background-size: cover;
+								// background-image: url('../assets/images/nophoto.jpg');
+								// background-size: cover;
 							}
+							img{
+								object-fit: cover;
+								width: 100%;
+								height: 100%;
+							}
+							
 						}
 						.card_info_wrap{
 							display: flex;

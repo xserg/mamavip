@@ -59,29 +59,18 @@
 
 
 
-		<div class="contentWrap stepRegSecond" v-show="curStep == 2">
+		<div class="contentWrap stepRegSecond" v-show="curStep == 2" v-if="this.getInfos.data">
 		
 			<div class="topLine flexWrap">
-				<span class="theButton leftButton buttonTransparent" @click="prevStep">Назад</span>
+				<span class="theButton leftButton buttonTransparent" style="text-align:left;" @click="prevStep">Назад</span>
 				<h1 class="theTitle alignCenter">Прочтите соглашение</h1>
 				<span class="theButton ghostWrap"></span>
 			</div>
 
 			<div class="contentSubWrap">
 				<div class="infoWrap">
-					<h2>Заголовок</h2>
-					<h3>Подзаголовок</h3>
-					<p>Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
-					<p>Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
-					<br>
-					<h3>Подзаголовок</h3>
-					<p>Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
-					<br>
-					<h3>Подзаголовок</h3>
-					<p>Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
-					<br>
-					<h3>Подзаголовок</h3>
-					<p>Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности позволяет оценить значение модели развития. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий способствует подготовки и реализации соответствующий условий активизации.</p>
+					<h2>{{ this.getInfos.data.app_info[0].agreement_title }}</h2>
+					<p>{{ this.getInfos.data.app_info[0].agreement_text }}</p>
 				</div>
 				<span class="theButton buttonPrimary buttonConfirm" :class="{hiddenWrap: !this.formValues || Object.keys(this.formValues).length === 0 || !this.finishReg }" @click="confirmRegistr">Принять и продолжить</span>
 				<span class="theButton buttonPrimary buttonConfirm" :class="{hiddenWrap: this.formValues && Object.keys(this.formValues).length !== 0 && this.finishReg }" @click="prevStep">Зарегистрироваться</span>
@@ -109,7 +98,7 @@
 
 <script>
 
-import {mapState, mapMutations} from 'vuex';
+import {mapState, mapMutations, mapGetters, mapActions} from 'vuex';
 import axios from 'axios';
 
 import { Form, Field, ErrorMessage, useField } from 'vee-validate';
@@ -167,6 +156,9 @@ export default {
 			setRegPage: 'setRegPage',
 			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
+		...mapActions({
+			fetchInfos: 'fetchInfos',
+		}),
 
 		// Шаги, для регистрации
 		nextStep(){
@@ -220,6 +212,9 @@ export default {
 		...mapState({
 			isAuth: state => state.isAuth,
 			newReg: state => state.newReg,
+		}),
+		...mapGetters({
+			getInfos: 'getInfos',
 		})
 	},
 
@@ -240,7 +235,7 @@ export default {
 			position: relative;
 			z-index: 10;
 			width: 100%;
-			padding-top: 80px;
+			padding-top: 60px;
 			padding-bottom: 40px;
 			.titleLine{
 				margin-bottom: 32px;

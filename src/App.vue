@@ -128,8 +128,8 @@ export default {
 	// max-height: 100vh;
 	// min-height: 100vh;
 	// height: 100vh;
-	max-height: 100%;
-	min-height: 100%;
+	max-height: 100vh;
+	min-height: 100vh;
 	height: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
