@@ -197,7 +197,7 @@ export default createStore({
 						headers: {
 							Authorization: state.currUser.token_type + ' ' + state.currUser.access_token,
 						}
-					});
+					}).catch(function (error) { if (error.response.status == 401){  commit('setAuthOut')  } });
 					// console.log(response.data);
 					commit('setUserData', response.data);
 					// console.log(response.data);
@@ -227,7 +227,7 @@ export default createStore({
 						headers: {
 							Authorization: state.currUser.token_type + ' ' + state.currUser.access_token,
 						}
-					});
+					}).catch(function (error) { if (error.response.status == 401){  commit('setAuthOut')  } });
 					commit('setInfos', response.data);
 					commit('setLoadingStatus', false);
 				}, 50 )

@@ -33,7 +33,8 @@
 					<span v-if="!getCurrentLecture.prices.price_by_promo && getCurrentLecture.prices.price_by_category" @click="buyLecture(30)" class="theButton buttonSecondary buttonOptimal marginAuto">Купить на месяц: {{ Math.round(getCurrentLecture.prices.price_by_category[2].price_for_lecture) }}₽</span>
 					<span v-if="getCurrentLecture.prices.price_by_promo" @click="buyLecture(30)" class="theButton buttonSecondary buttonOptimal marginAuto">Купить на месяц: {{ Math.round(getCurrentLecture.prices.price_by_promo[2].price_for_promo_lecture) }}₽</span>
 					<br>
-					
+
+					<!-- <a ref="activeLinkButton" class="activeBuyButton" :href="this.activeLink" target="_blank">Покупка</a> -->
 				</div>
 				
 			</div>
@@ -60,6 +61,7 @@ export default {
 	data(){
 		return{
 			// hasElements: false,
+			activeLink: '',
 		}
 	},
 
@@ -80,7 +82,16 @@ export default {
 						'Access-Control-Allow-Origin': '*',
 					};
 					const response = await axios.post('https://api.xn--80axb4d.online/v1/lecture/' + this.getCurrentLecture.id + '/buy/' + time, {}, { headers });
-					window.open(response.data.link,"_self");
+					
+					if(response){
+						window.open(response.data.link,"_self");
+						// this.activeLink = response.data.link;
+						// setTimeout(() => {
+						// 	this.$refs.activeLinkButton.click();
+						// }, 500);
+						// 	// console.log(this.activeLink);
+					}
+					
 				}, 500 );
 			} catch(e){
 				console.log(e);
@@ -116,6 +127,12 @@ export default {
 		padding-bottom: 48px;
 		background-color: #FFF;
 		justify-content: flex-start;
+		.activeBuyButton{
+			height: 0;
+			overflow: hidden;
+			width: 0;
+			opacity: 0;
+		}
 		.contentSubWrap{
 			padding: 32px 16px;
 			p{

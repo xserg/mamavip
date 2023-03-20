@@ -28,7 +28,7 @@
 import Autoriz from '@/pages/Autoriz';
 import Registr from '@/pages/Registr';
 
-import { mapState, mapGetters, mapMutations} from 'vuex';
+import { mapState, mapGetters, mapMutations, mapActions} from 'vuex';
 
 
 
@@ -47,7 +47,10 @@ export default {
 		...mapMutations({
 			setHomeTab: 'setHomeTab',
 			setProfileTab: 'setProfileTab',
-		})
+		}),
+		...mapActions({
+			fetchUserData: 'fetchUserData',
+		}),
 		// nextStep(){
 		// 	this.curStep += 1;
 		// }
@@ -86,6 +89,10 @@ export default {
 		// this.$store.commit('initialiseVuexContent');
 		// this.$store.dispatch("content/initialiseVuexContent");
 	}, 
+
+	mounted(){
+		this.fetchUserData();
+	},
 
 
   // watch: {

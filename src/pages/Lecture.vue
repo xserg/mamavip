@@ -246,21 +246,21 @@ export default defineComponent({
 
 		sendFeedback(values){
 			const fiterValues = {
-				lectureId: this.getCurrentLecture.id,
-				lectorId: this.getCurrentLecture.lector.id,
-				userId: this.getCurrUser.user.id,
-				message: values.mess,
+				user_id: this.getCurrUser.user.id,
+				lector_id: this.getCurrentLecture.lector.id,
+				content: values.mess,
 			};
 			// console.log('Фитбек сформирован:');
 			// console.log(fiterValues);
 			try{
 				setTimeout( async () => {
-					const response = await axios.post('https://api.xn--80axb4d.online/v1/user/login', fiterValues, {
+					const response = await axios.post('/v1/lecture/' + this.getCurrentLecture.id + '/feedback', fiterValues, {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}
 					}).catch(function (error) { if (error.response){} });
 					if(response){
+						// console.log(response);
 						this.$refs.feedbackField.reset();
 						this.notificationMess = 'Ваше сообщение успешно отправлено.';
 						setTimeout(() => {

@@ -182,6 +182,18 @@ export default({
 			padding: 16px 0px;
 			padding: 0;
 			background-color: #F3F5F6;
+			.topLine{
+				.theButton{
+					max-width: 30px;
+					min-width: 30px;
+					width: 30px;
+				}
+				.theTitle{
+					max-width: calc(100% - 60px);
+					min-width: calc(100% - 60px);
+					width: calc(100% - 60px);
+				}
+			}
 			.empty_wrap{
 				width: 100%;
 				background-color: #FFF;

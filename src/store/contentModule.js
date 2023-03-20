@@ -623,8 +623,17 @@ export const contentModule = {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
 					}).catch(function (error) { if (error.response.status !== 404){  commit('setSaved', 'e')  } });
+					// console.log(response);
 					if(response){
-						commit('setSaved', response.data.data);
+						if(response.data.data){
+							commit('setSaved', response.data.data);
+							commit('setStatusLoading', false);
+						}else{
+							commit('setStatusLoading', false);
+						}
+					}else{
+						commit('setSaved', []);
+						commit('setStatusLoading', false);
 					}
 				}, 50 )
 				 
@@ -652,7 +661,15 @@ export const contentModule = {
 						}
 					}).catch(function (error) { if (error.response.status !== 404){  commit('setWatched', 'e')  } });
 					if(response){
-						commit('setWatched', response.data.data);
+						if(response.data.data){
+							commit('setWatched', response.data.data);
+							commit('setStatusLoading', false);
+						}else{
+							commit('setStatusLoading', false);
+						}
+					}else{
+						commit('setWatched', []);
+						commit('setStatusLoading', false);
 					}
 				}, 50 )
 				 
@@ -680,7 +697,15 @@ export const contentModule = {
 						}
 					}).catch(function (error) { if (error.response.status !== 404){  commit('setPurchased', 'e')  } });
 					if(response){
-						commit('setPurchased', response.data.data);
+						if(response.data.data){
+							commit('setPurchased', response.data.data);
+							commit('setStatusLoading', false);
+						}else{
+							commit('setStatusLoading', false);
+						}
+					}else{
+						commit('setPurchased', []);
+						commit('setStatusLoading', false);
 					}
 				}, 50 )
 				 
@@ -710,7 +735,15 @@ export const contentModule = {
 						}).catch(function (error) { if (error.response.status !== 404){  commit('setNotViewed', 'e')  } });
 						
 						if(response){
-							commit('setNotViewed', response.data.data);
+							if(response.data.data){
+								commit('setNotViewed', response.data.data);
+								commit('setStatusLoading', false);
+							}else{
+								commit('setStatusLoading', false);
+							}
+						}else{
+							commit('setNotViewed', []);
+							commit('setStatusLoading', false);
 						}
 					}, 50 )
 				// }
@@ -738,7 +771,15 @@ export const contentModule = {
 						}
 					}).catch(function (error) { if (error.response.status !== 404){  commit('setPromopack', 'e')  } });
 					if(response){
-						commit('setPromopack', response.data);
+						if(response.data){
+							commit('setPromopack', response.data);
+							commit('setStatusLoading', false);
+						}else{
+							commit('setStatusLoading', false);
+						}
+					}else{
+						commit('setPromopack', []);
+						commit('setStatusLoading', false);
 					}
 				}, 50 )
 				

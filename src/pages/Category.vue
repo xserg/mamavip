@@ -160,21 +160,32 @@ export default({
 			background-color: #FFF;
 			width: 100%;
 			z-index: 110;
-			position: absolute;
+			position: fixed;
 			left: 0;
 			top: 0;
+			.theButton{
+				max-width: 30px;
+				min-width: 30px;
+				width: 30px;
+			}
+			.theTitle{
+				max-width: calc(100% - 60px);
+				min-width: calc(100% - 60px);
+				width: calc(100% - 60px);
+			}
 		}
+				
 		.contentSubWrap.popupWrap{
 			width: 100%;
 			z-index: 105;
-			position: absolute;
+			position: fixed;
 			left: 0; 
-			top: 45px;
+			top: 40px;
 			// height: calc(100% - 45px);
-			padding: 8px 16px;
+			padding: 16px 16px;
 			padding-bottom: 58px;
 			background-color: #FFF;
-			min-height: calc(100vh - 45px);
+			min-height: calc(100vh - 40px);
 		}
 		.contentSubWrap{
 			width: 100%;

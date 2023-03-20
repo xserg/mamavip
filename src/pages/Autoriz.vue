@@ -24,7 +24,7 @@
 				<div class="topLine flexWrap">
 					<span class="theButton leftButton buttonTransparent ghostWrap">Назад</span>
 					<h1 class="theTitle alignCenter">Вход</h1>
-					<button class="theButton rightButton buttonTransparent fontFamilyB">Войти</button>
+					<span class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Войти</span>
 				</div>
 
 				<div class="contentSubWrap">
@@ -51,6 +51,7 @@
 						</label>
 
 						<div class="infoWrap">
+							<button class="theButton buttonOptimal marginAuto buttonPrimary fontFamilyB marginB20" style="margin-bottom:52px">Войти</button>
 							<span class="theButton buttonOptimal marginAuto buttonWhite fontFamilyB" @click="forgotStep">Забыли пароль?</span>
 							<span class="theTitle">Нет аккаунта?</span>
 							<span class="theButton buttonOptimal marginAuto buttonTransparent fontFamilyB fontSize14" @click="this.setRegPage()">Зарегистрироваться</span>
@@ -582,7 +583,7 @@ export default defineComponent({
 					// console.log(params);
 
 					const response = 
-						await axios.post('https://api.xn--80axb4d.online/v1/password/check', params).catch(function (error) { if (error.response){} });
+						await axios.post('https://api.xn--80axb4d.online/v1/password/reset', params).catch(function (error) { if (error.response){} });
 					// console.log(response);
 					if(response){
 						this.curStep = 'auth_login';
@@ -684,7 +685,7 @@ export default defineComponent({
 				margin-bottom: 0;
 			}
 			.infoWrap{
-				margin-top: 52px;
+				margin-top: 22px;
 				display: flex;
 				flex-direction: column;
 				.theButton{
