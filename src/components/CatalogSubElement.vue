@@ -4,7 +4,7 @@
 		<div class="the_subcategory_wrap">
 			<div class="the_subcategory_subwrap">
 				<div class="the_subcategory_box">
-					<img v-if="subCategory.preview_picture" :src="subCategory.preview_picture" alt="preview_image">
+					<img v-if="subCategory.preview_picture" :src="subCategory.preview_picture ? 'https://api.xn--80axb4d.online/storage/' + subCategory.preview_picture : ''" alt="preview_image">
 					<div class="bottom_line fontFamilyEB">{{ subCategory.title }}</div>
 				</div>
 			</div>

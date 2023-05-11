@@ -11,41 +11,63 @@
 				
 				<span class="theButton leftButton buttonTransparent buttonBack" @click="$router.go(-1), setRouterAnimate()"></span>
 				<!-- <span class="theButton leftButton buttonTransparent buttonBack" @click="$router.push('/catalog/' + this.currentSubCategory.parent_slug), setRouterAnimate()"></span> -->
-				
+				 
 				<h1 class="theTitle alignCenter">{{ this.currentSubCategory.title }}</h1>
 				<span class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</span>
 			</div>
 
-			<div class="contentSubWrap">
-				<div class="topWrap content_box info_box">
+			<div class="contentSubWrap" >
+				<div class="topWrap content_box info_box marginB12">
 					<div class="img_wrap">
-						<img class="the_img" v-if="this.currentSubCategory.preview_picture" :src="this.currentSubCategory.preview_picture" alt="subcategory_image" />
+						<img class="the_img" v-if="this.currentSubCategory.preview_picture" :src="this.currentSubCategory.preview_picture  ? 'https://api.xn--80axb4d.online/storage/' + this.currentSubCategory.preview_picture : ''" alt="subcategory_image" />
 						<span class="empty_icon"></span>
 					</div>
 					<span class="the_title fontSize20 fontFamilyEB">{{ this.currentSubCategory.title }}</span>
-					<span class="the_subtitle fontSize14 marginB12">{{ this.currentSubCategory.description }}</span>
-					<span class="theButton buttonPrimary buttonOptimal marginAuto marginB12" @click="$router.push('/category_prices/'), setRouterAnimate()">Купить от {{ this.currentSubCategory.prices[0].price_for_category }}₽</span>
+					<div class="the_subtitle fontSize14 marginB12" v-html="this.currentSubCategory.description"/>
+					<!-- <span class="the_subtitle fontSize14 marginB12">{{ this.currentSubCategory.description }}</span> -->
+					<span class="theButton buttonPrimary buttonOptimal marginAuto marginB12" v-if="currentSubCategoryList.data && this.currentSubCategory.prices[0].price_for_category !== null" @click="$router.push('/category_prices/'), setRouterAnimate()">Купить от {{ this.currentSubCategory.prices[0].price_for_category }}₽</span>
+					<span class="theButton buttonPrimary buttonOptimal marginAuto marginB12" v-if="currentSubCategoryList.data && this.currentSubCategory.prices[0].price_for_category == null && this.currentSubCategory.prices[1].price_for_category !== null" @click="$router.push('/category_prices/'), setRouterAnimate()">Купить от {{ this.currentSubCategory.prices[1].price_for_category }}₽</span>
+					<span class="theButton buttonPrimary buttonOptimal marginAuto marginB12" v-if="currentSubCategoryList.data && this.currentSubCategory.prices[0].price_for_category == null && this.currentSubCategory.prices[1].price_for_category == null && this.currentSubCategory.prices[2].price_for_category !== null" @click="$router.push('/category_prices/'), setRouterAnimate()">Купить от {{ this.currentSubCategory.prices[2].price_for_category }}₽</span>
+
 				</div>
 
-				<div class="bottomWrap content_box elements_box" v-if="currentSubCategoryList.data">
-					<span class="the_title fontSize20 fontFamilyEB">Лекции</span>
-					<span class="the_subtitle fontSize14">Всего: {{ this.currentSubCategoryList.data.length ? this.currentSubCategoryList.data.length : '-' }} • Просмотрено: {{viewedLectures}}</span>
-					<elements-list 
-						v-if="currentSubCategoryList.data.length > 0"
-						class="elements_list"
-						:posts="currentSubCategoryList.data" 
-					/>
+				<div v-if="currentSubCategoryList.data">
+
+					<div class="midWrap content_box elements_box marginB12" style="margin-bottom:12px;" v-if="currentSubCategoryList.data">
+						<span class="the_title fontSize20 fontFamilyEB">Лекции</span>
+						<span class="the_subtitle fontSize14">Всего: {{ this.currentSubCategoryList.data.length ? this.currentSubCategoryList.data.length : '-' }} • Просмотрено: {{viewedLectures}}</span>
+						<elements-list 
+							v-if="currentSubCategoryList.data.length > 0"
+							class="elements_list"
+							:posts="currentSubCategoryList.data" 
+						/>
+					</div>
+
+					<div class="bottomWrap content_box elements_box" >
+						<!-- ЛЕКТОРЫ -->
+						<div class="teachers_box bottomWrap marginB12">
+							<span class="the_title fontFamilyEB fontSize20 blockWrap">{{ this.getInfos.data.app_info[0].out_lectors_title }}</span>
+							<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
+							<div class="element_box" v-if="catTeachersList.data && catTeachersList.data.length">
+								<teacher-slider v-if="catTeachersList.data" :teachers="catTeachersList.data"/>
+							</div>
+							<div v-else class="roller_box">
+								<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+							</div>
+						</div>
+						<!-- ЛЕКТОРЫ END -->
+					</div>
 				</div>
 				
 
-				<!-- <div class="bottomWrap empty_wrap">
+				<div v-else class="bottomWrap empty_wrap">
 					<div class="empty_subwrap flexWrap">
 						<img class="the_img" src="./../assets/images/emptyState.png" alt="img">
 						<span class="the_title fontFamilyEB">Кажется, здесь ничего нет</span>
 						<span class="the_desc fontSize14">Попробуйте обновить страницу или поискать в другом месте</span>
-						<span class="theButton buttonTertiary buttonOptimal">Обновить</span>
+						<span class="theButton buttonTertiary buttonOptimal" @click="this.fetchCurrentSubCategoryAndElements(this.$route.params.slug)">Обновить</span>
 					</div>
-				</div> -->
+				</div>
 
 				<!-- <div class="bottomWrap error_wrap">
 					<div class="error_subwrap flexWrap">
@@ -60,9 +82,21 @@
 
 			</div>
 
+			<!-- <div class="contentSubWrap">
+				<div v-if="!currentSubCategory && !currLoadingStatus" class="bottomWrap empty_wrap">
+					<div class="empty_subwrap flexWrap">
+						<img class="the_img" src="./../assets/images/emptyState.png" alt="img">
+						<span class="the_title fontFamilyEB">Кажется, здесь ничего нет</span>
+						<span class="the_desc fontSize14">Попробуйте обновить страницу или поискать в другом месте</span>
+						<span class="theButton buttonTertiary buttonOptimal">Обновить</span>
+					</div>
+				</div>
+			</div> -->
+
 			
 
 
+			
 
 			<!-- <bottom-line></bottom-line> -->
 			
@@ -74,6 +108,10 @@
 			</div>
 		</div>
 
+
+
+
+
 	</div>
 	
 	
@@ -83,6 +121,7 @@
 <script>
 
 import ElementsList from '@/components/ElementsList';
+import TeacherSlider from '@/components/TeacherSlider';
 
 import {mapState, mapGetters, mapMutations, mapActions} from 'vuex';
 
@@ -93,6 +132,7 @@ export default({
 
 	components: {
 		ElementsList,
+		TeacherSlider
 	}, 
 
 	props: {
@@ -115,7 +155,9 @@ export default({
     }),
 		...mapActions({
 			fetchCurrentSubCategoryAndElements: 'content/fetchCurrentSubCategoryAndElements',
+			fetchCatLectors: 'content/fetchCatLectors',
     }), 
+		
 		
 
 		setViewedLectures(){
@@ -136,10 +178,12 @@ export default({
 		...mapState({
 		}),
 		...mapGetters({
+			getInfos: 'getInfos',
 			currLoadingStatus: 'content/currLoadingStatus',
 			sortedElements: 'content/sortedElements',
 			currentSubCategory: 'content/currentSubCategory',
 			currentSubCategoryList: 'content/currentSubCategoryList',
+			catTeachersList: 'content/catTeachersList',
 		}),
 	},
  
@@ -148,12 +192,18 @@ export default({
 		// console.log(this.$route.params);
 		this.fetchCurrentSubCategoryAndElements(this.$route.params.slug);
 		this.setViewedLectures();
+		this.fetchCatLectors(this.currentSubCategory.slug);
 	},
 
 	watch:{
-		getCurrentLecture: {
+		getCurrentLecture:{
 			handler(newVal){
 				this.setViewedLectures();
+			}
+		},
+		currentSubCategory:{
+			handler(newVal){
+				this.fetchCatLectors(this.currentSubCategory.slug);
 			}
 		}
 	},
@@ -361,6 +411,12 @@ export default({
 					width: 100%;
 					margin-left: 0;
 					margin-right: 0;
+				}
+			}
+
+			.teachers_box{
+				.the_title{
+					margin-bottom: 16px;
 				}
 			}
 		}

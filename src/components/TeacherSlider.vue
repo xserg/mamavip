@@ -55,7 +55,7 @@ export default({
 			sliderOptions: {
 				// swipeDistance: 20,
 				// timing: 'ease-out',
-				// infinite: false,
+				infinite: false,
 				dots: false,
 				navButtons: false,
 				slidesToShow: 2.5,
@@ -109,6 +109,7 @@ export default({
 		opacity: 1;
 	}
 	.the_element{
+		max-width: 196px;
 		// font-size: 14px;
 		.top_line{
 			padding: 8px 16px;

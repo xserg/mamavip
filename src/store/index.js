@@ -21,9 +21,26 @@ export default createStore({
 		curTab: 'home',
 		routerAnimation: '',
 		currentFaq: {},
+
+		photoEditChanges: false,
+		isMotherLocal: 2,
+		editingStatus: true,
+
   },
 
   getters: {
+
+		getEditingStatus(state){
+			return state.editingStatus;
+		},
+
+		getIsMotherLocal(state){
+			return state.isMotherLocal;
+		},
+
+		getPhotoEditChanges(state){
+			return state.photoEditChanges;
+		},
 
 		getAvailableTimer(state){
 			return state.availableTimer;
@@ -52,6 +69,19 @@ export default createStore({
   },
 
   mutations: {
+
+		switchEditing(state, bool){
+			if(!bool){
+				state.editingStatus = bool;
+			}else{
+				state.editingStatus = bool;
+			}
+		},
+
+
+		setPhotoEditChanges(state, bool){
+			state.photoEditChanges = bool;
+		},
 
 
 		setLoadingStatus(state, bool){
@@ -101,14 +131,14 @@ export default createStore({
 			if (localStorage.getItem('currentLector')) {
 				state.content.currentLector = JSON.parse(localStorage.currentLector)
 			}
+			if (localStorage.getItem('todayLecture')) {
+				state.content.todayLecture = JSON.parse(localStorage.todayLecture)
+			}
 		},
 		
-		switchBabyBornStatus(state){
-			if(state.currUser.user.is_mother == 0){
-				state.currUser.user.is_mother = 1;
-			}else{
-				state.currUser.user.is_mother = 0;
-			}
+		switchBabyBornStatus(state, bool){
+			state.isMotherLocal = bool;
+			// state.currUser.user.is_mother = bool;
 		},
 
 		setInfos(state, data){
@@ -189,6 +219,10 @@ export default createStore({
   actions: {
 
 
+		async fetchIsMotherLocal({state}){
+			state.isMotherLocal = state.currUser.user.is_mother;
+		},
+
 		async fetchUserData({state, commit}){
 			try{
 				commit('setLoadingStatus', true);
@@ -198,17 +232,13 @@ export default createStore({
 							Authorization: state.currUser.token_type + ' ' + state.currUser.access_token,
 						}
 					}).catch(function (error) { if (error.response.status == 401){  commit('setAuthOut')  } });
-					// console.log(response.data);
+					// console.log(response);
 					commit('setUserData', response.data);
-					// console.log(response.data);
 					if(response.data.data.next_free_lecture_available){
 						commit('setAvailableTimer', response.data.data.next_free_lecture_available)
 					}else{
 						commit('setAvailableTimer', false)
 					}
-					
-					
-					
 					commit('setLoadingStatus', false);
 				}, 50 )	
 			} 

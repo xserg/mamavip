@@ -13,6 +13,7 @@
     "vue": "^3.2.13",
     "vue-agile": "^2.0.0",
     "vue-axios": "^3.5.2",
+    "vue-moment": "^4.1.0",
     "vue-router": "^4.0.3",
     "vue-timer-hook": "^1.0.51",
     "vue-yup-validation": "^0.0.3",

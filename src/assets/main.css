@@ -47,7 +47,7 @@ html{
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
-	line-height: 125%;
+	line-height: 145%;
 	outline: none !important;
 	user-select: none;
 }
@@ -68,7 +68,7 @@ button, span.theButton{
 	user-select: none;
 	-webkit-tap-highlight-color: transparent;
 	cursor: pointer;
-	font-size: inherit;
+	font-size: 14px;
 }
 
 .roller_box{
@@ -174,6 +174,11 @@ body{
 	font-family: Manrope, Arial, sans-serif;
 	font-weight: 400;
 	overflow: hidden;
+	font-size: 14px;
+}
+
+body b{
+	font-weight: 600;
 }
 /* a:visited{
 	color: #23292D;
@@ -212,11 +217,12 @@ body .marginAuto{
 	/* max-width: 600px;
 	margin-left: auto;
 	margin-right: auto; */
-	position: absolute;
-	left: 0;
+	/* position: absolute; */
+	position: relative;
+	/* left: 0;
 	top: 0;
 	right: 0;
-	bottom: 0;
+	bottom: 0; */
 	overflow: scroll;
 	/* overflow-x: hidden; */
 	z-index: 15;
@@ -231,7 +237,7 @@ body .marginAuto{
 	padding-right: 16px;
 	margin-left: auto;
 	margin-right: auto;
-	min-height: 100vh;
+	/* min-height: 100vh; */
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -265,7 +271,7 @@ body .marginAuto{
 	padding: 0;
 	margin: 0;
 	color: initial;
-	font-size: 16px;
+	font-size: 15px;
 	cursor: pointer;
 	transition: all .14s ease;
 	border-radius: 8px;
@@ -523,13 +529,13 @@ a:hover{
 	font-size: 12px;
 }
 .fontSize14{
-	font-size: 14px;
+	font-size: 13px;
 }
 .fontSize16{
-	font-size: 16px;
+	font-size: 15px;
 }
 .fontSize20{
-	font-size: 20px;
+	font-size: 17px;
 }
 .fontSize32{
 	font-size: 32px;
@@ -541,7 +547,7 @@ a:hover{
 	font-weight: 800;
 }
 .infoWrap h2{
-	font-size: 20px;
+	font-size: 17px;
 	margin-bottom: 20px;
 	font-weight: 800;
 }
@@ -624,6 +630,9 @@ a:hover{
 	flex-direction: column;
 	align-items: flex-start;
 	position: relative;
+}
+.formWrap .inputWrap.phoneInput .errorTitle{
+	display: none;
 }
 .formWrap .inputWrap.hiddenWrap{
 	display: none;
@@ -789,7 +798,7 @@ a:hover{
 	min-width: 60%;
 	margin-top: 12px;
 	margin-bottom: 12px;
-	font-size: 16px;
+	font-size: 15px;
 }
 
 
@@ -860,6 +869,30 @@ a:hover{
   opacity: 0.02;
 }
 
+.mainContainer.theLecture .contentWrap .contentSubWrap .info_box .video_wrap .video_iframe .iframe_box iframe{
+	width: 100%;
+	height: 100%;
+}
+#app .mainContainer .contentWrap .contentSubWrap .desc_box .desc_subbox p{
+	line-height: 145%;
+}
+#app .the_subcategory .the_subcategory_wrap{
+	height: 100%;
+}
+#app .the_subcategory .the_subcategory_wrap .the_subcategory_box{
+	padding-top: 26.4%;
+	height: inherit;
+	display: flex;
+}
+#app .the_subcategory .the_subcategory_wrap .the_subcategory_box .bottom_line{
+	font-size: 13px;
+	line-height: 110%;
+	padding: 9px 12px;
+	width: 100%;
+}
+#app .the_subcategory .the_subcategory_wrap .the_subcategory_subwrap{
+	height: 100%;
+}
 
 /* ------- Анимации -------- */
 
@@ -986,28 +1019,29 @@ a:hover{
 @media screen and (max-width: 550px) {
 
 	body{
-		font-size: 14px;
-	}
-	
-	.fontSize12{
-		font-size: 11px;
-	}
-	.fontSize14{
-		font-size: 12px;
-	}
-	.fontSize16{
-		font-size: 14px;
-	}
-	.fontSize20{
-		font-size: 18px;
-	}
-	.fontSize32{
-		font-size: 26px;
+		font-size: 13px;
 	}
 	
 	.theButton{
 		font-size: 14px;
 	}
+
+	.fontSize12{
+		font-size: 11px;
+	}
+	.fontSize14{
+		font-size: 13px;
+	}
+	.fontSize16{
+		font-size: 14px;
+	}
+	.fontSize20{
+		font-size: 16px;
+	}
+	.fontSize32{
+		font-size: 26px;
+	}
+	
 	
 	
 }

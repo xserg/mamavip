@@ -16,7 +16,7 @@
 					<div class="userinfo_box">
 						<router-link class="userinfo_card" to="/profile/edit" @click="setRouterAnimate">
 							<div v-if="this.getCurrUser.user.photo_small" class="card_photo_wrap">
-								<img :src="this.getCurrUser.user.photo_small" alt="profile_image">
+								<img :src="this.getCurrUser.user.photo_small ? 'https://api.xn--80axb4d.online/storage/' + this.getCurrUser.user.photo_small : ''" alt="profile_image">
 							</div>
 							<span v-else class="card_photo_wrap"></span>
 							<div class="card_info_wrap">
@@ -41,11 +41,12 @@
 				
 
 				<!-- РЕКОМЕНДУЕМ -->
-				<div v-if="currLoadingStatus || !getCurrUser.user || !getRecommended" class="recommended_box midWrap marginB12 roller_box">
+
+				<div v-if="currLoadingStatus || !getCurrUser.user" class="recommended_box midWrap marginB12 roller_box">
 					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 				</div>
 
-				<div v-else class="recommended_box midWrap marginB12" :class="{recommended_box: getCurrUser.user.next_free_lecture_available == null || getAvailableTimer.isExpired, notavailable_box: getCurrUser.user.next_free_lecture_available !== null || !getAvailableTimer.isExpired, error_box: getRecommended === 'e' }">
+				<div v-if="getRecommended" class="recommended_box midWrap marginB12" :class="{recommended_box: getCurrUser.user.next_free_lecture_available == null || getAvailableTimer.isExpired, notavailable_box: getCurrUser.user.next_free_lecture_available !== null || !getAvailableTimer.isExpired, error_box: getRecommended === 'e' }">
 					<div v-if="!getAvailableTimer">
 						<span class="the_title fontFamilyEB fontSize20 blockWrap">{{ this.getInfos.data.app_info[0].recommended_title }}</span>
 						<span class="the_subtitle marginB12 fontSize14 blockWrap">{{ this.getInfos.data.app_info[0].recommended_subtitle }}</span>
@@ -77,13 +78,13 @@
 
 
 				<!-- ПРОМОПАК -->
-				<div v-if="currLoadingStatus || !getPromopack.data" class="videos_box midWrap marginB12">
+				<div v-if="currLoadingStatus || !getCurrUser.user" class="videos_box midWrap marginB12">
 					<div class="roller_box">
 						<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 					</div>
 				</div>
 
-				<div class="videos_box midWrap marginB12" v-else :class="{error_box: getPromopack === 'e'}">
+				<div class="videos_box midWrap marginB12" v-if="getPromopack.data" :class="{error_box: getPromopack === 'e'}">
 					
 					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/promopack" @click="setRouterAnimate">Акции</router-link>
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
@@ -160,9 +161,9 @@
 					</div>
 				</div>
 				<div v-if="!currLoadingStatus && getNotViewed && getNotViewed !== undefined" class="videos_box bottomWrap" :class="{error_box: getNotViewed.length}">
-					<router-link class="the_title fontFamilyEB fontSize20 blockWrap"  to="/forview" @click="setRouterAnimate">{{ this.getInfos.data.app_info[0].not_viewed_yet_title }}</router-link>
+					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" v-if="getNotViewed.length !== 0"  to="/forview" @click="setRouterAnimate">{{ this.getInfos.data.app_info[0].not_viewed_yet_title }}</router-link>
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
-					<div class="element_box" v-if="getNotViewed !== 'e'">
+					<div class="element_box" v-if="getNotViewed !== 'e' || getNotViewed.length !== 0">
 						<!-- <element 
 						:post="recommendationElement"
 						:key="recommendationElement.id"
@@ -394,11 +395,11 @@ export default {
 							position: relative;
 							.card_name{
 								font-weight: 800;
-								margin-bottom: 4px;
 								user-select: none;
 								color: #23292D;
 								position: relative;
 								padding-right: 48px;
+								font-size: 14px;
 							}
 							.card_status{
 								padding-right: 40px;
@@ -465,6 +466,7 @@ export default {
 				}
 				.the_subtitle{
 					padding: 0 16px;
+					padding-bottom: 4px;
 				}
 			}
 

@@ -4,10 +4,10 @@
 		<!-- @mousedown="handleMouseDown(event)" -->
 		<div class="the_element_box">
 			<!-- <img src="./../assets/images/element.jpg" alt="element"> -->
-			<img v-if="filterCatalogElement.preview_picture" :src="filterCatalogElement.preview_picture" alt="element">
+			<img v-if="filterCatalogElement.preview_picture" :src="filterCatalogElement.preview_picture ? 'https://api.xn--80axb4d.online/storage/' + filterCatalogElement.preview_picture : ''" alt="element">
 			<span class="post_noimg" v-else ></span>
 		</div>
-		<div class="the_title fontSize16 fontFamilyEB" style="font-size:16px !important;">{{ filterCatalogElement.title }}</div> 
+		<div class="the_title fontSize16 fontFamilyEB" style="font-size:15px !important;">{{ filterCatalogElement.title }}</div> 
 		<!-- <span class="the_title fontSize14 fontFamilyEB">Короткий заголовок у элемента</span> -->
 	</div>
 	
@@ -137,7 +137,9 @@ export default({
 	.the_title{
 		display: block;
 		color: #23292D;
-		font-size: 1.06rem !important;
+		font-size: 0.96rem !important;
+		line-height: 120%;
+		font-weight: 600;
 	}
 }
 

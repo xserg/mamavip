@@ -147,18 +147,18 @@
 						<p class="fontSize12 alignCenter">Проверьте папку «Спам», если не видите письма</p>
 					</div>
 
-					<div class="infoWrap testingWrap">
+				<div class="infoWrap testingWrap">
 
-						<!-- {{ this.displayTimerSeconds }} -->
-						<!-- <span>{{this.time.hours}}</span>:<span>{{this.time.minutes}}</span>:<span>{{this.time.seconds}}</span><span>{{this.time.ampm}}</span> -->
-						<!-- <span>{{this.timer.days}}</span>:<span>{{this.timer.hours}}</span>:<span>{{this.timer.minutes}}</span>:<span>{{this.timer.seconds.value < 10 ? '0' + this.timer.seconds.value : this.timer.seconds}}</span> <span>{{this.time.ampm}}</span> -->
-						<!-- {{ this.displayTimerSeconds }} -->
-						<!-- <p>{{timer.isRunning ? 'Running' : 'Not running'}}</p> -->
-						<!-- <button @click="timer.start()">Start</button>
-						<button @click="timer.pause()">Pause</button>
-						<button @click="timer.resume()">Resume</button>
-						<button @click="restartOne()">Restart</button> -->
-					</div> 
+					<!-- {{ this.displayTimerSeconds }} -->
+					<!-- <span>{{this.time.hours}}</span>:<span>{{this.time.minutes}}</span>:<span>{{this.time.seconds}}</span><span>{{this.time.ampm}}</span> -->
+					<!-- <span>{{this.timer.days}}</span>:<span>{{this.timer.hours}}</span>:<span>{{this.timer.minutes}}</span>:<span>{{this.timer.seconds.value < 10 ? '0' + this.timer.seconds.value : this.timer.seconds}}</span> <span>{{this.time.ampm}}</span> -->
+					<!-- {{ this.displayTimerSeconds }} -->
+					<!-- <p>{{timer.isRunning ? 'Running' : 'Not running'}}</p> -->
+					<!-- <button @click="timer.start()">Start</button>
+					<button @click="timer.pause()">Pause</button>
+					<button @click="timer.resume()">Resume</button>
+					<button @click="restartOne()">Restart</button> -->
+				</div> 
 
 				</div>
 			
@@ -167,65 +167,6 @@
 			
 
 		</div>
-
-
-
-
-
-
-		<div class="mainContainer authstep_code" v-show=" this.curStep == 'auth_code2' ">
-			<Form class="contentWrap" @submit="onAuthcodePass" v-slot="{ errors }" :validation-schema="schema_code2">
-
-				<div class="errorWrap flexWrap fontSize14" :class="{ ghostWrap: !this.showErrors }">
-					<p>Введен не корректный код</p>
-					<div class="button_wrap">
-						<span class="separate"></span>
-						<span class="theButton close_button" @click="hideMessages"></span>
-					</div>
-				</div>
-
-				<div class="notificationWrap flexWrap fontSize14" :class="{ ghostWrap: !this.showNotification }">
-					<p>{{ this.notificationMessage }}</p>
-					<div class="button_wrap">
-						<span class="separate"></span>
-						<span class="theButton close_button" @click="hideMessages"></span>
-					</div>
-				</div>
-				
-				<div class="topLine flexWrap">
-					<span class="theButton leftButton buttonBack" @click="loginStep"></span>
-					<h1 class="theTitle alignCenter">Аутентификация профиля</h1>
-					<button class="theButton rightButton buttonTransparent fontFamilyB">Далее</button>
-				</div>
-
-				<div class="contentSubWrap">
-					<div class="titleLine">
-						<h2 class="pageTitle fontSize20 alignCenter fontFamilyEB marginB12">Введите код из письма</h2>
-					</div>
-					<div class="formWrap marginB50">
-						<label class="inputWrap" :class="{notValid: errors.code2 }">
-							<span class="label">Код</span>
-							<div class="inputBox">
-								<Field ref="forgotCodeInput2" name="code2" type="number" onkeypress="this.value=this.value.substring(0,5)" placeholder="123456" />
-							</div>
-								<ErrorMessage class="errorTitle" name="code2" />
-						</label>
-					</div>
-
-					<div class="infoWrap">
-						<span class="theButton buttonWhite" :class="{disabled: !this.resendCode2 }" @click="onResendCode2">Запросить код повторно <b :class="{hiddenWrap: this.resendCode2 }">{{this.timer.minutes}}:{{this.timer.seconds.value < 10 ? '0' + this.timer.seconds.value : this.timer.seconds}}</b></span>
-						<p class="fontSize12 alignCenter">Проверьте папку «Спам», если не видите письма</p>
-					</div>
-
-					<div class="infoWrap testingWrap">
-					</div> 
-				</div>
-			
-			</Form>
-		</div>
-
-
-
 
 
 
@@ -297,7 +238,6 @@ export default defineComponent({
 	setup(){
 
 		const resendCode = ref(true);
-		const resendCode2 = ref(true);
 		const time = new Date();
 		// const format = '12-hour'
     // const time = useTime(format);
@@ -329,7 +269,6 @@ export default defineComponent({
 						// const res = await fetch('https://www.greetingsapi.com/random')
 						// const response = await res.json()
 						resendCode.value = true;
-						resendCode2.value = true;
 					} catch (error) {
 						console.log('Error! Could not reach the API. ' + error);
 					}
@@ -369,38 +308,33 @@ export default defineComponent({
 		const schema_code = yup.object({
       code: yup.string().required('Введите код подтверждения').min(6, 'Код должен состоять из 6 символов').max(6, 'Код должен состоять из 6 символов').typeError().label('Код из письма'),
 		});
-		const schema_code2 = yup.object({
-      code2: yup.string().required('Введите код подтверждения').min(6, 'Код должен состоять из 6 символов').max(6, 'Код должен состоять из 6 символов').typeError().label('Код из письма'),
-		});
 		const schema_newpass = yup.object({
       newpass: yup.string().required('Пожалуйста, заполните это поле').min(8, 'Поле должно содержать не менее 8 символов').label('Пароль'),
 			confirm_newpass: yup.string().label('Подтверждение пароля').required('Пожалуйста, заполните это поле').oneOf([yup.ref('newpass'), null], 'Пароли должны совпадать'),
 		});
     return {
-      schema, schema_forgot, schema_code, schema_code2, schema_newpass,
-			resendCode, resendCode2, time, timer, restartOne,
+      schema, schema_forgot, schema_code, schema_newpass,
+			resendCode, time, timer, restartOne,
 			// displayTimerDays, displayTimerHours, displayTimerMinutes, displayTimerSeconds, displayTimerValues,
     };
 
+
 		
+
+
 	},
 
 	data(){
 		return{
 			loading: false,
-			cacheUserData: {},
 			curStep: 'auth_login',
 			inputPassType: 'password',
 			showErrors: false,
-			notificationMessage: '',
 			showNotification: false,
 			notificationErrorMess: '',
 			resendCode: true,
-			resendCode2: true,
 			curResetValues: '',
 			curResetCode: '',
-			curResetValues2: '',
-			curResetCode2: '',
 			// resendCode: false,
 			// loginForm: {
 			// 	email: '',
@@ -428,37 +362,23 @@ export default defineComponent({
 
 		handleLogin(user) {
       this.loading = true;
-			this.cacheUserData = user;
 			// console.log(user);
 			// this.fetchAuth(user);
 			try{
 				setTimeout( async () => {
-					const response = await axios.post('https://api.xn--80axb4d.online/v1/user/login', this.cacheUserData).catch(function (error) { if (error.response){} });
+					const response = await axios.post('https://api.xn--80axb4d.online/v1/user/login', user).catch(function (error) { if (error.response){} });
 					if(response){
-						// console.log(response);
-						this.notificationMessage = response.data.message;
-						
-						setTimeout(() => {
-							this.showNotification = true;
-						}, 400);
-						setTimeout(() => {
-							this.showNotification = false;
-						}, 3000);
-						
-						this.curStep = 'auth_code2';
-						this.resendCode2 = false;
-						this.restartOne();
-
-						// this.setAuthIn(response.data);
-						// setTimeout( async () => {
-						// const responseInfos = await axios.get('https://api.xn--80axb4d.online/v1/app/info', {
-						// 		headers: {
-						// 			Authorization: response.data.token_type + ' ' + response.data.access_token,
-						// 		}
-						// 	});
-						// 	this.setInfos(responseInfos.data);
-						// }, 50 );
-						// this.$router.push("/");
+						// console.log('Типо прошло');
+						this.setAuthIn(response.data);
+						setTimeout( async () => {
+						const responseInfos = await axios.get('https://api.xn--80axb4d.online/v1/app/info', {
+								headers: {
+									Authorization: response.data.token_type + ' ' + response.data.access_token,
+								}
+							});
+							this.setInfos(responseInfos.data);
+						}, 50 );
+						this.$router.push("/");
 						
 					}else{
 						this.notificationErrorMess = 'Неправильный логин/пароль. Повторите попытку.';
@@ -472,6 +392,9 @@ export default defineComponent({
 
 					// this.setCurUserContent(response.data);
 				}, 50 );
+
+				
+
 
 				// const responseInfos = axios.get('https://api.xn--80axb4d.online/v1/app/info', {
 				// 	headers: {
@@ -496,10 +419,6 @@ export default defineComponent({
 		loginStep(){
 			this.curStep = 'auth_login';
 		},
-		loginStep2(){
-			this.curStep = 'auth_code2';
-			this.$refs.forgotCodeInput2.reset();
-		},
 		forgotStep(){
 			this.curStep = 'auth_forgot';
 			this.$refs.forgotCodeInput.reset();
@@ -516,14 +435,14 @@ export default defineComponent({
 			}
 		},
 
-		// onSubmit(values){
-		// 	// console.log(JSON.stringify(values, null, 2));
-		// 	// this.showErrors = true;
-		// 	this.setRouterAnimate();
-		// 	router.push('/');
-		// 	this.setAuthIn();
-		// 	setTimeout(() => {}, 50);
-		// },
+		onSubmit(values){
+			// console.log(JSON.stringify(values, null, 2));
+			// this.showErrors = true;
+			this.setRouterAnimate();
+			router.push('/');
+			this.setAuthIn();
+			setTimeout(() => {}, 50);
+		},
 
 		onSendCode(values){
 			this.curResetValues = values;
@@ -553,6 +472,7 @@ export default defineComponent({
 							this.showErrors = false;
 						}, 3000);
 					}
+					
 
 				}, 50 );
 			} catch(e){
@@ -565,112 +485,6 @@ export default defineComponent({
 			// this.$refs.forgotEmailInput.reset();
 			
 		},
-
-
-
-		
-
-		onResendCode2(){
-			if(this.resendCode2){
-					try{
-					setTimeout( async () => {
-						// console.log('Повторный запрос на КОД');
-						const response = 
-							await axios.post('https://api.xn--80axb4d.online/v1/user/login', this.cacheUserData).catch(function (error) { if (error.response){} });
-						// console.log(response);
-						if(response){
-							setTimeout(() => {
-								this.showNotification = true;
-							}, 400);
-							setTimeout(() => {
-								this.showNotification = false;
-							}, 3000);
-
-							this.curStep = 'auth_code2';
-							this.resendCode2 = false;
-							this.restartOne();
-						}else{
-							this.notificationErrorMess = 'Пользователя с таким email не существует.';
-							setTimeout(() => {
-							this.showErrors = true;
-							}, 400);
-							setTimeout(() => {
-								this.showErrors = false;
-							}, 3000);
-						}
-						
-
-					}, 50 );
-				} catch(e){
-					// console.log(e);
-				} finally {}
-
-				this.$refs.forgotCodeInput2.reset();
-				setTimeout(() => {
-					this.showNotification = true;
-				}, 400);
-				setTimeout(() => {
-					this.showNotification = false;
-				}, 3000);
-				// this.showErrors = true;
-				this.curStep = 'auth_code2';
-				this.resendCode2 = false;
-				this.restartOne();
-			}
-		},
-
-
-		onAuthcodePass(values){
-			// console.log(values);
-			// console.log(JSON.stringify(values, null, 2));
-			try{
-				setTimeout( async () => {
-					this.curResetCode2 = values.code;
-					const filterCode = {
-						code: values.code2,
-					};
-					// console.log(filterCode);
-					// console.log('Отправка кода на сброс пароля');
-					const response = 
-						await axios.post('https://api.xn--80axb4d.online/v1/user/login/code', filterCode).catch(function (error) { if (error.response){  } });
-					// console.log(response);
-					if(response){
-						this.$refs.forgotCodeInput2.reset();
-						// this.showErrors = true;
-						this.setAuthIn(response.data);
-						setTimeout( async () => {
-						const responseInfos = await axios.get('https://api.xn--80axb4d.online/v1/app/info', {
-								headers: {
-									Authorization: response.data.token_type + ' ' + response.data.access_token,
-								}
-							});
-							this.setInfos(responseInfos.data);
-						}, 50 );
-						this.$router.push("/");
-						// console.log(response);
-						// this.$router.push("/");
-					}else{
-						this.notificationErrorMess = 'Некорректный код.';
-						setTimeout(() => {
-						this.showErrors = true;
-						}, 400);
-						setTimeout(() => {
-							this.showErrors = false;
-						}, 3000);
-					}
-
-				}, 50 );
-			} catch(e){
-				console.log(e);
-			} finally {}
-			
-		},
-
-
-
-
-
-		// authentification codes
 
 		onResendCode(){
 			if(this.resendCode){

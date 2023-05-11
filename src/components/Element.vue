@@ -7,15 +7,20 @@
 				<!-- <span class="bought blockWrap" :class="{hiddenWrap: !getCurrUser.user.purchased_lectures.find(item => item.id === post.id )}"></span> -->
 				<span class="premium blockWrap" :class="{hiddenWrap: post.is_free == 1 }"></span>
 			</div>
-			<span class="play"></span>
+			<span class="download" v-if="post.content_type && post.content_type.type == 'pdf'"></span>
+			<span class="download" v-if="post.content_type && post.content_type.title == 'pdf'"></span>
+			<span class="play" v-if="post.content_type && post.content_type.type == 'embed'"></span>
+			<span class="play" v-if="post.content_type && post.content_type.title == 'embed'"></span>
+			<span class="play" v-if="post.content_type && post.content_type.type == 'kinescope'"></span>
+			<span class="play" v-if="post.content_type && post.content_type.title == 'kinescope'"></span>
 			<!-- <span @click="$emit('deleteElement', post)">Открыть</span> -->
 		</div>
 		<div class="the_element_box">
 			<!-- <img src="./../assets/images/element.jpg" alt="element"> -->
-			<img v-if="post.preview_picture" :src="post.preview_picture" alt="element">
+			<img v-if="post.preview_picture" :src="post.preview_picture ? 'https://api.xn--80axb4d.online/storage/' + post.preview_picture : ''" alt="element">
 			<span class="star" :class="{active: post.is_promo == 1}"></span>
 		</div>
-		<span class="the_title fontSize16 fontFamilyEB">{{ post.title + ' ' + post.id}}</span>
+		<span class="the_title fontSize16 fontFamilyEB">{{ post.title }}</span>
 		<!-- <span class="the_title fontSize14 fontFamilyEB">Короткий заголовок у элемента</span> -->
 	</div>
 	
@@ -214,6 +219,24 @@ export default({
 				background-repeat: no-repeat;
 			}
 		}
+		.download{
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			background: rgba(255, 255, 255, 0.7);
+			backdrop-filter: blur(10px);
+			padding: 8px;
+			&::before{
+				content: '';
+				width: 100%;
+				height: 100%;
+				display: block;
+				background-image: url('../assets/icons/download-a.png');
+				background-size: contain;
+				background-position: center;
+				background-repeat: no-repeat;
+			}
+		}
 	}
 	.the_element_box{
 		border: 1px solid rgba(35, 41, 45, 0.1);
@@ -265,16 +288,17 @@ export default({
 		display: block;
 		color: #23292D;
 
-		max-height: 3.06rem;
+		max-height: 2.46rem;
     height: 100%;
-    line-height: 1.53rem;
+    line-height: 1.16rem;
     text-overflow: ellipsis;
-    font-size: 1.07rem;
+    font-size: 0.96rem;
     overflow: hidden;
 		white-space: normal; 
     -webkit-line-clamp: 2;
     display: -webkit-box;
     -webkit-box-orient: vertical;
+		width: calc(100% - 20px);
 	}
 }
 

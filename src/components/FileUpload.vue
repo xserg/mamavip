@@ -70,7 +70,7 @@
 
 <script>
 import axios from 'axios';
-import {mapGetters, mapActions} from 'vuex';
+import {mapGetters, mapActions, mapMutations} from 'vuex';
 export default {
 
 	props: {
@@ -124,6 +124,11 @@ export default {
 
 	methods: {
 
+		...mapMutations({
+			setPhotoEditChanges: 'setPhotoEditChanges',
+			switchEditing: 'switchEditing',
+		}),
+
 		...mapActions({
 			fetchUserData: 'fetchUserData',
 		}),
@@ -147,7 +152,7 @@ export default {
 				if(newPhoto.includes('data:image')){
 					this.localPhoto = newPhoto;
 				}else{
-					this.localPhoto = newPhoto + '?' + Date.now();
+					this.localPhoto = 'https://api.xn--80axb4d.online/storage/' + newPhoto + '?' + Date.now();
 				}
 			}
 		},
@@ -156,6 +161,7 @@ export default {
 		resetFileInput() {
 			this.hasPhoto = false;
 			this.hasPhotoChanges = true;
+			this.setPhotoEditChanges(true);
 			this.cachePhoto = '';
 			this.localPhoto = false;
 			
@@ -207,6 +213,8 @@ export default {
 
 					this.fetchUserData();
 					this.hasPhotoChanges = false;
+					this.switchEditing(true);
+					this.setPhotoEditChanges(false);
 
 				}, 100);
 			}else{
@@ -221,7 +229,7 @@ export default {
 						}
 					});
 
-					console.log(response);
+					// console.log(response);
 					
 					
 
@@ -247,6 +255,8 @@ export default {
 
 					this.fetchUserData();
 					this.hasPhotoChanges = false;
+					this.switchEditing(true);
+					this.setPhotoEditChanges(false);
 
 				});
 			}
@@ -334,13 +344,14 @@ export default {
               };
 							this.hasPhoto = true;
 							this.hasPhotoChanges = true;
+							this.setPhotoEditChanges(true);
 
 							// console.log('Устанавливаем localPhoto');
 							if(reader.result){
 								if(reader.result.includes('data:image')){
 									this.localPhoto = reader.result;
 								}else{
-									this.localPhoto = reader.result + '?' + Date.now();
+									this.localPhoto = 'https://api.xn--80axb4d.online/storage/' + reader.result + '?' + Date.now();
 								}
 							}
 							

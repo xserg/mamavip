@@ -168,7 +168,7 @@ export default {
 		filter: blur(20vh);
 	}
 	.authContainer{
-		height: 100vh;
+		height: 100%;
 		z-index: 10;
 		position: relative;
 	}

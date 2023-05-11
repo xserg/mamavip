@@ -3,10 +3,10 @@
 	<div class="the_element marginB12" @mousedown="handleMouseDown" @click="handleClick">
 		<div class="the_element_box">
 			<!-- <img src="./../assets/images/element.jpg" alt="element"> -->
-			<img v-if="filterTeacher.photo" :src="filterTeacher.photo" alt="element">
+			<img v-if="filterTeacher.photo" :src="filterTeacher.photo ? 'https://api.xn--80axb4d.online/storage/' + filterTeacher.photo : ''" alt="element">
 		</div>
 		<!-- <h5 class="new_title">{{ teacher.name }}</h5> -->
-		<div class="teacher_title fontFamilyB fontSize14" style="font-size:14px !important;">{{ filterTeacher.name }}</div> 
+		<div class="teacher_title fontFamilyB fontSize14" style="font-size:13px !important;">{{ filterTeacher.name }}</div> 
 		<!-- <span class="the_title fontFamilyB">{{ teacher.title }}</span> -->
 		<!-- <span class="the_title fontSize14 fontFamilyEB">Короткий заголовок у элемента</span> -->
 	</div>
@@ -140,6 +140,7 @@ export default({
 		// padding-left: 4px;
 		// padding-right: 4px;
 		width: calc(100% - 16px);
+		margin-top: 8px;
 		margin-left: auto;
 		margin-right: auto;
 		position: relative;

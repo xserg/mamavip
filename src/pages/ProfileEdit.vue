@@ -1,6 +1,6 @@
 <template>
   <div class="mainContainer">
-		<div class="contentWrap" :class="{hiddenWrap: deleteAccount}">
+		<div class="contentWrap" :class="{hiddenWrap: deleteAccount, fixed: this.popupToDelete}">
 
 				<div class="notificationWrap flexWrap fontSize14" :class="{ ghostWrap: !this.showNotification }">
 					<p>Изменения сохранены</p>
@@ -26,7 +26,6 @@
 					</div>
 				</div>
 
-
 				<div class="notificationWrap flexWrap fontSize14" :class="{ ghostWrap: !this.showNotificationPhoto }">
 					<p>Новая фотография сохранена.</p>
 					<div class="button_wrap">
@@ -37,9 +36,7 @@
 
 				<!-- motorstate.com.ua-Volvo-APCI_PTT-2.8+PTT-2.7 -->
 
-
 				<div class="topLine flexWrap">
-					
 					<a @click="$router.go(-1)" class="theButton leftButton buttonTransparent">Назад</a>
 					<h1 class="theTitle alignCenter">Профиль</h1>
 					<button class="theButton rightButton buttonTransparent fontFamilyB" @click="this.$refs.mainSubmitButton.click()">Сохранить</button>
@@ -47,13 +44,11 @@
 
 				<div class="contentSubWrap profile_wrap">
 
-					
-					<div class="photo_wrap topWrap marginB12">
+					<div class="photo_wrap topWrap marginB12" @click="submitButtonToo">
 						<FileUpload :maxSize="10" accept="png,jpg,jpeg" @file-uploaded="getUploadedData" />
 					</div>
 
-					
-					<Form @submit="onSubmit" v-slot="{ errors }" :validation-schema="schema">
+					<Form @submit="onSubmit" v-slot="{ errors }" :validation-schema="schema" :class="{turn_disabled: !this.getEditingStatus}">
 
 						<div class="info_wrap midWrap marginB12">
 							<div class="formWrap">
@@ -61,7 +56,7 @@
 								<label class="inputWrap" :class="{notValid: errors.name }">
 									<span class="label">Как вас зовут?</span>
 									<div class="inputBox">
-										<Field name="name" placeholder="Имя" v-model="this.getCurrUser.user.name" />
+										<Field name="name" placeholder="Имя" :value="this.getCurrUser.user.name" />
 									</div>
 									<ErrorMessage class="errorTitle" name="name" />
 								</label>
@@ -69,7 +64,7 @@
 								<label class="inputWrap" :class="{notValid: errors.birthdate }">
 									<span class="label">Дата вашего рождения</span>
 									<div class="inputBox inputDate">
-										<Field name="birthdate" type="date" placeholder="Выберите дату..." v-model="this.getCurrUser.user.birthdate" />
+										<Field name="birthdate" type="date" placeholder="Выберите дату..." :value="this.getCurrUser.user.birthdate" />
 									</div>
 									<ErrorMessage class="errorTitle" name="birthdate" />
 								</label>
@@ -77,13 +72,13 @@
 								<label class="inputWrap" :class="{notValid: errors.phone }">
 									<span class="label">Номер телефона</span>
 									<div class="inputBox">
-										<Field name="phone" type="tel" placeholder="+7" v-model="this.getCurrUser.user.phone" />
+										<Field name="phone" type="tel" placeholder="+7" :value="this.getCurrUser.user.phone == '+7000000000' ? '' : this.getCurrUser.user.phone" />
 										<!-- <Field v-model="mobile" name="mobile" v-slot="{ field }" type="tel" placeholder="+7">
 											<input v-bind="field">
 										</Field> -->
 										
 									</div>
-									<!-- <ErrorMessage class="errorTitle" name="phone" value="Ошибка" /> -->
+									<ErrorMessage class="errorTitle" name="phone" value="Ошибка" />
 								</label>
 								
 							</div>
@@ -94,29 +89,36 @@
 						<div class="more_wrap midWrap marginB12">
 							<span class="the_title marginB12 fontFamilyEB blockWrap">Выберите статус</span>
 							<div class="statuses_wrap">
-								<span class="the_status" :class="{active: this.getCurrUser.user.is_mother == 0}" @click="switchBabyBornStatus()">Я беременна</span>
-								<span class="the_status" :class="{active: this.getCurrUser.user.is_mother == 1}" @click="switchBabyBornStatus()">Я мама</span>
+								<span class="the_status" :class="{active: getIsMotherLocal == 0}" @click="switchBabyBornStatus(0)">Я беременна</span>
+								<span class="the_status" :class="{active: getIsMotherLocal == 1}" @click="switchBabyBornStatus(1)">Я мама</span>
 							</div>
 							<div class="hidden_inputs">
-								<Field ref="isMotherStatus" name="is_mother" placeholder="Ребенок рожден" v-model="this.getCurrUser.user.is_mother" />
+								<Field ref="isMotherStatus" name="is_mother" placeholder="Ребенок рожден" v-model="getIsMotherLocal" />
+								<!-- <Field ref="isMotherStatus" name="is_mother" placeholder="Ребенок рожден" :value="this.getCurrUser.user.is_mother" /> -->
 							</div>
 							<div class="formWrap">
 
-								<label class="inputWrap" :class="{ hiddenWrap: this.getCurrUser.user.is_mother == 1, notValid: errors.pregnancy_weeks }">
+								<label class="inputWrap"  :class="{hiddenWrap: getIsMotherLocal == 1, notValid: errors.pregnancy_weeks }">
 									<span class="label">Какой срок?</span>
 									<div class="inputBox">
 										<Field ref="bornFalse" name="pregnancy_weeks" type="number" placeholder="В неделях" v-model="pregnancyWeeks" />
 									</div>
 									<ErrorMessage class="errorTitle" name="pregnancy_weeks" />
 								</label>
-								<label class="inputWrap" :class="{ hiddenWrap: this.getCurrUser.user.is_mother == 0, notValid: errors.baby_born }">
+								<label class="inputWrap"  :class="{hiddenWrap: getIsMotherLocal == 0, notValid: errors.baby_born }">
 									<span class="label">Когда родился малыш?</span>
 									<div class="inputBox babyBorned">
-										<Field ref="bornTrue" name="baby_born" type="date" placeholder="Выберите дату..." v-model="this.getCurrUser.user.baby_born" />
+										<Field ref="bornTrue" name="baby_born" type="date" placeholder="Выберите дату..." :value="this.getCurrUser.user.baby_born" />
 									</div>
-									<ErrorMessage class="errorTitle" name="baby_born" />
+									<!-- <ErrorMessage class="errorTitle" name="baby_born" /> -->
 								</label>
 								
+							</div>
+
+							<div class="profile_dates">
+								<span class="profile_title">Информация о профиле</span>
+								<span class="reg_date">Дата регистрации: {{ date_reg }}</span>
+								<span class="setinfo_date">Дата заполнения профиля: {{ date_upd }}</span>
 							</div>
 							
 						</div>
@@ -163,6 +165,9 @@
 
 <script>
 import axios from 'axios';
+// Vue.use(require('vue-moment'));
+import moment from 'vue-moment';
+
 import {mapActions, mapGetters, mapMutations} from 'vuex';
 // @ is an alias to /src
 // import DefaultLikes from '@/components/DefaultLikes.vue'
@@ -176,21 +181,37 @@ export default {
 
 
 	setup(){
-		// const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+		const phoneRegExp = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;;
 
 		const schema = yup.object().shape({
 			name: yup.string().required('Пожалуйста, заполните это поле').typeError('Поле обязателено').min(2, 'Поле должно содержать не менее 2 символов').label('Имя'),
-			birthdate: yup.date().typeError('Введите дату рождения').max(new Date(), 'Выберете корректную дату').label('День рождения'),
+			birthdate: yup.date().typeError('Введите дату рождения').max(new Date(), 'Выберите корректную дату').label('День рождения'),
 			is_mother: yup.string().required('Пожалуйста, заполните это поле').typeError('Поле обязателено').min(1, 'Введите корректные данные').max(1, 'Введите корректные данные').label('Ребенок рожден'),
-			pregnancy_weeks: yup.number().min(0, 'Введите корректный срок').max(40, 'Введите корректный срок').typeError().label('Количество недель'),
-			baby_born: yup.date().typeError('Введите дату рождения малыша').max(new Date(), "Выберете корректную дату").label('День рождения'),
-			phone: yup.string().when('mobile', {
+			pregnancy_weeks: yup.string().typeError('Введите количество недель').label('Количество недель'),
+			// baby_born: yup.string().typeError('Введите дату рождения малыша'),
+
+			baby_born: yup
+				.date()
+				.nullable()
+				.notRequired()
+				.test(
+					"Is date greater",
+					"DOB cannot be greater than today's date",
+					(value) => {
+						if (!value) return true;
+						if (value) return true;
+						// return moment().diff(value) > 0;
+					}
+			),
+
+			// pregnancy_weeks: yup.number().min(0, 'Введите корректный срок').max(40, 'Введите корректный срок').typeError().label('Количество недель'),
+			// baby_born: yup.date().typeError('Введите дату рождения малыша').max(new Date(), "Выберете корректную дату").label('День рождения'),
+			phone: yup.string().min(10, 'Введите корректный номер').matches(phoneRegExp, 'Введите корректный номер').notRequired().when('mobile', {
 				is: (value) => value?.length > 0,
 				then: yup.string().phone("", true, 'Введите корректный номер телефона'),
 				otherwise: yup.string(),
 			}),
 			
-
 			// phone: yup.string().matches(phoneRegExp, 'Phone number is not valid')
 		},
 		[
@@ -214,6 +235,8 @@ export default {
 			showNotificationPhoto: false,
 			popupToDelete: 'false',
 			pregnancyWeeks: 0,
+			date_reg: '',
+			date_upd: '',
 		}
 	},
 
@@ -231,8 +254,12 @@ export default {
 		// 	// isAuth: state => state.isAuth,
 		// }),
 		...mapGetters({
+			getInfos: 'getInfos',
 			getCurrUser: 'getCurrUser',
 			getAvailableTimer: 'getAvailableTimer',
+			getPhotoEditChanges: 'getPhotoEditChanges',
+			getIsMotherLocal: 'getIsMotherLocal',
+			getEditingStatus: 'getEditingStatus',
 		})
 	},
 
@@ -242,11 +269,20 @@ export default {
 		...mapMutations({
 			changeUserData: 'changeUserData',
 			switchBabyBornStatus: 'switchBabyBornStatus',
+			switchEditing: 'switchEditing',
 		}),
 
 		...mapActions({
 			fetchUserData: 'fetchUserData',
+			fetchIsMotherLocal: 'fetchIsMotherLocal',
 		}),
+
+		filterDates(reg, upd){
+			const regD = new Date(reg);
+			this.date_reg = regD.getUTCDate() +"/"+ (regD.getUTCMonth()+1) +"/"+ regD.getUTCFullYear();
+			const updD = new Date(upd);
+			this.date_upd = updD.getUTCDate() +"/"+ (updD.getUTCMonth()+1) +"/"+ updD.getUTCFullYear();
+		},
 
 		getUploadedData(file) {
       this.file = file;
@@ -317,16 +353,55 @@ export default {
     },
 
 
+		submitButtonToo(){
+			if(this.getEditingStatus){
+				this.switchEditing(false);
+				this.$refs.mainSubmitButton.click();
+			}else{}
+			// this.$refs.formContainer.click();
+			// this.$refs.mainSubmitButton.click();
+			// this.$refs.mainSubmitButton.click();
+		},
 
 		onSubmit(user) {
 			if(user.pregnancy_weeks){
 				user.pregnancy_weeks = Math.round(user.pregnancy_weeks);
 			}else{
-				user.pregnancy_weeks = 0;
+				user.pregnancy_weeks = 1;
 			}
+			if(user.phone){
+				// user.phone = Math.round(user.pregnancy_weeks);
+			}else{
+				user.phone = '+7000000000';
+			}
+			if(user.baby_born){
+				// user.baby_born = format(user.baby_born, 'DD-MM-YYYY');
+			}else{
+				const today = new Date();
+				const yyyy = today.getFullYear();
+				let mm = today.getMonth() + 1; // Months start at 0!
+				let dd = today.getDate();
+
+				if (dd < 10) dd = '0' + dd;
+				if (mm < 10) mm = '0' + mm;
+
+				const formattedToday = yyyy + '-' + mm + '-' + dd;
+
+				user.baby_born = formattedToday;
+			}
+
 			try{
-				setTimeout( () => {
-					const response = 
+				console.log(user);
+				// const values = {
+				// 	baby_born: "2022-10-10",
+				// 	birthdate: "1992-03-20",
+				// 	is_mother: 1,
+				// 	name: "test",
+				// 	phone: "9506777777",
+				// 	pregnancy_weeks: 2,
+				// };
+				setTimeout( async () => {
+					const response = await
 						axios.put('https://api.xn--80axb4d.online/v1/user/profile', user, {
 							headers: {
 								Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
@@ -335,22 +410,52 @@ export default {
   							'Access-Control-Allow-Origin': '*',
 							}
 						}
-					);
-					// console.log('Данные обработаны');
+					).catch(function (error) { 
+					if (error.response.status == 401){  
+						commit('setAuthOut')  
+					} else if (error.response){ 
+						setTimeout(() => {
+							this.showErrors = true;
+						}, 400);
+						setTimeout(() => {
+							this.showErrors = false;
+						}, 3000);
+					}else{
+						setTimeout(() => {
+							this.showErrors = true;
+						}, 400);
+						setTimeout(() => {
+							this.showErrors = false;
+						}, 3000);
+						// this.fetchUserData();
+						// // console.log('Данные обработаны');
+						// setTimeout(() => {
+						// 	this.showNotification = true;
+						// }, 400);
+						// setTimeout(() => {
+						// 	this.showNotification = false;
+						// }, 3000);
+					} });
+
+					if(response){
+						this.fetchUserData();
+						if(this.getEditingStatus){
+							setTimeout(() => {
+								this.showNotification = true;
+							}, 400);
+							setTimeout(() => {
+								this.showNotification = false;
+							}, 3000);
+						}
+						
+					}
+
 					// console.log(response);
 
-					// this.changeUserData(user);
-					this.fetchUserData();
+					// this.fetchUserData();
+					
 
-					setTimeout(() => {
-						this.showNotification = true;
-					}, 400);
-					setTimeout(() => {
-						this.showNotification = false;
-					}, 3000);
-
-
-				}, 500 );
+				}, 50 );
 			} catch(e){
 				console.log(e);
 			} finally {}
@@ -366,11 +471,12 @@ export default {
 		// Переключение статуса "рождение малыша" под инпуты сроков
 		bornTrue(){
 			this.born = true;
-			this.$refs.bornFalse.reset();
+			// this.$refs.bornFalse.reset();
 		},
 		bornFalse(){
 			this.born = false;
-			this.$refs.bornTrue.reset();
+			// this.$refs.noBabyBorn.value('string?');
+			// this.$refs.bornTrue.reset();
 		},
 
 
@@ -393,13 +499,18 @@ export default {
 	mounted(){
 		this.fetchUserData();
 		this.setPregnancyWeeks();
+		this.fetchIsMotherLocal();
+		this.filterDates(this.getCurrUser.user.created_at, this.getCurrUser.user.updated_at);
 	},
 
 
 	watch:{
 		getCurrUser: {
 			handler(newVal){
+				// this.fetchUserData();
+				this.fetchIsMotherLocal();
 				this.setPregnancyWeeks();
+				this.filterDates(this.getCurrUser.user.created_at, this.getCurrUser.user.updated_at);
 				// console.log('Новое значение: ' + newVal);
 			},
 			deep: true
@@ -413,14 +524,18 @@ export default {
 <style lang="scss" scoped>
 
 .mainContainer{
-	height: 100vh;
+	height: 100%;
 	.contentWrap{
 		padding: 0;
 		padding-top: 45px;
 		padding-bottom: 48px;
 		background-color: #FFF;
-		overflow: scroll;
+		// overflow: scroll;
 		justify-content: flex-start;
+		.fixed{
+			height: 100vh;
+			overflow: hidden;
+		}
 
 		.topLine{
 			.leftButton{
@@ -432,6 +547,9 @@ export default {
 		.notificationWrap{
 			bottom: 60px;
 		}
+		.errorWrap{
+			bottom: 60px;
+		}
 
 	
 		.contentSubWrap.profile_wrap{
@@ -439,6 +557,29 @@ export default {
 			padding: 16px 0;
 			padding: 0;
 			background-color: #F3F5F6;
+			form{
+				position: relative;
+				&::before{
+					content: '';
+					width: 100%;
+					height: 100%;
+					opacity: 0;
+					visibility: hidden;
+					display: block;
+					top: 0;
+					left: 0;
+					position: absolute;
+					transition: all .26s ease;
+					background-color: #fff;
+					z-index: 10;
+				}
+				&.turn_disabled{
+					&::before{
+						visibility: visible;
+						opacity: .6;
+					}
+				}
+			}
 			.profileSubmitButton{
 				width: 0;
 				height: 0;
@@ -503,6 +644,27 @@ export default {
 				background-color: #FFF;
 				padding: 20px 16px;
 				position: relative;
+				.profile_dates{
+					.profile_title{
+						font-weight: 600;
+						font-size: 13px;
+						margin-bottom: 10px;
+						display: block;
+						
+					}
+					.reg_date{
+						font-size: 12px;
+						margin-bottom: 6px;
+						display: block;
+						color: #666A6C;
+					}
+					.setinfo_date{
+						font-size: 12px;
+						margin-bototm: 4px;
+						display: block;
+						color: #666A6C;
+					}
+				}
 				.hidden_inputs{
 					height: 0;
 					opacity: 0;
@@ -578,6 +740,7 @@ export default {
 		width: 100%;
 		margin: 0 auto;
 		max-width: none;
+		height: 100vh;
 		.contentSubWrap.finish_delete_wrap{
 			max-width: 480px;
 			width: 100%;

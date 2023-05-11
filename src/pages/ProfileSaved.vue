@@ -10,7 +10,7 @@
 		<div class="contentWrap" v-else :class="{centered: this.getSaved == 'e'}">
 
 			<div class="topLine flexWrap">
-				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
+				<a @click="$router.push('/profile'), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Сохранённые</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Готово</button>
 			</div>

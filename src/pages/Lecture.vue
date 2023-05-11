@@ -3,6 +3,26 @@
 	<div class="mainContainer theLecture" :class="{fixed: heightLock}">
 		<div class="contentWrap">
 
+			<div class="popup_wrap" :class="{ghostWrap: !thePopup}">
+				<div class="popup_box">
+					<span class="the_title blockWrap fontSize16 alignCenter marginB12 fontFamilyB">Пожалуйста, оцените материал</span>
+					<span class="the_title blockWrap fontSize14 alignCenter marginB20 fontFamilyR">Это поможет нам стать лучше</span>
+					<span class="the_title blockWrap fontSize14 alignCenter marginB12 fontFamilyB" style="color:#23292DB2;">Лекция</span>
+					<div class="rating_stars">
+						<span class="the_star" :class="{active: localRating == 1 || localRating == 2 || localRating == 3 || localRating == 4 || localRating == 5}" @click="preRating(2)"></span>
+						<span class="the_star" :class="{active: localRating == 2 || localRating == 3 || localRating == 4 || localRating == 5}" @click="preRating(4)"></span>
+						<span class="the_star" :class="{active: localRating == 3 || localRating == 4 || localRating == 5}" @click="preRating(6)"></span>
+						<span class="the_star" :class="{active: localRating == 4 || localRating == 5}" @click="preRating(8)"></span>
+						<span class="the_star" :class="{active: localRating == 5}" @click="preRating(10)"></span>
+					</div>
+					<div class="buttons_wrap flexWrap">
+						<span class="theButton buttonTertiary" @click="showPopup">Отмена</span>
+						<span class="theButton buttonPrimary" :class="{disabled: localRating == 0}" @click="sendRating">Оценить</span>
+					</div>
+				</div>
+				<!-- <popup-slider class="slider_wrap" :posts="sertificateslist" /> -->
+			</div>
+
 			<div class="notificationWrap flexWrap fontSize14" :class="{ ghostWrap: !this.showNotification }">
 				<p>{{ this.notificationMess }}</p>
 				<div class="button_wrap">
@@ -25,143 +45,397 @@
 				</div>
 			</div> -->
 
-			<div class="topLine flexWrap">
+			<div class="topLine flexWrap"  v-if="!loadingStatus && getCurrentLecture.id">
 				<!-- <a @click="$router.push('/catalog/' + this.currentSubCategory.parent_slug + '/' + this.currentSubCategory.slug), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" /> -->
 				<a @click="this.$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
-				<h1 class="theTitle alignCenter">Лекция</h1>
+				<h1 class="theTitle alignCenter" v-if="getCurrentLecture.content_type.type == 'kinescope' || getCurrentLecture.content_type.title == 'kinescope' ">Лекция</h1>
+				<h1 class="theTitle alignCenter" v-if="getCurrentLecture.content_type.type == 'embed' || getCurrentLecture.content_type.title == 'embed' ">Лекция</h1>
+				<h1 class="theTitle alignCenter" v-if="getCurrentLecture.content_type.type == 'pdf' || getCurrentLecture.content_type.title == 'pdf '">Материал</h1>
+				
 				<div class="buttons_wrap theButton rightButton flexWrap" v-if="!loadingStatus && getCurrentLecture.id">
-					<button class="theButton rightButton buttonTransparent buttonWatched fontFamilyB" :class="{active: theWatched }" @click="addToWatched"></button>
-					<button class="theButton rightButton buttonTransparent buttonFav fontFamilyB" :class="{active: theFav }" @click="addToFav"></button>
+					<button v-if="getCurrUser.user.name !== null" class="theButton rightButton buttonTransparent buttonWatched fontFamilyB" :class="{active: theWatched }" @click="addToWatched"></button>
+					<button v-if="getCurrUser.user.name !== null" class="theButton rightButton buttonTransparent buttonFav fontFamilyB" :class="{active: theFav }" @click="addToFav"></button>
 				</div>
 				<div class="buttons_wrap theButton rightButton flexWrap" v-else></div>
 				
 			</div>
 
 			<div class="contentSubWrap" v-if="!loadingStatus && getCurrentLecture.id"> 
-				<div class="topWrap content_box info_box marginB12">
-
-					<div class="video_wrap" :class="{active: this.startLecture }" v-if="getCurrentLecture.is_free == 0 || getCurrentLecture.purchase_info.is_purchased == 1 || !getAvailableTimer">
-						<div class="video_starter" @click="startWatchLecture" v-if="getCurrentLecture.is_free == 1 || getCurrentLecture.purchase_info.is_purchased == 1"></div>
-						<!-- <div class="video_starter" @click="startWatchLecture"></div> -->
-						<img class="video_preview" v-if="getCurrentLecture.preview_picture" :src="getCurrentLecture.preview_picture" alt="preview" />
-						<span class="video_nopreview" v-else alt="preview" />
-						<div class="video_iframe">
-							<iframe :src="currentLectureLink" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; encrypted-media;" allowfullscreen></iframe>
-						</div>
-					</div>
-					<div class="notavailable_wrap topWrap" v-else>
-						<div class="message_wrap">
-							<span class="mess_icon"></span>
-							<span class="mess_title fontFamilyEB">График просмотра</span>
-							<span class="mess_desc">Вы уже выбрали лекцию на сегодня.<br>Следующая лекция доступна через<br>{{ getAvailableTimer.hours }} ч. {{ getAvailableTimer.minutes }} мин. {{ getAvailableTimer.seconds }} сек.</span>
-						</div>
-					</div>
-
-					<div class="top_titles">
-						<span class="the_status" :class="{active: this.getCurrentLecture.list_watched == 1 }">Просмотрено</span>
-						<span class="the_status promo_mark" :class="{promo_active: this.getCurrentLecture.is_promo == 1 }">На акции</span>
-						<span class="the_title fontSize20 fontFamilyEB">{{ getCurrentLecture.title }}</span>
-					</div>
-				
+				<div class="contentCheck" v-if="getCurrUser.user.name !== null">
 					
-					<div class="buttons_wrap" :class="{hiddenWrap: getCurrentLecture.purchase_info.is_purchased == 1}" v-if="getCurrentLecture.is_free !== 1 || getCurrentLecture.prices.purchase_info == 0 || getAvailableTimer">
-						<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="!getCurrentLecture.prices.price_by_promo && getCurrentLecture.prices.price_by_category" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices.price_by_category[0].price_for_lecture) }}₽</span>
-						<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices.price_by_promo" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices.price_by_promo[0].price_for_promo_lecture) }}₽</span>
-						<!-- <span class="theButton buttonPrimary buttonOptimal marginB12 marginAuto">199 ₽ — на 12 дней</span>
-						<span class="theButton buttonSecondary buttonOptimal marginAuto">99 ₽ — на 1 день</span> -->
-					</div>
-				</div>
+					<div class="kinescope_wrap" v-if="getCurrentLecture.content_type.type == 'kinescope' || getCurrentLecture.content_type.title == 'kinescope'">
+						<div class="topWrap content_box info_box marginB12">
 
-				<div class="midWrap desc_box content_box marginB12">
-					<div class="desc_subbox" :class="{active: moreDesc == true, fixed_height: getCurrentLecture.description.length > 250}">
-						<p>{{ getCurrentLecture.description }}</p> 
-					</div>
-					<span v-show="getCurrentLecture.description.length > 250" class="show_more" @click="showMoreDesc">{{  moreDesc ? 'Скрыть' : 'Подробнее' }}</span>
-				</div>
+							<div class="video_wrap" :class="{active: this.startLecture }" v-if="getCurrentLecture.is_free == 0 || getCurrentLecture.purchase_info.is_purchased == 1 || !getAvailableTimer || getTodayLecture == getCurrentLecture.id">
+								<div class="video_starter" @click="startWatchLecture" v-if="getCurrentLecture.is_free == 1 && !getAvailableTimer || getCurrentLecture.purchase_info.is_purchased == 1 || getTodayLecture == getCurrentLecture.id"></div>
+								<!-- <div class="video_starter" @click="startWatchLecture"></div> -->
+								<img class="video_preview" v-if="getCurrentLecture.preview_picture" :src="getCurrentLecture.preview_picture ? 'https://api.xn--80axb4d.online/storage/' + getCurrentLecture.preview_picture : ''" alt="preview" />
+								<span class="video_nopreview" v-else alt="preview" />
+								<div class="video_iframe">
+									<iframe 
+										:src="currentLectureLink" 
+										frameborder="0" 
+										allow="autoplay; fullscreen; picture-in-picture; encrypted-media;" 
+										allowfullscreen>
+									</iframe>
+								</div>
+							</div>
+							<div class="notavailable_wrap topWrap" v-else>
+								<div class="message_wrap">
+									<span class="mess_icon"></span>
+									<span class="mess_title fontFamilyEB">График просмотра</span>
+									<span class="mess_desc">Вы уже выбрали материал на сегодня.<br>Следующий бесплатный будет доступен через<br>{{ getAvailableTimer.hours }} ч. {{ getAvailableTimer.minutes }} мин. {{ getAvailableTimer.seconds }} сек.</span>
+								</div>
+							</div>
 
-				<div class="userinfo_wrap topWrap marginB12">
-					<div class="userinfo_box" v-if="getCurrentLecture.lector">
-						<a class="userinfo_card" @click=" this.fetchCurrentLector(getCurrentLecture.lector.id), $router.push('/lectors/' + getCurrentLecture.lector.id ), setRouterAnimate">
-							<div class="card_photo_wrap" v-if="getCurrentLecture.lector.photo" :class="{filled: getCurrentLecture.lector.photo}">
-								<img :src="getCurrentLecture.lector.photo" alt="lector_photo">
+							<div class="top_titles">
+								<span class="the_status" :class="{active: theWatched }">Просмотрено</span>
+								<span class="the_status promo_mark" :class="{promo_active: this.getCurrentLecture.is_promo == 1 }">На акции</span>
+								<!-- Средняя общая оценка: <span class="the_status rating" :class="{active: getCurrentLecture.rates.rate_user !== null}" v-if="getCurrentLecture.rates.rate_avg !== null ">{{ Number(getCurrentLecture.rates.rate_avg/2).toFixed(1) + '/' + 10/2  }}</span> -->
+								<span class="the_status rating" :class="{active: getCurrentLecture.rates.rate_user !== null}" v-if="getCurrentLecture.rates.rate_user !== null ">{{ Number(getCurrentLecture.rates.rate_user/2).toFixed(0) + '/' + 10/2  }}</span>
+								<span class="the_status rating" :class="{active: getCurrentLecture.rates.rate_user !== null}" v-else>{{ '-' }}</span>
+								<!-- <span class="the_status rating" v-if="this.rate !== null ">{{ this.rate/2 + '/' + 10/2  }}</span>
+								<span class="the_status rating" v-else>{{ '-' }}</span> -->
+								<span class="the_title fontSize20 fontFamilyEB">{{ getCurrentLecture.title }}</span>
 							</div>
-							<div class="card_info_wrap">
-								<!-- <span class="card_name">Заполните профиль</span> -->
-								<span class="card_name">{{ getCurrentLecture.lector.name }}</span>
-								<span class="card_status fontSize14">Лектор</span>
-								<span class="card_button theButton buttonTransparent buttonOptimal"></span>
-							</div>
+						
 							
-						</a>
-					</div>
-				</div>
-
-
-				<div class="midWrap content_box elements_box marginB12" v-if="currentSubCategoryListFilter.length && !currLoadingStatus && !loadingStatus && currentSubCategory.title && this.getInfos.data">
-					<span class="the_subtitle fontSize14">{{ this.getInfos.data.app_info[0].more_in_the_collection }}</span>
-					<a @click="$router.push('/catalog/' + this.currentSubCategory.parent_slug + '/' + this.currentSubCategory.slug), setRouterAnimate()" class="the_title fontSize20 fontFamilyEB">{{ currentSubCategory.title }}</a>
-					<elements-slider 
-						v-if="currentSubCategoryListFilter.length > 0"
-						:posts="currentSubCategoryListFilter"
-					/>
-				</div>
-
-				<div class="midWrap feedback_box content_box elements_box marginB12" v-if="!currLoadingStatus && !loadingStatus">
-					<span class="the_subtitle fontSize14">Напиши автору лекции</span>
-					<span class="the_title fontSize20 fontFamilyEB">Обратная связь</span>
-					
-					<Form @submit="sendFeedback" v-slot="{ errors }" class="formWrap">
-						<label class="inputWrap" :class="{notValid: errors.mess }">
-							<div class="inputBox">
-								<Field ref="feedbackField" v-slot="{ field }" v-model="comment" name="mess">
-									<textarea v-bind="field" name="comment" placeholder="Ваше сообщение"/>
-									<!-- <div v-if="errors[0]">{{errors[0]}}</div> -->
-								</Field>
-								<!-- <Field name="mess" type="textarea" onkeypress="this.value=this.value.substring(0,5)" placeholder="Сообщение" /> -->
+							<!-- Условия для кнопок покупки BEGIN -->
+							<!-- Если карточка куплена -->
+							<div v-if="getCurrentLecture.purchase_info.is_purchased">
+								<div class="buttons_wrap">
+									<!-- <span>Купленная</span> -->
+									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-if="localRating >= 1" @click="showPopup">Сменить оценку</span>
+									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-else @click="showPopup">Оценить</span>
+								</div>
 							</div>
-								<ErrorMessage class="errorTitle" name="mess" />
-						</label>
-						<button class="submitButton theButton buttonPrimary buttonOptimal">Отправить</button>
-					</Form>
+							<!-- Если карточка не куплена -->
+							<div v-else>
+								<!-- Если бесплатная -->
+								<div class="buttons_wrap" v-if="getCurrentLecture.payment_type.type == 'free'">
+									<!-- Если уже какая-то карточка просмотрена сегодня -->
+									<div v-if="getAvailableTimer && getCurrentLecture.id !== getTodayLecture">
+										<div class="tarif_one" v-if="getCurrentLecture.show_tariff_1">
+											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[0].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[0].common_price_for_one_lecture) }}₽</span>
+											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[0].custom_price_for_one_lecture) }}₽</span>
+										</div>
+										<div class="tarif_one" v-if="!getCurrentLecture.show_tariff_1 && getCurrentLecture.show_tariff_2">
+											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[1].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[1].common_price_for_one_lecture) }}₽</span>
+											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[1].custom_price_for_one_lecture) }}₽</span>
+										</div>
+										<div class="tarif_one" v-if="!getCurrentLecture.show_tariff_1 && !getCurrentLecture.show_tariff_2 && getCurrentLecture.show_tariff_3">
+											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[2].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[2].common_price_for_one_lecture) }}₽</span>
+											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[2].custom_price_for_one_lecture) }}₽</span>
+										</div>
+									</div>
+									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-if="localRating >= 1" @click="showPopup">Сменить оценку</span>
+									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-else @click="showPopup">Оценить</span>
+								</div>
+								<!-- Если карточка платная -->
+								<div class="buttons_wrap" v-else>
+									<div class="tarif_one" v-if="getCurrentLecture.show_tariff_1">
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[0].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[0].common_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[0].custom_price_for_one_lecture) }}₽</span>
+									</div>
+									<div class="tarif_one" v-if="!getCurrentLecture.show_tariff_1 && getCurrentLecture.show_tariff_2">
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[1].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[1].common_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[1].custom_price_for_one_lecture) }}₽</span>
+									</div>
+									<div class="tarif_one" v-if="!getCurrentLecture.show_tariff_1 && !getCurrentLecture.show_tariff_2 && getCurrentLecture.show_tariff_3">
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[2].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[2].common_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[2].custom_price_for_one_lecture) }}₽</span>
+									</div>
+									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-if="localRating >= 1" @click="showPopup">Сменить оценку</span>
+									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-else @click="showPopup">Оценить</span>
+								</div>
+							</div>
+							<!-- Условия для кнопок покупки END -->
 
-				</div>
-				
-
-				<div class="bottomWrap moreinfo_box content_box">
-					<p>Представленные материалы не являются лечением или руководством к действию. Перед любыми действиями требуется консультация специалиста. Просматривая материалы вы подтверждаете факт ознакомления с <router-link class="the_link" to="/policy" @click="setRouterAnimate">обязательным соглашением</router-link></p>
-				</div>
-
-				<!-- <div class="bottomWrap empty_wrap">
-					<div class="empty_subwrap flexWrap">
-						<img class="the_img" src="./../assets/images/emptyState.png" alt="img">
-						<span class="the_title fontFamilyEB">Кажется, здесь ничего нет</span>
-						<span class="the_desc fontSize14">Попробуйте обновить страницу или поискать в другом месте</span>
-						<span class="theButton buttonTertiary buttonOptimal">Обновить</span>
+						</div>
 					</div>
-				</div> 
 
-				<div class="bottomWrap error_wrap">
-					<div class="error_subwrap flexWrap">
-						<span class="the_toptitle fontSize20 fontFamilyEB">Лекции</span>
-						<img class="the_img" src="./../assets/images/noResponse.png" alt="img">
-						<span class="the_title fontFamilyEB">Кажется, здесь ничего нет</span>
-						<span class="the_desc fontSize14">Попробуйте обновить страницу или поискать в другом месте</span>
-						<span class="theButton buttonTertiary buttonOptimal">Обновить</span>
+					
+					<div class="pdf_wrap" v-if="getCurrentLecture.content_type.type == 'pdf' || getCurrentLecture.content_type.title == 'pdf'">
+						<div class="topWrap content_box info_box marginB12">
+
+							<div class="video_wrap" :class="{active: this.startLecture }" v-if="getCurrentLecture.is_free == 0 || getCurrentLecture.purchase_info.is_purchased == 1 || !getAvailableTimer || getTodayLecture == getCurrentLecture.id">
+								<div class="pdf_downloader" @click="startWatchLecture" v-if="getCurrentLecture.is_free == 1 && !getAvailableTimer || getCurrentLecture.purchase_info.is_purchased == 1 || getTodayLecture == getCurrentLecture.id"></div>
+								<!-- <div class="video_starter" @click="startWatchLecture"></div> -->
+								<img class="video_preview" v-if="getCurrentLecture.preview_picture" :src="getCurrentLecture.preview_picture ? 'https://api.xn--80axb4d.online/storage/' + getCurrentLecture.preview_picture : ''" alt="preview" />
+								<span class="video_nopreview" v-else alt="preview" />
+								<div class="video_iframe">
+									<iframe 
+										:src="currentLectureLink" 
+										frameborder="0" 
+										allow="autoplay; fullscreen; picture-in-picture; encrypted-media;" 
+										allowfullscreen>
+									</iframe>
+								</div>
+							</div>
+							<div class="notavailable_wrap topWrap" v-else>
+								<div class="message_wrap">
+									<span class="mess_icon"></span>
+									<span class="mess_title fontFamilyEB">График просмотра</span>
+									<span class="mess_desc">Вы уже выбрали материал на сегодня.<br>Следующий бесплатный будет доступен через<br>{{ getAvailableTimer.hours }} ч. {{ getAvailableTimer.minutes }} мин. {{ getAvailableTimer.seconds }} сек.</span>
+								</div>
+							</div>
+
+							<div class="top_titles">
+								<span class="the_status" :class="{active: theWatched }">Просмотрено</span>
+								<span class="the_status promo_mark" :class="{promo_active: this.getCurrentLecture.is_promo == 1 }">На акции</span>
+								<!-- Средняя общая оценка: <span class="the_status rating" :class="{active: getCurrentLecture.rates.rate_user !== null}" v-if="getCurrentLecture.rates.rate_avg !== null ">{{ Number(getCurrentLecture.rates.rate_avg/2).toFixed(1) + '/' + 10/2  }}</span> -->
+								<span class="the_status rating" :class="{active: getCurrentLecture.rates.rate_user !== null}" v-if="getCurrentLecture.rates.rate_user !== null ">{{ Number(getCurrentLecture.rates.rate_user/2).toFixed(0) + '/' + 10/2  }}</span>
+								<span class="the_status rating" :class="{active: getCurrentLecture.rates.rate_user !== null}" v-else>{{ '-' }}</span>
+								<!-- <span class="the_status rating" v-if="this.rate !== null ">{{ this.rate/2 + '/' + 10/2  }}</span>
+								<span class="the_status rating" v-else>{{ '-' }}</span> -->
+								<span class="the_title fontSize20 fontFamilyEB">{{ getCurrentLecture.title }}</span>
+							</div>
+
+
+							<!-- Условия для кнопок покупки BEGIN -->
+							<!-- Если карточка куплена -->
+							<div v-if="getCurrentLecture.purchase_info.is_purchased">
+								<div class="buttons_wrap">
+									<!-- <span>Купленная</span> -->
+									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-if="localRating >= 1" @click="showPopup">Сменить оценку</span>
+									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-else @click="showPopup">Оценить</span>
+								</div>
+							</div>
+							<!-- Если карточка не куплена -->
+							<div v-else>
+								<!-- Если бесплатная -->
+								<div class="buttons_wrap" v-if="getCurrentLecture.payment_type.type == 'free'">
+									<!-- Если уже какая-то карточка просмотрена сегодня -->
+									<div v-if="getAvailableTimer && getCurrentLecture.id !== getTodayLecture">
+										<div class="tarif_one" v-if="getCurrentLecture.show_tariff_1">
+											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[0].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Скачать от {{ Math.round(getCurrentLecture.prices[0].common_price_for_one_lecture) }}₽</span>
+											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Скачать от {{ Math.round(getCurrentLecture.prices[0].custom_price_for_one_lecture) }}₽</span>
+										</div>
+										<div class="tarif_one" v-if="!getCurrentLecture.show_tariff_1 && getCurrentLecture.show_tariff_2">
+											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[1].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Скачать от {{ Math.round(getCurrentLecture.prices[1].common_price_for_one_lecture) }}₽</span>
+											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Скачать от {{ Math.round(getCurrentLecture.prices[1].custom_price_for_one_lecture) }}₽</span>
+										</div>
+										<div class="tarif_one" v-if="!getCurrentLecture.show_tariff_1 && !getCurrentLecture.show_tariff_2 && getCurrentLecture.show_tariff_3">
+											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[2].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Скачать от {{ Math.round(getCurrentLecture.prices[2].common_price_for_one_lecture) }}₽</span>
+											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Скачать от {{ Math.round(getCurrentLecture.prices[2].custom_price_for_one_lecture) }}₽</span>
+										</div>
+									</div>
+									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-if="localRating >= 1" @click="showPopup">Сменить оценку</span>
+									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-else @click="showPopup">Оценить</span>
+								</div>
+								<!-- Если карточка платная -->
+								<div class="buttons_wrap" v-else>
+									<div class="tarif_one" v-if="getCurrentLecture.show_tariff_1">
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[0].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Скачать от {{ Math.round(getCurrentLecture.prices[0].common_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Скачать от {{ Math.round(getCurrentLecture.prices[0].custom_price_for_one_lecture) }}₽</span>
+									</div>
+									<div class="tarif_one" v-if="!getCurrentLecture.show_tariff_1 && getCurrentLecture.show_tariff_2">
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[1].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Скачать от {{ Math.round(getCurrentLecture.prices[1].common_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Скачать от {{ Math.round(getCurrentLecture.prices[1].custom_price_for_one_lecture) }}₽</span>
+									</div>
+									<div class="tarif_one" v-if="!getCurrentLecture.show_tariff_1 && !getCurrentLecture.show_tariff_2 && getCurrentLecture.show_tariff_3">
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[2].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Скачать от {{ Math.round(getCurrentLecture.prices[2].common_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Скачать от {{ Math.round(getCurrentLecture.prices[2].custom_price_for_one_lecture) }}₽</span>
+									</div>
+									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-if="localRating >= 1" @click="showPopup">Сменить оценку</span>
+									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-else @click="showPopup">Оценить</span>
+								</div>
+							</div>
+							<!-- Условия для кнопок покупки END -->
+
+						</div>
 					</div>
-				</div> -->
 
+					<div class="iframe_wrap" v-if="getCurrentLecture.content_type.type == 'embed' || getCurrentLecture.content_type.title == 'embed'">
+						<div class="topWrap content_box info_box marginB12">
+
+							<div class="video_wrap" :class="{active: this.startLecture }" v-if="getCurrentLecture.is_free == 0 || getCurrentLecture.purchase_info.is_purchased == 1 || !getAvailableTimer || getTodayLecture == getCurrentLecture.id ">
+								<div class="video_starter" @click="startWatchLecture" v-if="getCurrentLecture.is_free == 1 && !getAvailableTimer || getCurrentLecture.purchase_info.is_purchased == 1 || getTodayLecture == getCurrentLecture.id"></div>
+								<!-- <div class="video_starter" @click="startWatchLecture"></div> -->
+								<img class="video_preview" v-if="getCurrentLecture.preview_picture" :src="getCurrentLecture.preview_picture ? 'https://api.xn--80axb4d.online/storage/' + getCurrentLecture.preview_picture : ''" alt="preview" />
+								<span class="video_nopreview" v-else alt="preview" />
+								<div class="video_iframe">
+									<div class="iframe_box" v-html="currentLectureEmbedLink"></div>
+								</div>
+							</div>
+							<div class="notavailable_wrap topWrap" v-else>
+								<div class="message_wrap">
+									<span class="mess_icon"></span>
+									<span class="mess_title fontFamilyEB">График просмотра</span>
+									<span class="mess_desc">Вы уже выбрали материал на сегодня.<br>Следующий бесплатный будет доступен через<br>{{ getAvailableTimer.hours }} ч. {{ getAvailableTimer.minutes }} мин. {{ getAvailableTimer.seconds }} сек.</span>
+								</div>
+							</div>
+
+							<div class="top_titles">
+								<span class="the_status" :class="{active: theWatched }">Просмотрено</span>
+								<span class="the_status promo_mark" :class="{promo_active: this.getCurrentLecture.is_promo == 1 }">На акции</span>
+								<!-- Средняя общая оценка: <span class="the_status rating" :class="{active: getCurrentLecture.rates.rate_user !== null}" v-if="getCurrentLecture.rates.rate_avg !== null ">{{ Number(getCurrentLecture.rates.rate_avg/2).toFixed(1) + '/' + 10/2  }}</span> -->
+								<span class="the_status rating" :class="{active: getCurrentLecture.rates.rate_user !== null}" v-if="getCurrentLecture.rates.rate_user !== null ">{{ Number(getCurrentLecture.rates.rate_user/2).toFixed(0) + '/' + 10/2  }}</span>
+								<span class="the_status rating" :class="{active: getCurrentLecture.rates.rate_user !== null}" v-else>{{ '-' }}</span>
+								<!-- <span class="the_status rating" v-if="this.rate !== null ">{{ this.rate/2 + '/' + 10/2  }}</span>
+								<span class="the_status rating" v-else>{{ '-' }}</span> -->
+								<span class="the_title fontSize20 fontFamilyEB">{{ getCurrentLecture.title }}</span>
+							</div>
+
+							<!-- Условия для кнопок покупки BEGIN -->
+							<!-- Если карточка куплена -->
+							<div v-if="getCurrentLecture.purchase_info.is_purchased">
+								<div class="buttons_wrap">
+									<span>Купленная</span>
+									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-if="localRating >= 1" @click="showPopup">Сменить оценку</span>
+									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-else @click="showPopup">Оценить</span>
+								</div>
+							</div>
+							<!-- Если карточка не куплена -->
+							<div v-else>
+								<!-- Если бесплатная -->
+								<div class="buttons_wrap" v-if="getCurrentLecture.payment_type.type == 'free'">
+									<!-- Если уже какая-то карточка просмотрена сегодня -->
+									<div v-if="getAvailableTimer && getCurrentLecture.id !== getTodayLecture">
+										<div class="tarif_one" v-if="getCurrentLecture.show_tariff_1">
+											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[0].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[0].common_price_for_one_lecture) }}₽</span>
+											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[0].custom_price_for_one_lecture) }}₽</span>
+										</div>
+										<div class="tarif_one" v-if="!getCurrentLecture.show_tariff_1 && getCurrentLecture.show_tariff_2">
+											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[1].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[1].common_price_for_one_lecture) }}₽</span>
+											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[1].custom_price_for_one_lecture) }}₽</span>
+										</div>
+										<div class="tarif_one" v-if="!getCurrentLecture.show_tariff_1 && !getCurrentLecture.show_tariff_2 && getCurrentLecture.show_tariff_3">
+											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[2].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[2].common_price_for_one_lecture) }}₽</span>
+											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[2].custom_price_for_one_lecture) }}₽</span>
+										</div>
+									</div>
+									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-if="localRating >= 1" @click="showPopup">Сменить оценку</span>
+									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-else @click="showPopup">Оценить</span>
+								</div>
+								<!-- Если карточка платная -->
+								<div class="buttons_wrap" v-else>
+									<div class="tarif_one" v-if="getCurrentLecture.show_tariff_1">
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[0].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[0].common_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[0].custom_price_for_one_lecture) }}₽</span>
+									</div>
+									<div class="tarif_one" v-if="!getCurrentLecture.show_tariff_1 && getCurrentLecture.show_tariff_2">
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[1].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[1].common_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[1].custom_price_for_one_lecture) }}₽</span>
+									</div>
+									<div class="tarif_one" v-if="!getCurrentLecture.show_tariff_1 && !getCurrentLecture.show_tariff_2 && getCurrentLecture.show_tariff_3">
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[2].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[2].common_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[2].custom_price_for_one_lecture) }}₽</span>
+									</div>
+									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-if="localRating >= 1" @click="showPopup">Сменить оценку</span>
+									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-else @click="showPopup">Оценить</span>
+								</div>
+							</div>
+							<!-- Условия для кнопок покупки END -->
+
+						</div>
+					</div>
+
+
+
+					<div class="midWrap desc_box content_box marginB12" v-if="getCurrentLecture.description">
+						<div class="desc_subbox" :class="{active: moreDesc == true, fixed_height: getCurrentLecture.description.length > 250}">
+							<div v-html="getCurrentLecture.description" />
+							<!-- <p>{{ getCurrentLecture.description }}</p>  -->
+						</div>
+						<span v-show="getCurrentLecture.description.length > 250" class="show_more" @click="showMoreDesc">{{  moreDesc ? 'Скрыть' : 'Подробнее' }}</span>
+					</div>
+
+					<div class="userinfo_wrap midWrap marginB12">
+						<div class="userinfo_box" v-if="getCurrentLecture.lector">
+							<a class="userinfo_card" @click=" this.fetchCurrentLector(getCurrentLecture.lector.id), $router.push('/lectors/' + getCurrentLecture.lector.id ), setRouterAnimate">
+								<div class="card_photo_wrap" v-if="getCurrentLecture.lector.photo" :class="{filled: getCurrentLecture.lector.photo}">
+									<img :src="getCurrentLecture.lector.photo ? 'https://api.xn--80axb4d.online/storage/' + getCurrentLecture.lector.photo : ''" alt="lector_photo">
+								</div>
+								<div class="card_info_wrap">
+									<!-- <span class="card_name">Заполните профиль</span> -->
+									<span class="card_name">{{ getCurrentLecture.lector.name }}</span>
+									<span class="card_status fontSize14">Лектор</span>
+									<span class="card_button theButton buttonTransparent buttonOptimal"></span>
+								</div>
+								
+							</a>
+						</div>
+					</div>
+
+
+					<div class="midWrap content_box elements_box marginB12" v-if="currentSubCategoryListFilter.length && !currLoadingStatus && !loadingStatus && currentSubCategory.title && this.getInfos.data">
+						<span class="the_subtitle fontSize14">{{ this.getInfos.data.app_info[0].more_in_the_collection }}</span>
+						<a @click="$router.push('/catalog/' + this.currentSubCategory.parent_slug + '/' + this.currentSubCategory.slug), setRouterAnimate()" class="the_title fontSize20 fontFamilyEB">{{ currentSubCategory.title }}</a>
+						<elements-slider 
+							v-if="currentSubCategoryListFilter.length > 0"
+							:posts="currentSubCategoryListFilter"
+						/>
+					</div>
+
+					<div class="midWrap feedback_box content_box elements_box marginB12" v-if="!currLoadingStatus && !loadingStatus">
+						<span class="the_subtitle fontSize14">Напиши автору лекции</span>
+						<span class="the_title fontSize20 fontFamilyEB">Обратная связь</span>
+						
+						<Form @submit="sendFeedback" v-slot="{ errors }" class="formWrap" v-if="!formWasSent">
+							<label class="inputWrap" :class="{notValid: errors.mess }">
+								<div class="inputBox">
+									<Field ref="feedbackField" v-slot="{ field }" v-model="comment" name="mess">
+										<textarea v-bind="field" name="comment" placeholder="Ваше сообщение"/>
+										<!-- <div v-if="errors[0]">{{errors[0]}}</div> -->
+									</Field>
+									<!-- <Field name="mess" type="textarea" onkeypress="this.value=this.value.substring(0,5)" placeholder="Сообщение" /> -->
+								</div>
+									<ErrorMessage class="errorTitle" name="mess" />
+							</label>
+							<button class="submitButton theButton buttonPrimary buttonOptimal">Отправить</button>
+						</Form>
+
+						<div class="sentSuccess" v-else>{{this.getInfos.data.app_info[0].thanks_for_feedback}}</div>
+
+					</div>
+					
+
+					<div class="bottomWrap moreinfo_box content_box">
+						<p>Представленные материалы не являются лечением или руководством к действию. Перед любыми действиями требуется консультация специалиста. Просматривая материалы вы подтверждаете факт ознакомления с <router-link class="the_link" to="/policy" @click="setRouterAnimate">обязательным соглашением</router-link></p>
+					</div>
+
+					<!-- <div class="bottomWrap empty_wrap">
+						<div class="empty_subwrap flexWrap">
+							<img class="the_img" src="./../assets/images/emptyState.png" alt="img">
+							<span class="the_title fontFamilyEB">Кажется, здесь ничего нет</span>
+							<span class="the_desc fontSize14">Попробуйте обновить страницу или поискать в другом месте</span>
+							<span class="theButton buttonTertiary buttonOptimal">Обновить</span>
+						</div>
+					</div> 
+
+					<div class="bottomWrap error_wrap">
+						<div class="error_subwrap flexWrap">
+							<span class="the_toptitle fontSize20 fontFamilyEB">Лекции</span>
+							<img class="the_img" src="./../assets/images/noResponse.png" alt="img">
+							<span class="the_title fontFamilyEB">Кажется, здесь ничего нет</span>
+							<span class="the_desc fontSize14">Попробуйте обновить страницу или поискать в другом месте</span>
+							<span class="theButton buttonTertiary buttonOptimal">Обновить</span>
+						</div>
+					</div> -->
 				
+				</div>
+
+				<div class="contentSubWrap contentCompleteProfile" v-else>
+					<div class="finish_delete_wrap flexWrap">
+						<img src="./../assets/images/delete.png" alt="delete-account" class="the_img">
+						<span class="the_title blockWrap fontFamilyEB marginB12">Заполните профиль</span>
+						<p class="the_desc blockWrap fontSize14 marginB12">Это необходимо, чтобы пользоваться сервисом</p>
+						<router-link class="theButton buttonPrimary buttonOptimal fontSize16" to="/profile/edit" @click="setRouterAnimate">Заполнить</router-link>
+					</div>
+				</div>
 
 			</div>
 
-			
-
+		
 			<div class="contentSubWrap" v-else>
 				<div class="midWrap content_box info_box roller_box">
 					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 				</div>
 			</div>
 
+
+			
 
 			<!-- {{ timerCounter.minutes }}: {{ timerCounter.seconds }}
 			
@@ -209,6 +483,9 @@ export default defineComponent({
 
 	data(){
 		return{
+			localRating: 0,
+			thePopup: false,
+			formWasSent: false,
 			loadingStatus: false,
 			// hasAccess: false,
 			theFav: false,
@@ -223,6 +500,7 @@ export default defineComponent({
 			// notificationIframeErrorMess: 'Во время загрузки видео произошла ошибка',
 			sameLectures: [],
 			currentLectureLink: '',
+			currentLectureEmbedLink: '',
 		}
 	},
 
@@ -231,6 +509,7 @@ export default defineComponent({
 		...mapMutations({
       setRouterAnimate: 'setRouterAnimate',
 			setAvailableTimer: 'setAvailableTimer',
+			setTodayLecture: 'content/setTodayLecture',
     }),
 		
 		...mapActions({
@@ -244,6 +523,61 @@ export default defineComponent({
 			// fetchCategoryAndSubcategory: 'content/fetchCategoryAndSubcategory',
 		}),
 
+		showPopup(){
+			if(this.thePopup == true){
+				this.thePopup = false;
+			}else{
+				this.thePopup = true;
+			}
+		},
+		preRating(value){
+			console.log(value);
+			this.localRating = Math.round(value)/2;
+		},
+		sendRating(){
+			if(this.localRating !== 0){
+				const filterRating = {
+					rate: this.localRating * 2,
+				}
+				try{
+					setTimeout( async () => {
+						const response = await axios.post(' https://api.xn--80axb4d.online/v1/lecture/' + this.getCurrentLecture.id + '/rate', filterRating, {
+							headers: {
+								Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
+							}
+						}).catch(function (error) { if (error.response){} });
+						if(response){
+							console.log(response);
+							this.thePopup = false;
+							this.notificationMess = this.getInfos.data.app_info[0].thanks_for_rate;
+							setTimeout(() => {
+							this.showNotification = true;
+							}, 400);
+							setTimeout(() => {
+								this.showNotification = false;
+							}, 3000);
+						}else{
+							this.notificationErrorMess = 'Во время отправки оценки произошла ошибка.';
+							setTimeout(() => {
+							this.showErrors = true;
+							}, 400);
+							setTimeout(() => {
+								this.showErrors = false;
+							}, 3000);
+						}
+
+						// this.setCurUserContent(response.data);
+					}, 50 );
+
+
+					
+				} 
+				catch(e){} 
+				finally {}
+
+			}
+		},
+
 		sendFeedback(values){
 			const fiterValues = {
 				user_id: this.getCurrUser.user.id,
@@ -254,7 +588,7 @@ export default defineComponent({
 			// console.log(fiterValues);
 			try{
 				setTimeout( async () => {
-					const response = await axios.post('/v1/lecture/' + this.getCurrentLecture.id + '/feedback', fiterValues, {
+					const response = await axios.post(' https://api.xn--80axb4d.online/v1/lecture/' + this.getCurrentLecture.id + '/feedback', fiterValues, {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}
@@ -262,7 +596,8 @@ export default defineComponent({
 					if(response){
 						// console.log(response);
 						this.$refs.feedbackField.reset();
-						this.notificationMess = 'Ваше сообщение успешно отправлено.';
+						this.notificationMess = this.getInfos.data.app_info[0].message_sent;
+						this.formWasSent = true;
 						setTimeout(() => {
 						this.showNotification = true;
 						}, 400);
@@ -270,7 +605,7 @@ export default defineComponent({
 							this.showNotification = false;
 						}, 3000);
 					}else{
-						this.notificationErrorMess = 'Во время отправки сообщения произошла ошибка.';
+						this.notificationErrorMess = this.getInfos.data.app_info[0].message_sent_error;
 						setTimeout(() => {
 						this.showErrors = true;
 						}, 400);
@@ -366,17 +701,43 @@ export default defineComponent({
 			try{
 				setTimeout( async () => {
 
-					const headers = { 
-						"Authorization": this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
-						'Content-Type': 'application/json',
-						'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
-						'Access-Control-Allow-Origin': '*',
-					};
-					const response = await axios.post('https://api.xn--80axb4d.online/v1/lecture/1/watch', {}, { headers }
-					);
-					if(response.data){
+					const response = await axios.post('https://api.xn--80axb4d.online/v1/lecture/' + this.getCurrentLecture.id + '/watch', {}, {
+						headers: {
+							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
+						}
+					}).catch(function (error) { if (error.response){} });
+
+					// const headers = { 
+					// 	"Authorization": this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
+					// 	'Content-Type': 'application/json',
+					// 	'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
+					// 	'Access-Control-Allow-Origin': '*',
+					// };
+					// const response = await axios.post('https://api.xn--80axb4d.online/v1/lecture/' + this.getCurrentLecture.id + '/watch', {}, { headers }
+					// );
+
+					// console.log(response);
+					if(response){
 						this.startLecture = true;
-						this.currentLectureLink = 'https://kinescope.io/embed/' + response.data.data['kinescope-id'];
+						if(this.getCurrentLecture.content_type.type == 'kinescope' || this.getCurrentLecture.content_type.title == 'kinescope'){
+							this.currentLectureLink = 'https://kinescope.io/embed/' + response.data.data['content'];
+							this.setTodayLecture(this.getCurrentLecture.id);
+						}else if(this.getCurrentLecture.content_type.type == 'pdf' || this.getCurrentLecture.content_type.title == 'pdf'){
+							// const pdflink = 'https://xn--80axb4d.online/' + response.data.data['content'];
+							// this.$router.push(pdflink);
+							const pdflink = response.data.data['content'];
+							const anchor = document.createElement('a');
+							anchor.href = 'https://api.xn--80axb4d.online/storage/' + pdflink;
+							// console.log(pdflink);
+							anchor.target="_self";
+							anchor.click();
+							this.setTodayLecture(this.getCurrentLecture.id);
+
+						}else if(this.getCurrentLecture.content_type.type == 'embed' || this.getCurrentLecture.content_type.title == 'embed'){
+							this.currentLectureEmbedLink = response.data.data['content'];
+							this.setTodayLecture(this.getCurrentLecture.id);
+						}
+						
 					}else{
 						setTimeout(() => {
 							this.notificationMess = 'Во время загрузки видео произошла ошибка';
@@ -414,7 +775,7 @@ export default defineComponent({
 						// console.log(response);
 
 						this.theFav = false;
-						this.notificationMess = 'Удалили из «Сохранённых»';
+						this.notificationMess = this.getInfos.data.app_info[0].removed_from_saved;
 						
 					}, 500 );
 				} catch(e){
@@ -443,7 +804,7 @@ export default defineComponent({
 						// console.log(response);
 
 						this.theFav = true;
-						this.notificationMess = 'Добавили в «Сохранённые»';
+						this.notificationMess = this.getInfos.data.app_info[0].added_to_saved;
 						
 					}, 500 );
 				} catch(e){
@@ -493,7 +854,7 @@ export default defineComponent({
 						// console.log(response);
 
 						this.theWatched = false;
-						this.notificationMess = 'Удалили из «Просмотренных»';
+						this.notificationMess = this.getInfos.data.app_info[0].removed_from_watched;
 						
 					}, 500 );
 				} catch(e){
@@ -522,7 +883,7 @@ export default defineComponent({
 						// console.log(response);
 
 						this.theWatched = true;
-						this.notificationMess = 'Добавили в «Просмотренные»';
+						this.notificationMess = this.getInfos.data.app_info[0].added_to_watched;
 						
 						
 					}, 500 );
@@ -605,6 +966,7 @@ export default defineComponent({
 			currLoadingStatus: 'content/currLoadingStatus',
 			// sortedElements: 'content/sortedElements',
 			currentSubCategory: 'content/currentSubCategory',
+			getTodayLecture: 'content/getTodayLecture',
 			getCurrentLecture: 'content/getCurrentLecture',
 			currentSubCategoryList: 'content/currentSubCategoryList',
 			currentSubCategoryListFilter: 'content/currentSubCategoryListFilter',
@@ -617,7 +979,10 @@ export default defineComponent({
 
 		this.fetchUserData();
 		this.setLoadingStatus(true);
-
+		if(this.getCurrentLecture.rates){
+			this.preRating(this.getCurrentLecture.rates.rate_user);
+		}
+		
 		// if(){}
 		this.fetchCurrentLecture(this.$route.params.id);
 		
@@ -665,6 +1030,11 @@ export default defineComponent({
 				
 				this.checkTheFav();
 				this.checkTheWatched();
+				
+				if(this.getCurrentLecture.rates){
+					this.preRating(this.getCurrentLecture.rates.rate_user);
+				}
+				
 
 			},
 			deep: true
@@ -702,6 +1072,65 @@ export default defineComponent({
 		background-color: #FFF;
 		overflow: scroll;
 		justify-content: flex-start;
+
+		.popup_wrap{
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			background-color: rgba(0, 0, 0, 0.172);
+			z-index: 10000010;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			transition: all .24s ease;
+			padding-left: 16px;
+			padding-right: 16px;
+			.popup_box{
+				max-width: 395px;
+				width: 100%;
+				border-radius: 12px;
+				background-color: #FFF;
+				padding: 16px;
+				.rating_stars{
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					width: 100%;
+					margin-bottom: 26px;
+					.the_star{
+						display: block;
+						width: 18px;
+						min-width: 18px;
+						height: 18px;
+						position: relative;
+						background-size: contain;
+						background-repeat: no-repeat;
+						background-position: center;
+						background-image: url('../assets/icons/star-pull.svg');
+						margin: 0 3px;
+						&.active{
+							background-image: url('../assets/icons/star.svg');
+						}
+					}
+				}
+				.the_title{
+					color: #23292D;
+				}
+				.buttons_wrap{
+					width: calc(100% + 8px);
+					margin-left: -4px;
+					margin-right: -4px;
+					.theButton{
+						width: calc(50% - 10px);
+						margin: 4px 5px;
+					}
+				}
+			}
+		}
+
+		
 		.topLine{
 			.buttons_wrap{
 				justify-content: flex-end;
@@ -725,6 +1154,39 @@ export default defineComponent({
 				background-color: #FFF;
 				padding-bottom: 5px;
 				// margin-bottom: 12px;
+			}
+			&.contentCompleteProfile {
+				background-color: #FFF;
+				padding-top: 30px;
+				.finish_delete_wrap{
+					max-width: 480px;
+					margin-left: auto;
+					margin-right: auto;
+					width: 100%;
+					align-items: center;
+					justify-content: center;
+					flex-direction: column;
+					.the_img{
+						margin-left: auto;
+						margin-right: auto;
+						display: block;
+						// width: 100%;
+						width: 55.6%;
+						margin-bottom: 10px;
+						display: block;
+					}
+					.the_title{
+						color: #23292DB2;
+						text-align: center;
+						margin-bottom: 12px;
+					}
+					.the_desc{
+						text-align: center;
+						color: #23292DB2;
+						margin-bottom: 24px;
+					}
+					.theButton{}
+				}
 			}
 			.info_box{
 				.notavailable_wrap{
@@ -784,6 +1246,15 @@ export default defineComponent({
 							width: 100%;
 							height: 100%;
 						}
+						.iframe_box{
+							width: 100%;
+							height: 100%;
+							display: block;
+							& > *{
+								width: 100% !important;
+								height: 100% !important;
+							}
+						}
 					}
 					.video_starter{
 						width: 100%;
@@ -810,6 +1281,31 @@ export default defineComponent({
 							z-index: 15;
 						}
 					}
+					.pdf_downloader{
+						width: 100%;
+						height: 100%;
+						position: absolute;
+						left: 0;
+						top: 0;
+						z-index: 20;
+						cursor: pointer;
+						&::before{
+							position: absolute;
+							display: block;
+							top: 50%;
+							left: 50%;
+							transform: translate(-50%, -50%);
+							content: '';
+							width: 48px;
+							height: 48px;
+							border-radius: 50%;
+							background-repeat: no-repeat;
+							background-size: contain;
+							background-position: center;
+							background-image: url('./../assets/icons/download-a.png');
+							z-index: 15;
+						}
+					}
 					.video_preview{
 						width: 100%;
 						height: 100%;
@@ -830,7 +1326,7 @@ export default defineComponent({
 						left: 0;
 						right: 0;
 						bottom: 0;
-						z-index: 10;
+						z-index: 3;
 						border: 1px solid rgba(35, 41, 45, 0.1);
 						object-fit: cover;
 						background-color: #fd7c8463;
@@ -870,10 +1366,37 @@ export default defineComponent({
 					height: 0px;
 					opacity: 0;
 					transition: height .42s ease, opacity .22s ease;
+					&.rating{
+						color: #EED13E;
+						position: relative;
+						display: flex;
+						align-items: center;
+						height: auto;
+						opacity: 1;
+						font-size: 14px;
+						margin-top: 4px;
+						margin-bottom: 6px;
+						&::before{
+							display: block;
+							content: "";
+							width: 18px;
+							height: 18px;
+							position: relative;
+							background-size: contain;
+							background-repeat: no-repeat;
+							background-position: center;
+							background-image: url('../assets/icons/star-pull.svg');
+							margin-right: 5px;
+						}
+						&.active::before{
+							background-image: url('../assets/icons/star.svg');
+						}
+					}
+
 					&.promo_mark{
 						height: max-content;
 						opacity: 1;
-						color: #ffa502;
+						color: #EED13E;
 						position: absolute;
 						right: 16px;
 						top: 0;
@@ -895,7 +1418,7 @@ export default defineComponent({
 							content: '';
 							width: 18px;
 							height: 18px;
-							background-image: url('../assets/icons/star.png');
+							background-image: url('../assets/icons/star-pull.svg');
 							background-size: contain;
 							background-repeat: no-repeat;
 							background-position: center;
@@ -914,6 +1437,22 @@ export default defineComponent({
 				}
 				.buttons_wrap{
 					padding: 0 16px 28px;
+					.theButton.setRating{
+						display: block;
+						margin-top: 6px;
+						height: 0;
+						overflow: hidden;
+						opacity: 0;
+						visibility: visible;
+						transition: all .26s ease;
+						padding: 0px 16px;
+						&.active{
+							height: auto;
+							opacity: 1;
+							visibility: visible;
+							padding: 12px 16px;
+						}
+					}
 				}
 			}
 			
@@ -939,13 +1478,13 @@ export default defineComponent({
 				}
 				.show_more, .show_less{
 					cursor: pointer;
-					margin-top: 4px;
+					margin-top: 8px;
 					display: block;
 					font-weight: 800;
 					color: #FD7C84;
 					transition: all .14s ease;
 					width: max-content;
-					font-size: 14px;
+					font-size: 13px;
 					&:hover{
 						opacity: .9;
 					}
@@ -995,10 +1534,8 @@ export default defineComponent({
 							position: relative;
 							.card_name{
 								font-weight: 800;
-								margin-bottom: 4px;
 								user-select: none;
 								color: #23292D;
-								line-height: 24px;
 							}
 							.card_status{
 								padding-right: 40px;
@@ -1037,11 +1574,14 @@ export default defineComponent({
 					color: #23292D;
 					padding-left: 16px;
 					padding-right: 16px;
-					margin-bottom: 12px;
+					margin-bottom: 22px;
 					display: block;
 					position: relative;
 					cursor: pointer;
-					padding-bottom: 10px;
+					// padding-bottom: 10px;
+					line-height: 110%;
+					width: calc(100% - 0px);
+					padding-right: 36px;
 					&::before{
 						content: '';
 						position: absolute;
@@ -1076,6 +1616,23 @@ export default defineComponent({
 			}
 			.feedback_box{
 				margin-bottom: 16px;
+				padding-bottom: 10px;
+				.sentSuccess{
+					width: calc(100% - 20px);
+					margin: 0 auto;
+					margin-bottom: 0px;
+					padding: 20px;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					height: 100px;
+					text-align: center;
+					border-radius: 12px;
+					background-color: #FFF0F1;
+					color: #FD7C84;
+					font-weight: 600;
+					font-size: 14px;
+				}
 				.the_title{
 					padding-bottom: 0;
 					&::before{

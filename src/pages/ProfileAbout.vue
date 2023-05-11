@@ -26,7 +26,7 @@
 			<div class="contentSubWrap popupWrap" v-if="popupInfo && !getLoadingStatus && this.getInfos.data">
 				<div class="infoWrap">
 					<!-- <h2>{{ this.getCurrentFaq.title }}</h2> -->
-					<img :src="this.getInfos.data.app_info[0].app_show_qr_link"/>
+					<img :src="this.getInfos.data.app_info[0].app_show_qr_link ? 'https://api.xn--80axb4d.online/storage/' + this.getInfos.data.app_info[0].app_show_qr_link : '' "/>
 				</div>
 			</div>
 
@@ -42,9 +42,9 @@
 					<!-- <span class="the_title fontSize20 fontFamilyEB">{{ this.getInfos.data.app_info[0].app_title }}</span> -->
 					<span class="the_subtitle fontSize32 fontFamilyEB">{{ this.getInfos.data.app_info[0].app_title }}</span>
 				</div>
-				<div class="info_wrap marginB12 midWrap">
-					<p>{{ this.getInfos.data.app_info[0].about_app }}</p>
-				</div>
+				<div class="info_wrap marginB12 midWrap" v-html="this.getInfos.data.app_info[0].about_app" />
+					<!-- <p>{{ this.getInfos.data.app_info[0].about_app }}</p>
+				</div> -->
 				<div class="author_wrap marginB12 midWrap">
 					<span class="the_title fontSize14">Автор</span>
 					<span class="the_value fontFamilyEB">{{ this.getInfos.data.app_info[0].app_author_name }}</span>
@@ -94,15 +94,34 @@ export default {
 		}),
 
 		copyLink(){
-			const copyText = document.getElementById("linkforcopy").textContent;
-      navigator.clipboard.writeText(copyText);
-			setTimeout(() => {
-				this.showNotification = true;
-				this.notificationMess = 'Скопировано'
-			}, 400);
-			setTimeout(() => {
-				this.showNotification = false;
-			}, 3000);
+
+			if (navigator.share) {
+				navigator.share({
+					title: 'мамы.online',
+					text: 'Школа "Мам и Пап"',
+					url: 'https://мамы.online/',
+				});
+				setTimeout(() => {
+					this.showNotification = true;
+					this.notificationMess = 'Скопировано'
+				}, 400);
+				setTimeout(() => {
+					this.showNotification = false;
+				}, 3000);
+			}else{
+				const copyText = document.getElementById("linkforcopy").textContent;
+      	navigator.clipboard.writeText(copyText);
+				setTimeout(() => {
+					this.showNotification = true;
+					this.notificationMess = 'Скопировано'
+				}, 400);
+				setTimeout(() => {
+					this.showNotification = false;
+				}, 3000);
+			}
+
+			
+			
 
 		},
 		switchPopupInfo(bool){

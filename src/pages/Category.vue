@@ -1,8 +1,8 @@
 <template>
 
-	<div class="mainContainer catalogCategory">
+	<div class="mainContainer catalogCategory" :class="{fixed: popupInfo}">
 
-		<div class="contentWrap" >
+		<div class="contentWrap">
 
 			<!-- <div class="topLine flexWrap"> 
 				<router-link class="theButton leftButton buttonTransparent buttonBack" to="/"></router-link>
@@ -20,7 +20,8 @@
 			<div class="contentSubWrap popupWrap" v-if="popupInfo && !currLoadingStatus && currentCategoryList.data">
 				<div class="infoWrap">
 					<!-- <h2>{{ this.getCurrentFaq.title }}</h2> -->
-					<p>{{ currentCategory.info }}</p>
+					<div v-html="currentCategory.info" />
+						<!-- <p>{{ currentCategory.info }}</p> -->
 				</div>
 			</div>
 
@@ -31,14 +32,15 @@
 					<!-- <router-link class="theButton buttonBack theWhite" to="/catalog" /> -->
 					<a @click="$router.go(-1), setRouterAnimate()" class="theButton buttonBack theWhite" />
 					<!-- <img src="./../assets/images/category.jpg" alt=""> -->
-					<img v-if="currentCategory.preview_picture" :src="currentCategory.preview_picture" alt="category_image">
+					<img v-if="currentCategory.preview_picture" :src="currentCategory.preview_picture ? 'https://api.xn--80axb4d.online/storage/' + currentCategory.preview_picture : ''" alt="category_image">
 					<span class="empty_preview"></span>
 					
 				</div>
 				<div class="midWrap content_box info_box">
 					<span class="the_title fontSize20 fontFamilyEB">{{ currentCategory.title }}</span>
-					<span class="the_subtitle fontSize14">{{ currentCategory.description }}</span>
-					<span @click="switchPopupInfo(true)" class="the_moreicon"></span>
+					<div class="the_subtitle fontSize14" v-html="currentCategory.description" />
+					<!-- <span class="the_subtitle fontSize14">{{ currentCategory.description }}</span> -->
+					<span @click="switchPopupInfo(true)" class="the_moreicon">Подробнее</span>
 					<!-- <span class="the_subtitle fontSize14">{{ currentCategory.info }}</span> -->
 				</div>
 				<div class="bottomWrap content_box categories_box" >
@@ -147,6 +149,10 @@ export default({
 .mainContainer.catalogCategory{
 	height: 100vh;
 	position: relative;
+	.fixed{
+		overflow: hidden;
+		// height: 
+	}
 	.contentWrap{
 		padding: 0;
 		padding-top: 0px;
@@ -186,6 +192,12 @@ export default({
 			padding-bottom: 58px;
 			background-color: #FFF;
 			min-height: calc(100vh - 40px);
+			height: calc(100vh - 85px);
+			max-width: 600px;
+			left: 50%;
+			transform: translateX(-50%);
+			overflow: scroll;
+			padding-bottom: 140px;
 		}
 		.contentSubWrap{
 			width: 100%;
@@ -209,9 +221,15 @@ export default({
 					left: 8px;
 					top: 12px;
 					z-index: 5;
-					width: 24px;
-					height: 24px;
-					min-width: 24px;
+					width: 28px;
+					height: 28px;
+					min-width: 28px;
+					background-color: #cacaca36;
+					background-size: 22px;
+					background-repeat: no-repeat;
+					background-position: center;
+					border-radius: 50%;
+					padding: 10px;
 				}
 				img{
 					position: absolute;
@@ -260,16 +278,24 @@ export default({
 					// }
 				}
 				.the_moreicon{
+					cursor: pointer;
 					display: block;
-					width: 20px;
-					height: 20px;
+					// width: 20px;
+					// height: 20px;
 					position: absolute;
-					right: 16px;
-					top: 16px;
-					background-size: contain;
-					background-repeat: no-repeat;
-					background-position: center;
-					background-image: url('./../assets/icons/alert-l.svg');
+					right: 12px;
+					top: 12px;
+					font-weight: 600;
+					// background-size: contain;
+					// background-repeat: no-repeat;
+					// background-position: center;
+					// background-image: url('./../assets/icons/alert-l.svg');
+					width: max-content;
+					font-size: 11px;
+					color: #FD7C84;
+					background-color: #FFEAEB;
+					border-radius: 99px;
+					padding: 5px 10px 5px;
 					
 				}
 				.the_subtitle{

@@ -26,8 +26,10 @@ export const contentModule = {
 
 		// Список Лекторов
 		teachers: [],
+		catTeachers: [],
 		teachersError: false,
 
+		todayLecture: '',
 		currentLector: {},
 		currentLectorError: false,
 
@@ -133,6 +135,9 @@ export const contentModule = {
 		teachersList(state){
 			return state.teachers;
 		},
+		catTeachersList(state){
+			return state.catTeachers;
+		},
 		getCurrentLector(state){
 			return state.currentLector;
 		},
@@ -178,6 +183,10 @@ export const contentModule = {
 		getCurrentLecture(state){
 			return state.currentLecture;
 		},
+		getTodayLecture(state){
+			return state.todayLecture;
+		},
+
 
 		// Временный вывод сертификатов (ПЕРЕДЕЛАТЬ ПОД ТЕКУЩЕГО ЛЕКТОРА)
 		sertificateslist(state){
@@ -207,6 +216,9 @@ export const contentModule = {
 		// Получить список лекторов (под axios запрос)
 		setLectors(state, lectors) {
 			state.teachers = lectors;
+		},
+		setCatLectors(state, lectors) {
+			state.catTeachers = lectors;
 		},
 		setCurrentLector(state, lector){
 			state.currentLector = lector;
@@ -298,6 +310,9 @@ export const contentModule = {
 		setEmptyCurrentLecture(state){
 			state.currentLecture = {};
 		},
+		setTodayLecture(state, lecture) {
+			state.todayLecture = lecture;
+		},
 		setCurrentLecture(state, lecture) {
 			state.currentLecture = lecture;
 		},
@@ -327,7 +342,7 @@ export const contentModule = {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
 					});
-					console.log(response.data.data);
+					// console.log(response.data.data);
 					commit('setLectureAccess', response.data.data);
 					commit('setStatusLoading', false);
 				}, 50 )
@@ -348,6 +363,25 @@ export const contentModule = {
 						}
 					});
 					commit('setLectors', response.data);
+					commit('setStatusLoading', false);
+				}, 50 )
+				
+			} catch(e){
+				console.log(e);
+			} finally {}
+		},
+
+		async fetchCatLectors({state, rootState, commit}, categorySlug){
+			console.log(categorySlug);
+			try{
+				commit('setStatusLoading', true);
+				setTimeout( async () => {
+					const response = await axios.get('https://api.xn--80axb4d.online/v1/lectors/category/' + categorySlug, {
+						headers: {
+							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+						}
+					});
+					commit('setCatLectors', response.data);
 					commit('setStatusLoading', false);
 				}, 50 )
 				
@@ -391,7 +425,7 @@ export const contentModule = {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
-					});
+					}).catch(function (error) { if (error.response.status){ commit('setStatusLoading', false); commit('setCurrentLectorElements', []);  } });
 					commit('setCurrentLectorElements', response.data);
 					commit('setStatusLoading', false);
 					commit('setSertificatesStatus', true);
@@ -562,7 +596,7 @@ export const contentModule = {
 							headers: {
 								Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 							}
-						});
+						}).catch(function (error) { if (error.response.status){ commit('setStatusLoading', false); commit('setCurrentSubCategory', 'e' );  } });
 						commit('setCurrentSubCategory', response.data.category);
 						commit('setCurrentSubCategoryElements', '');
 						setTimeout( async () => {
@@ -570,7 +604,7 @@ export const contentModule = {
 								headers: {
 									Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 								}
-							});
+							}).catch(function (error) { if (error.response.status){ commit('setStatusLoading', false); commit('setCurrentSubCategoryElements', []);  } });
 							commit('setCurrentSubCategoryElements', responseElems.data);
 
 							commit('setStatusLoading', false);

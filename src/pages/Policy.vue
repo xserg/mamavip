@@ -20,7 +20,7 @@
 			<div class="contentSubWrap" v-else>
 				<div class="infoWrap">
 					<h2>{{ this.getInfos.data.app_info[0].agreement_title }}</h2>
-					<p>{{ this.getInfos.data.app_info[0].agreement_text }}</p>
+					<div v-html="this.getInfos.data.app_info[0].agreement_text" />
 				</div>
 			</div>
 

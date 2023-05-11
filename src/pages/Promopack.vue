@@ -53,6 +53,7 @@
 <script>
 // @ is an alias to /src
 // import DefaultLikes from '@/components/DefaultLikes.vue'
+import axios from 'axios';
 import ElementsList from '@/components/ElementsList';
 
 import {mapState, mapMutations, mapGetters, mapActions} from 'vuex';
@@ -68,12 +69,29 @@ export default {
 	methods:{
 
 		...mapMutations({
+			setInfos: 'setInfos',
 			setHomeTab: 'setHomeTab',
 			setRouterAnimate: 'setRouterAnimate',
 		}),
 		...mapActions({
 			fetchPromopack: 'content/fetchPromopack',
     }),
+
+
+		loadStaticInfo(){
+			try{
+				setTimeout( async () => {
+					const responseInfos = await axios.get('https://api.xn--80axb4d.online/v1/app/info', {
+						headers: {
+							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
+						}
+					});
+					this.setInfos(responseInfos.data);
+				}, 50 );
+			}
+			catch(e){} 
+			finally {}
+		}
 
 	},
 
@@ -86,6 +104,7 @@ export default {
 		...mapState({
 		}),
 		...mapGetters({
+			getCurrUser: 'getCurrUser',
 			currLoadingStatus: 'content/currLoadingStatus',
 			currentSubCategory: 'content/currentSubCategory',
 			getPromopack: 'content/getPromopack',
@@ -93,6 +112,7 @@ export default {
 	},
 
 	mounted() {
+		this.loadStaticInfo();
 		this.fetchPromopack(1000);
   },
 

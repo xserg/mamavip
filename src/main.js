@@ -20,7 +20,8 @@ store.subscribe( (mutation, state) => {
 	localStorage.setItem('currentSubCategory', JSON.stringify(state.content.currentSubCategory));  
 	localStorage.setItem('currentSubCategoryElements', JSON.stringify(state.content.currentSubCategoryElements));    
 	localStorage.setItem('currentLecture', JSON.stringify(state.content.currentLecture));    
-	localStorage.setItem('currentLector', JSON.stringify(state.content.currentLector));   
+	localStorage.setItem('currentLector', JSON.stringify(state.content.currentLector)); 
+	localStorage.setItem('todayLecture', JSON.stringify(state.content.todayLecture));  
 })
 
 app.use(store).use(router).mount('#app')

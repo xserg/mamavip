@@ -31,7 +31,7 @@
 					<div class="userinfo_box" v-else>
 						<div class="userinfo_card">
 							<div v-if="this.getCurrUser.user.photo_small" class="card_photo_wrap filled">
-								<img :src="this.getCurrUser.user.photo_small  + '?' + Date.now()" alt="profile_image">
+								<img :src="this.getCurrUser.user.photo_small ? 'https://api.xn--80axb4d.online/storage/' + this.getCurrUser.user.photo_small + '?' + Date.now() : ''" alt="profile_image">
 							</div>
 							<span v-else class="card_photo_wrap"></span>
 							<div class="card_info_wrap">
@@ -591,6 +591,7 @@ export default {
 								font-weight: 800;
 								margin-bottom: 4px;
 								user-select: none;
+								font-size: 14px;
 							}
 							.card_status{
 								padding-right: 40px;

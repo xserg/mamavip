@@ -9,31 +9,42 @@
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			<div class="contentSubWrap">
+			<div class="contentSubWrap" v-if="getCurrUser.user.name !== null">
 				<div class="infoWrap">
 					<h2>{{ currentSubCategory.title }}</h2>
 
 					<div class="content_box info_box marginB12">
 						<div class="video_wrap">
-							<img class="video_preview" :v-if="currentSubCategory.preview_picture" :src="currentSubCategory.preview_picture" alt="preview" />
+							<img class="video_preview" :v-if="currentSubCategory.preview_picture" :src="currentSubCategory.preview_picture ? 'https://api.xn--80axb4d.online/storage/' + currentSubCategory.preview_picture : ''" alt="preview" />
 						</div>
 					</div>
 
 					<p>Вы можете приобрести доступ ко всем видео из текущий подкатегории на необходимый вам промежуток времени.</p>
 					<br>
 					<br>
-					<span @click="buyCategory(1)" class="theButton buttonPrimary buttonOptimal marginAuto">Купить на день: {{ currentSubCategory.prices[0].price_for_category }}₽</span>
+					<span v-if="currentSubCategory.prices[0]" @click="buyCategory(this.getInfos.data.app_periods[0])" class="theButton buttonPrimary buttonOptimal marginAuto">Купить {{getInfos.data.app_info[0].tarif_title_1}}: {{ currentSubCategory.prices[0].price_for_category }}₽</span>
 					<br>
 					<br>
-					<span @click="buyCategory(14)" class="theButton buttonSecondary buttonOptimal marginAuto">Купить на неделю: {{ currentSubCategory.prices[1].price_for_category }}₽</span>
+					<span v-if="currentSubCategory.prices[1]" @click="buyCategory(this.getInfos.data.app_periods[1])" class="theButton buttonSecondary buttonOptimal marginAuto">Купить {{getInfos.data.app_info[0].tarif_title_2}}: {{ currentSubCategory.prices[1].price_for_category }}₽</span>
 					<br>
 					<br>
-					<span @click="buyCategory(30)" class="theButton buttonSecondary buttonOptimal marginAuto">Купить на месяц: {{ currentSubCategory.prices[2].price_for_category }}₽</span>
+					<span v-if="currentSubCategory.prices[2]" @click="buyCategory(this.getInfos.data.app_periods[2])" class="theButton buttonSecondary buttonOptimal marginAuto">Купить {{getInfos.data.app_info[0].tarif_title_3}}: {{ currentSubCategory.prices[2].price_for_category }}₽</span>
 					<br>
 					
 				</div>
 				
 			</div>
+
+			<div class="contentSubWrap contentCompleteProfile" v-else>
+				<div class="finish_delete_wrap flexWrap">
+					<img src="./../assets/images/delete.png" alt="delete-account" class="the_img">
+					<span class="the_title blockWrap fontFamilyEB marginB12">Заполните профиль</span>
+					<p class="the_desc blockWrap fontSize14 marginB12">Это необходимо, чтобы пользоваться сервисом</p>
+					<router-link class="theButton buttonPrimary buttonOptimal fontSize16" to="/profile/edit" @click="setRouterAnimate">Заполнить</router-link>
+				</div>
+			</div>
+
+			
 
 			<!-- <bottom-line></bottom-line> -->
 			
@@ -63,6 +74,7 @@ export default {
 	methods:{
 
 		...mapMutations({
+			setInfos: 'setInfos',
 			setRouterAnimate: 'setRouterAnimate',
 		}),
 
@@ -82,9 +94,26 @@ export default {
 				} catch(e){
 					console.log(e);
 				} finally {}
+		},
+
+		loadStaticInfo(){
+			try{
+				setTimeout( async () => {
+					const responseInfos = await axios.get('https://api.xn--80axb4d.online/v1/app/info', {
+						headers: {
+							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
+						}
+					});
+					this.setInfos(responseInfos.data);
+				}, 50 );
+			}
+			catch(e){} 
+			finally {}
 		}
 
 	},
+
+	
 
 
 	computed:{
@@ -92,9 +121,14 @@ export default {
 		}),
 		...mapGetters({
 			getCurrUser: 'getCurrUser',
+			getInfos: 'getInfos',
 			currentSubCategory: 'content/currentSubCategory',
 		}),
 	},
+
+	mounted(){
+		this.loadStaticInfo();
+	}
 
 }
 </script>
@@ -113,6 +147,39 @@ export default {
 			padding: 32px 16px;
 			p{
 				line-height: 150%;
+			}
+			&.contentCompleteProfile {
+				background-color: #FFF;
+				padding-top: 30px;
+				.finish_delete_wrap{
+					max-width: 480px;
+					margin-left: auto;
+					margin-right: auto;
+					width: 100%;
+					align-items: center;
+					justify-content: center;
+					flex-direction: column;
+					.the_img{
+						margin-left: auto;
+						margin-right: auto;
+						display: block;
+						// width: 100%;
+						width: 55.6%;
+						margin-bottom: 10px;
+						display: block;
+					}
+					.the_title{
+						color: #23292DB2;
+						text-align: center;
+						margin-bottom: 12px;
+					}
+					.the_desc{
+						text-align: center;
+						color: #23292DB2;
+						margin-bottom: 24px;
+					}
+					.theButton{}
+				}
 			}
 			.content_box{
 				margin-left: -15px;

@@ -7,7 +7,7 @@
 				<img class="the_img" src="./../assets/images/404.png" alt="img">
 				<span class="the_title fontFamilyEB">Страница не найдена</span>
 				<!-- <p class="the_desc fontSize14">Сохраняйте лекции, чтобы вернуться к ним в любой момент</p> -->
-				<router-link class="theButton buttonPrimary buttonOptimal fontSize16" to="/" @click="this.setHomeTab()">На главный экран</router-link>
+				<router-link class="theButton buttonPrimary buttonOptimal fontSize14" to="/" @click="this.setHomeTab()">На главный экран</router-link>
 			</div>
 
 			</div>
