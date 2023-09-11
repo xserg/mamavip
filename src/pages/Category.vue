@@ -19,9 +19,7 @@
 
 			<div class="contentSubWrap popupWrap" v-if="popupInfo && !currLoadingStatus && currentCategoryList.data">
 				<div class="infoWrap">
-					<!-- <h2>{{ this.getCurrentFaq.title }}</h2> -->
-					<div v-html="currentCategory.info" />
-						<!-- <p>{{ currentCategory.info }}</p> -->
+					<!-- <div v-html="currentCategory.info" /> -->
 				</div>
 			</div>
 
@@ -32,16 +30,19 @@
 					<!-- <router-link class="theButton buttonBack theWhite" to="/catalog" /> -->
 					<a @click="$router.go(-1), setRouterAnimate()" class="theButton buttonBack theWhite" />
 					<!-- <img src="./../assets/images/category.jpg" alt=""> -->
-					<img v-if="currentCategory.preview_picture" :src="currentCategory.preview_picture ? 'https://api.xn--80axb4d.online/storage/' + currentCategory.preview_picture : ''" alt="category_image">
+					<img v-if="currentCategory.preview_picture" :src="currentCategory.preview_picture ? 'https://api.roddom15.ru/storage/' + currentCategory.preview_picture : ''" alt="category_image">
 					<span class="empty_preview"></span>
 					
 				</div>
 				<div class="midWrap content_box info_box">
 					<span class="the_title fontSize20 fontFamilyEB">{{ currentCategory.title }}</span>
-					<div class="the_subtitle fontSize14" v-html="currentCategory.description" />
+					<div class="the_subtitle fontSize14 marginB12" v-html="currentCategory.description" />
+					<div class="the_subtitle the_moreinfo fontSize14" :class="{active: this.moreInfo}" v-html="currentCategory.info" />
 					<!-- <span class="the_subtitle fontSize14">{{ currentCategory.description }}</span> -->
-					<span @click="switchPopupInfo(true)" class="the_moreicon">Подробнее</span>
+					<!-- <span @click="switchPopupInfo(true)" class="the_moreicon">Подробнее</span> -->
+					<span @click="this.switchMoreInfo()" class="the_moreicon"> {{ moreButton }}</span>
 					<!-- <span class="the_subtitle fontSize14">{{ currentCategory.info }}</span> -->
+					<span v-if="currentCategory.id !== 38" class="theButton buttonPrimary buttonOptimal marginAuto marginB12" @click="$router.push('/category_prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].buy_category }}</span>
 				</div>
 				<div class="bottomWrap content_box categories_box" >
 					<catalog-sub-element 
@@ -97,6 +98,8 @@ export default({
 	data(){
 		return{
 			popupInfo: false,
+			moreButton: 'Подробнее',
+			moreInfo: false,
 			// post: {},
 		}
 	},
@@ -106,8 +109,9 @@ export default({
 		}),
 		...mapGetters({
 			currLoadingStatus: 'content/currLoadingStatus',
+			getInfos: 'getInfos',
 			currentCategory: 'content/currentCategory',
-			currentCategoryList: 'content/currentCategoryList',
+			currentCategoryList: 'content/currentCategoryList', 
 		}),
 	},
 
@@ -122,7 +126,18 @@ export default({
 
 		switchPopupInfo(bool){
 			this.popupInfo = bool;
-		}
+		},
+		switchMoreInfo(){
+			if(!this.moreInfo){
+				// console.log('Переключаем на true');
+				this.moreInfo = true;
+				this.moreButton = 'Скрыть';
+			}else{
+				// console.log('Переключаем на false');
+				this.moreInfo = false;
+				this.moreButton = 'Подробнее';
+			}
+		},
 	},
 
 
@@ -224,7 +239,7 @@ export default({
 					width: 28px;
 					height: 28px;
 					min-width: 28px;
-					background-color: #cacaca36;
+					background-color: #feabb0a8;
 					background-size: 22px;
 					background-repeat: no-repeat;
 					background-position: center;
@@ -303,6 +318,19 @@ export default({
 					color: #23292DB2;
 					line-height: 150%;
 					padding-right: 16px;
+				}
+				.the_moreinfo{
+					max-height: 0;
+					height: auto;
+					transition: opacity .8s ease,max-height .8s cubic-bezier(.08,1.1,.7,.98);
+					overflow: hidden;
+					&.active{
+						max-height: 2000px;
+						transition: opacity 1s cubic-bezier(.05,.91,.25,1),max-height 1.2s;
+					}
+				}
+				.theButton{
+					margin-top: 12px;
 				}
 			}
 

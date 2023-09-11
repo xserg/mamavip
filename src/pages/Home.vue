@@ -16,7 +16,7 @@
 					<div class="userinfo_box">
 						<router-link class="userinfo_card" to="/profile/edit" @click="setRouterAnimate">
 							<div v-if="this.getCurrUser.user.photo_small" class="card_photo_wrap">
-								<img :src="this.getCurrUser.user.photo_small ? 'https://api.xn--80axb4d.online/storage/' + this.getCurrUser.user.photo_small : ''" alt="profile_image">
+								<img :src="this.getCurrUser.user.photo_small ? 'https://api.roddom15.ru/storage/' + this.getCurrUser.user.photo_small : ''" alt="profile_image">
 							</div>
 							<span v-else class="card_photo_wrap"></span>
 							<div class="card_info_wrap">
@@ -62,8 +62,8 @@
 					</div>
 					<div class="message_wrap" v-else>
 						<span class="mess_icon"></span>
-						<span class="mess_title fontFamilyEB">График просмотра</span>
-						<span class="mess_desc">Следующая лекция доступна через <br>{{ getAvailableTimer.hours }} ч. {{ getAvailableTimer.minutes }} мин. {{ getAvailableTimer.seconds }} сек.</span>
+						<span class="mess_title fontFamilyEB">{{ getInfos.data.app_info[0].view_schedule }}</span>
+						<span class="mess_desc">{{ getInfos.data.app_info[0].watched_already }}<br>{{ getInfos.data.app_info[0].next_free_lecture_available_at }}<br>{{ getAvailableTimer.hours }} ч. {{ getAvailableTimer.minutes }} мин. {{ getAvailableTimer.seconds }} сек.</span>
 					</div>
 					
 					<div class="element_box" v-if="getRecommended === 'e'">
@@ -73,6 +73,13 @@
 						<span @click="this.fetchRecommended()" class="theButton buttonTertiary buttonOptimal">Обновить</span>
 					</div>
 
+				</div>
+				<div v-else class="recommended_box midWrap marginB12 notavailable_box error_box">
+					<div class="message_wrap" v-if="getAvailableTimer">
+						<span class="mess_icon"></span>
+						<span class="mess_title fontFamilyEB">График просмотра</span>
+						<span class="mess_desc">Следующая лекция доступна через <br>{{ getAvailableTimer.hours }} ч. {{ getAvailableTimer.minutes }} мин. {{ getAvailableTimer.seconds }} сек.</span>
+					</div>
 				</div>
 				<!-- РЕКОМЕНДУЕМ END -->
 
@@ -247,6 +254,7 @@ export default {
     }),
 		...mapActions({
 			fetchUserData: 'fetchUserData',
+			fetchInfos: 'fetchInfos',
       fetchLectors: 'content/fetchLectors',
 			fetchCatalog: 'content/fetchCatalog',
 			fetchPromopack: 'content/fetchPromopack',
@@ -307,13 +315,15 @@ export default {
 
 	mounted() {
 		this.fetchUserData();
+		this.fetchInfos();
 		this.setPregnancyWeeks();
 		this.setBabyAge();
 
-		this.fetchRecommended();
 		this.switchloadingStatus(false);
 
 		// this.setAvailableTimer();
+
+		this.fetchRecommended();
 
 		this.fetchPromopack(6);
 

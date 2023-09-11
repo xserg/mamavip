@@ -14,6 +14,10 @@
 					:post="post"
 					:key="post.id"
 				/>
+				
+			</div>
+			<div class="contentSubWrap content_box info_box marginB12">
+				<span class="theButton buttonPrimary buttonOptimal marginAuto marginB12" @click="$router.push('/catalog_prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].buy_all }}</span>
 			</div>
 
 			<!-- <bottom-line></bottom-line> -->
@@ -70,6 +74,7 @@ export default {
 		...mapState({
 		}),
 		...mapGetters({
+			getInfos: 'getInfos',
 			// recommendationElement: 'content/recommendationElement',
 			catalogList: 'content/catalogList',
 			// teachersList: 'content/teachersList',
@@ -84,7 +89,7 @@ export default {
 </script>
 
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 .mainContainer.catalogContainer{
 	height: 100vh;
@@ -104,9 +109,12 @@ export default {
 			grid-template-columns: repeat(3,1fr);
 			grid-gap: 12px;
 			// flex-wrap: wrap;
-			
+			&.content_box{
+				display: flex;
+				width: 100%;
+			}
 		}
-
+		
 	}
 }
 

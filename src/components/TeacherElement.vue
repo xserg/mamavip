@@ -3,7 +3,7 @@
 	<div class="the_element marginB12" @mousedown="handleMouseDown" @click="handleClick">
 		<div class="the_element_box">
 			<!-- <img src="./../assets/images/element.jpg" alt="element"> -->
-			<img v-if="filterTeacher.photo" :src="filterTeacher.photo ? 'https://api.xn--80axb4d.online/storage/' + filterTeacher.photo : ''" alt="element">
+			<img v-if="filterTeacher.photo" :src="filterTeacher.photo ? 'https://api.roddom15.ru/storage/' + filterTeacher.photo : ''" alt="element">
 		</div>
 		<!-- <h5 class="new_title">{{ teacher.name }}</h5> -->
 		<div class="teacher_title fontFamilyB fontSize14" style="font-size:13px !important;">{{ filterTeacher.name }}</div> 
@@ -101,13 +101,14 @@ export default({
 	// }
 	.the_element_box{
 		border: 1px solid rgba(35, 41, 45, 0.1);
+		border: 2px solid #feabb029;
 		border-radius: 8px;
 		overflow: hidden;
 		margin-bottom: 4px;
 		position: relative;
 		height: 0;
-		width: calc(100% - 36px);
-		padding-top: calc(100% - 36px);
+		width: calc(100% - 42px);
+		padding-top: calc(100% - 42px);
 		z-index: 10;
 		border-radius: 50%;
 		background-position: center;
@@ -119,6 +120,12 @@ export default({
 		background-size: 35%;
 		margin-left: auto;
 		margin-right: auto;
+	
+		width: 65%;
+		min-width: 65%;
+		padding-top: 65%;
+		margin-bottom: 8px;
+					
 		img{
 			position: absolute;
 			left: 0;

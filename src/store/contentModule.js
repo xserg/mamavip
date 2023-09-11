@@ -4,6 +4,10 @@ import axios from 'axios';
 export const contentModule = {
 	state: () => ({
 
+		threadMess: '',
+
+		requests: [],
+
 		statusIsLoading: false,
 
 		lectureAccess: '',
@@ -75,6 +79,8 @@ export const contentModule = {
 				title: 'Компонент',
 				preview: 'https://images.unsplash.com/photo-1674581648641-6362c00ac9ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80'
 			},
+
+	
 
 	}),
 	getters: {
@@ -187,6 +193,10 @@ export const contentModule = {
 			return state.todayLecture;
 		},
 
+		getRequests(state){
+			return state.requests;
+		},
+
 
 		// Временный вывод сертификатов (ПЕРЕДЕЛАТЬ ПОД ТЕКУЩЕГО ЛЕКТОРА)
 		sertificateslist(state){
@@ -268,6 +278,10 @@ export const contentModule = {
 			state.notViewedLecturs = elements;
 		},
 
+		setRequests(state, data){
+			state.requests = data;
+		},
+
 
 		// Получить список каталога-категорий (под axios запрос)
 		setCatalog(state, categories) {
@@ -326,9 +340,34 @@ export const contentModule = {
 			state.totalPages = totalPages
 		},
 
+		setThreadMess(state, mess){
+			state.threadMess = mess;
+		}
+
 
 	},
 	actions: {
+
+
+		async fetchRequests({state, rootState, commit}){
+			try{
+				commit('setStatusLoading', true);
+				setTimeout( async () => {
+					const response = await axios.get('https://api.roddom15.ru/v1/threads', {
+						headers: {
+							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+						}
+					});
+					commit('setRequests', response.data);
+					commit('setStatusLoading', false);
+					commit('setCatalogError', false);
+				}, 50 )
+				
+			} catch(e){
+				commit('setStatusLoading', false);
+				commit('setCatalogError', true);
+			} finally {}
+		},
 
 
 		async checkLectureAccess({state, rootState, commit}, lectureId){
@@ -336,8 +375,8 @@ export const contentModule = {
 				commit('setStatusLoading', true);
 				commit('setLectureAccess', '');
 				setTimeout( async () => {
-					const response = await axios.post('https://api.xn--80axb4d.online/v1/lecture/1/watch', {}, {
-					// const response = await axios.post('https://api.xn--80axb4d.online/v1/lecture/' + lectureId + '/watch', {}, {
+					const response = await axios.post('https://api.roddom15.ru/v1/lecture/1/watch', {}, {
+					// const response = await axios.post('https://api.roddom15.ru/v1/lecture/' + lectureId + '/watch', {}, {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -357,7 +396,8 @@ export const contentModule = {
 			try{
 				commit('setStatusLoading', true);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.xn--80axb4d.online/v1/lectors', {
+					const response = await axios.get('https://api.roddom15.ru/v1/lectors?per_page=100', {
+					// const response = await axios.get('https://api.roddom15.ru/v1/lectors', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -376,7 +416,7 @@ export const contentModule = {
 			try{
 				commit('setStatusLoading', true);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.xn--80axb4d.online/v1/lectors/category/' + categorySlug, {
+					const response = await axios.get('https://api.roddom15.ru/v1/lectors/category/' + categorySlug, {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -398,7 +438,7 @@ export const contentModule = {
 				commit('setEmptyCurrentLector');
 				commit('setEmptyCurrentLectorElements');
 				setTimeout( async () => {
-					const response = await axios.get('https://api.xn--80axb4d.online/v1/lector/' + lectorId, {
+					const response = await axios.get('https://api.roddom15.ru/v1/lector/' + lectorId, {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -421,7 +461,7 @@ export const contentModule = {
 				commit('setSertificatesStatus', false);
 				commit('setEmptyCurrentLectorElements');
 				setTimeout( async () => {
-					const response = await axios.get('https://api.xn--80axb4d.online/v1/lectures?per_page=1000&page=1&filter%5Blector_id%5D=' + lectorId + '&sort=-created_at', {
+					const response = await axios.get('https://api.roddom15.ru/v1/lectures?per_page=1000&page=1&filter%5Blector_id%5D=' + lectorId + '&sort=-created_at', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -443,7 +483,7 @@ export const contentModule = {
 			try{
 				commit('setStatusLoading', true);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.xn--80axb4d.online/v1/categories', {
+					const response = await axios.get('https://api.roddom15.ru/v1/categories', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -460,18 +500,19 @@ export const contentModule = {
 		},
 
 
-		async fetchRecommended({state, rootState, commit}){
+		async fetchRecommended({rootState, state, commit}){
 			try{
-				const emptyData = '';
+				// const emptyData = '';
 				commit('setStatusLoading', true);
-				commit('setRecommended', emptyData);
+				// commit('setRecommended', emptyData);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.xn--80axb4d.online/v1/lectures?per_page=30&page=1&filter%5Brecommended%5D=1', {
+					const response = await axios.get('https://api.roddom15.ru/v1/lectures?per_page=30&page=1&filter%5Brecommended%5D=1', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
 					}).catch(function (error) { if (error.response.status !== 404){  commit('setRecommended', 'e')  } });
-					if(response){
+					// console.log(response.data.data);
+					if(response.data){
 						commit('setRecommended', response.data.data);
 					}
 				}, 50 )
@@ -496,7 +537,7 @@ export const contentModule = {
 					commit('setStatusLoading', true);
 					commit('setCurrentCategory', []);
 					setTimeout( async () => {
-						const response = await axios.get('https://api.xn--80axb4d.online/v1/category/' + slug, {
+						const response = await axios.get('https://api.roddom15.ru/v1/category/' + slug, {
 							headers: {
 								Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 							}
@@ -520,7 +561,7 @@ export const contentModule = {
 						commit('setStatusLoading', true);
 						commit('setCurrentCategoryElements', []);
 						setTimeout( async () => {
-							const response = await axios.get('https://api.xn--80axb4d.online/v1/category/' + slug, {
+							const response = await axios.get('https://api.roddom15.ru/v1/category/' + slug, {
 								headers: {
 									Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 								}
@@ -545,7 +586,7 @@ export const contentModule = {
 						commit('setStatusLoading', true);
 						commit('setCurrentSubCategory', '');
 						setTimeout( async () => {
-							const response = await axios.get('https://api.xn--80axb4d.online/v1/category/' + slug, {
+							const response = await axios.get('https://api.roddom15.ru/v1/category/' + slug, {
 								headers: {
 									Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 								}
@@ -567,7 +608,7 @@ export const contentModule = {
 						commit('setStatusLoading', true);
 						commit('setCurrentSubCategoryElements', '');
 						setTimeout( async () => {
-						const response = await axios.get('https://api.xn--80axb4d.online/v1/lectures?per_page=1000&page=1&filter%5Bcategory_id%5D=' + categoryId, {
+						const response = await axios.get('https://api.roddom15.ru/v1/lectures?per_page=1000&page=1&filter%5Bcategory_id%5D=' + categoryId, {
 							headers: {
 								Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 							}
@@ -592,7 +633,7 @@ export const contentModule = {
 					commit('setStatusLoading', true);
 					commit('setCurrentSubCategory', '');
 					setTimeout( async () => {
-						const response = await axios.get('https://api.xn--80axb4d.online/v1/category/' + slug, {
+						const response = await axios.get('https://api.roddom15.ru/v1/category/' + slug, {
 							headers: {
 								Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 							}
@@ -600,7 +641,7 @@ export const contentModule = {
 						commit('setCurrentSubCategory', response.data.category);
 						commit('setCurrentSubCategoryElements', '');
 						setTimeout( async () => {
-							const responseElems = await axios.get('https://api.xn--80axb4d.online/v1/lectures?per_page=1000&page=1&filter%5Bcategory_id%5D=' + response.data.category.id, {
+							const responseElems = await axios.get('https://api.roddom15.ru/v1/lectures?per_page=1000&page=1&filter%5Bcategory_id%5D=' + response.data.category.id, {
 								headers: {
 									Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 								}
@@ -627,7 +668,7 @@ export const contentModule = {
 					commit('setStatusLoading', true);
 					commit('setEmptyCurrentLecture');
 					setTimeout( async () => {
-						const response = await axios.get('https://api.xn--80axb4d.online/v1/lecture/' + lectureId, {
+						const response = await axios.get('https://api.roddom15.ru/v1/lecture/' + lectureId, {
 							headers: {
 								Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 							}
@@ -652,7 +693,7 @@ export const contentModule = {
 				commit('setStatusLoading', true);
 				commit('setSaved', emptyData);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.xn--80axb4d.online/v1/lectures?per_page=' + count + '&page=1&filter%5Bsaved%5D=1', {
+					const response = await axios.get('https://api.roddom15.ru/v1/lectures?per_page=' + count + '&page=1&filter%5Bsaved%5D=1', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -689,7 +730,7 @@ export const contentModule = {
 				commit('setStatusLoading', true);
 				commit('setWatched', emptyData);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.xn--80axb4d.online/v1/lectures?per_page=' + count + '&page=1&filter%5Blist-watched%5D=1', {
+					const response = await axios.get('https://api.roddom15.ru/v1/lectures?per_page=' + count + '&page=1&filter%5Blist-watched%5D=1', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -725,7 +766,7 @@ export const contentModule = {
 				commit('setStatusLoading', true);
 				commit('setPurchased', emptyData);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.xn--80axb4d.online/v1/lectures?per_page=' + count + '&page=1&filter%5Bpurchased%5D=1', {
+					const response = await axios.get('https://api.roddom15.ru/v1/lectures?per_page=' + count + '&page=1&filter%5Bpurchased%5D=1', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -762,7 +803,7 @@ export const contentModule = {
 					commit('setStatusLoading', true);
 					commit('setNotViewed', emptyData);
 					setTimeout( async () => {
-						const response = await axios.get('https://api.xn--80axb4d.online/v1/lectures?per_page=' + count + '&page=1&filter%5Bsaved%5D=1&filter%5Bnot_watched%5D=1', {
+						const response = await axios.get('https://api.roddom15.ru/v1/lectures?per_page=' + count + '&page=1&filter%5Bsaved%5D=1&filter%5Bnot_watched%5D=1', {
 							headers: {
 								Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 							}
@@ -799,7 +840,7 @@ export const contentModule = {
 				commit('setStatusLoading', true);
 				commit('setPromopack', emptyData);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.xn--80axb4d.online/v1/promopack?per_page=' + count + '&page=1', {
+					const response = await axios.get('https://api.roddom15.ru/v1/promopack?per_page=' + count + '&page=1', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}

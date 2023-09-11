@@ -25,7 +25,7 @@
 				<div class="topLine flexWrap">
 					<span class="theButton leftButton buttonTransparent ghostWrap">Назад</span>
 					<h1 class="theTitle alignCenter">Регистрация</h1>
-					<button class="theButton rightButton buttonTransparent fontFamilyB">Далее</button>
+					<span class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</span> <!-- @click="nextStepReg" -->
 				</div>
 
 				<div class="contentSubWrap">
@@ -58,10 +58,11 @@
 								</div>
 								<ErrorMessage class="errorTitle" name="password_confirmation" />
 							</label>
+							<button class="theButton buttonOptimal marginAuto buttonPrimary fontFamilyB marginB20" style="margin-bottom:32px;margin-top:20px">Далее</button>
 							<div class="infoWrap">
 								<span class="theTitle">Есть аккаунт?</span>
 								<span class="theButton buttonTransparent fontFamilyB marginB30 fontSize14" @click="this.setLogPage()">Войти</span>
-								<p class="policy_text alignCenter fontSize12">Регистрируясь в приложении вы соглашаетесь с <a href="#" @click="nextStep">политикой обработки персональных данных</a></p>
+								<p class="policy_text alignCenter fontSize12">Регистрируясь в приложении вы соглашаетесь с <a href="#" @click="readPolicy()">политикой обработки персональных данных</a></p>
 							</div>
 						<!-- </Form> -->
 						<!-- <button class="theButton buttonPrimary buttonConfirm marginAuto" @click="onSubmit" >Отправить</button> -->
@@ -73,7 +74,7 @@
 
 
 
-			<div class="contentWrap stepRegSecond" v-show="curStep == 2" v-if="this.getInfos.data">
+			<div class="contentWrap stepRegSecond" v-show="curStep == 2">
 			
 				<div class="topLine flexWrap">
 					<span class="theButton leftButton buttonTransparent" style="text-align:left;" @click="prevStep">Назад</span>
@@ -81,14 +82,22 @@
 					<span class="theButton ghostWrap"></span>
 				</div>
 
-				<div class="contentSubWrap">
+				<div class="contentSubWrap" v-if="!agreementDataLoading">
 					<div class="infoWrap">
-						<h2>{{ this.getInfos.data.app_info[0].agreement_title }}</h2>
-						<div v-html="this.getInfos.data.app_info[0].agreement_text"/>
+						<!-- <h2 v-if="this.getInfos.data">{{ this.getInfos.data.app_info[0].agreement_title }}</h2> -->
+						<h2 v-html="this.agreementData[0].agreement_title"></h2>
+						<!-- <div v-if="this.getInfos.data" v-html="this.getInfos.data.app_info[0].agreement_text"/> -->
+						<div v-html="this.agreementData[0].agreement_text"/>
 						<!-- <p>{{ this.getInfos.data.app_info[0].agreement_text }}</p> -->
 					</div>
+					<!-- <span class="theButton buttonPrimary buttonConfirm" :class="{hiddenWrap: !this.finishReg }" @click="confirmRegistr">Принять и продолжить</span>
+					<span class="theButton buttonPrimary buttonConfirm" :class="{hiddenWrap: this.finishReg }" @click="prevStep">Зарегистрироваться</span> -->
 					<span class="theButton buttonPrimary buttonConfirm" :class="{hiddenWrap: !this.formValues || Object.keys(this.formValues).length === 0 || !this.finishReg }" @click="confirmRegistr">Принять и продолжить</span>
 					<span class="theButton buttonPrimary buttonConfirm" :class="{hiddenWrap: this.formValues && Object.keys(this.formValues).length !== 0 && this.finishReg }" @click="prevStep">Зарегистрироваться</span>
+				</div>
+
+				<div v-else class="roller_box">
+					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 				</div>
 				
 			</div>
@@ -99,25 +108,26 @@
 			<div class="topLine flexWrap">
 				<span class="theButton leftButton buttonBack" @click="prevStep"></span>
 				<h1 class="theTitle alignCenter">Аутентификация почты</h1>
-				<button class="theButton rightButton buttonTransparent fontFamilyB">Далее</button>
+				<span class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</span>
 			</div>
 			
 			<div class="contentSubWrap">
 				<div class="titleLine">
 					<h2 class="pageTitle fontSize20 alignCenter fontFamilyEB marginB12">Введите код из письма</h2>
 				</div>
-				<div class="formWrap marginB50">
+				<div class="formWrap marginB20">
 					<label class="inputWrap" :class="{notValid: errors.code }">
 						<span class="label">Код</span>
 						<div class="inputBox">
-							<Field ref="forgotCodeInput" name="code" type="number" onkeypress="this.value=this.value.substring(0,5)" placeholder="123456" />
+							<Field ref="forgotCodeInput" name="code" type="number" onkeypress="this.value=this.value.substring(0,11)" placeholder="123456" />
 						</div>
 							<ErrorMessage class="errorTitle" name="code" />
 					</label>
+					<button class="theButton buttonOptimal marginAuto buttonPrimary fontFamilyB marginB20" style="margin-bottom:42px;margin-top:12px">Далее</button>
 				</div>
 
 				<div class="infoWrap">
-					<span class="theButton buttonWhite" :class="{disabled: !this.resendCode }" @click="onResendCode">Запросить код повторно <b :class="{hiddenWrap: this.resendCode }">{{this.timer.minutes}}:{{this.timer.seconds.value < 10 ? '0' + this.timer.seconds.value : this.timer.seconds}}</b></span>
+					<span class="theButton buttonWhite buttonOptimal" :class="{disabled: !this.resendCode }" @click="onResendCode">Запросить код повторно <b :class="{hiddenWrap: this.resendCode }">{{this.timer.minutes}}:{{this.timer.seconds.value < 10 ? '0' + this.timer.seconds.value : this.timer.seconds}}</b></span>
 					<p class="fontSize12 alignCenter">Проверьте папку «Спам», если не видите письма</p>
 				</div>
 
@@ -132,17 +142,23 @@
 				<div class="infoWrap">
 					<h2>Регистрация прошла успешно!</h2>
 					<p class="confirmMessage">Для входа, нажмите на кнопку "Войти"</p>
-					<span class="theButton buttonConfirm buttonPrimary" @click="this.goMainPage()">Войти</span>
+					<!-- <span class="theButton buttonConfirm buttonPrimary" @click="this.goMainPage()">Войти</span> -->
+					<router-link class="theButton buttonConfirm buttonPrimary" to="/" @click="this.goMainPage()">Войти</router-link>
 					<!-- <button class="theButton buttonPrimary" @click="confirmReg">Войти</button> -->
 				</div>
 			</div>
 		</div>
 
 
+		<div class="empty_layout" v-if="curStep == 2"></div>
+
+
 	</div>
 </template>
 
 <script>
+
+// import { useRoute } from 'vue-router';
 
 import axios from 'axios';
 
@@ -194,7 +210,7 @@ export default defineComponent({
     });
 
 		const schema_code = yup.object({
-      code: yup.string().required('Введите код подтверждения').min(6, 'Код должен состоять из 6 символов').max(6, 'Код должен состоять из 6 символов').typeError().label('Код из письма'),
+      code: yup.string().required('Введите код подтверждения').min(6, 'Код должен состоять из 6 символов').max(12, 'Код должен состоять из 6 символов').typeError().label('Код из письма'),
 		});
 		const schema = yup.object({
       email: yup.string().required('Пожалуйста, заполните это поле').email('Пожалуйста, введите корректный email').typeError('Поле Email обязателен').label('Email'),
@@ -212,7 +228,7 @@ export default defineComponent({
 			finishReg: false,
 			inputPassType: 'password',
 			formValues: {},
-			
+			currReferal: false,
 			cacheUserData: {},
 			showErrors: false,
 			resendCode: true,
@@ -220,6 +236,11 @@ export default defineComponent({
 			showNotification: false,
 			notificationMess: '',
 			notificationErrorMess: '',
+			agreementData: [{
+				agreement_title: '',
+				agreement_text: '',
+			}],
+			agreementDataLoading: false,
 			// regForm: {
 			// 	email: '',
 			// 	firstName: '',
@@ -239,6 +260,7 @@ export default defineComponent({
 			setAuthIn: 'setAuthIn',
 			setAuthOut: 'setAuthOut',
 			setRegPage: 'setRegPage',
+			setHomeTab: 'setHomeTab',
 			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
 		...mapActions({
@@ -255,6 +277,10 @@ export default defineComponent({
 			this.curStep += 1;
 			this.finishReg = false;
 		},
+		// nextStepReg(){
+		// 	this.curStep += 1;
+		// 	this.finishReg = true;
+		// },
 		prevStep(){
 			this.curStep -= 1;
 			this.finishReg = false;
@@ -275,10 +301,87 @@ export default defineComponent({
 			}
 		},
 
+		readPolicy(){
+			this.agreementDataLoading = true;
+			try{
+				setTimeout( async () => {
+					const response = 
+						await axios.get('https://api.roddom15.ru/v1/app/agreement').catch(function (error) { if (error.response){} });
+					if(response){
+						this.agreementData = response.data.data;
+						this.agreementDataLoading = false;
+					}else{
+						this.agreementData = [{
+							agreement_title: 'Ошибка загрузки политики конфиденциальности',
+							agreement_text: 'К сожалению, загрузить политику конфинедциальности не удалось, однако Вы всегда сможете ознакомиться с ней позже.',
+						}]
+						this.notificationErrorMess = 'Неожиданная ошибка';
+						this.agreementDataLoading = false;
+						setTimeout(() => {
+						this.showErrors = true;
+						}, 400);
+						setTimeout(() => {
+							this.showErrors = false;
+						}, 3000);
+					}
+				}, 50 );
+			} catch(e){
+				// console.log(e);
+			} finally {}
+			this.curStep += 1;
+		},
+
 		onSubmit(values){
+
+			this.agreementDataLoading = true;
+
+			try{
+				setTimeout( async () => {
+					const response = 
+						await axios.get('https://api.roddom15.ru/v1/app/agreement').catch(function (error) { if (error.response){} });
+					if(response){
+						this.agreementData = response.data.data;
+						this.agreementDataLoading = false;
+					}else{
+						this.agreementData = [{
+							agreement_title: 'Ошибка загрузки политики конфиденциальности',
+							agreement_text: 'К сожалению, загрузить политику конфинедциальности не удалось, однако Вы всегда сможете ознакомиться с ней позже.',
+						}]
+						this.notificationErrorMess = 'Неожиданная ошибка';
+						this.agreementDataLoading = false;
+						setTimeout(() => {
+						this.showErrors = true;
+						}, 400);
+						setTimeout(() => {
+							this.showErrors = false;
+						}, 3000);
+					}
+				}, 50 );
+			} catch(e){
+				// console.log(e);
+			} finally {}
+
 			this.finishReg = true;
 			this.formValues = values;
 			this.curStep += 1;
+			// const route = useRoute();
+			// console.log(route.params);
+			
+		},
+
+		getCurrentReferal(){
+			const urlPath = window.location.search;
+			var refFilter = '';
+			const urlParams = new URLSearchParams(urlPath);
+			// console.log(urlParams);
+			if( urlParams.has('ref') ){
+					refFilter = urlParams.get('ref');
+					// console.log(refFilter);
+			}
+			if(refFilter && refFilter !== ''){
+				this.currReferal = refFilter;
+				// console.log(refFilter);
+			}
 		},
 
 
@@ -287,10 +390,20 @@ export default defineComponent({
 			// this.notificationErrorMess = 'ошибка';
 			try{
 				setTimeout( async () => {
-					const response = 
-						await axios.post('https://api.xn--80axb4d.online/v1/user/register', this.formValues).catch(function (error) { if (error.response){ 
+					if(this.currReferal){
+						// console.log('Реферальная ссылка: ' + 'https://api.roddom15.ru/v1/user/register?ref=' + this.currReferal);
+						var response = 
+						await axios.post('https://api.roddom15.ru/v1/user/register?ref=' + this.currReferal, this.formValues).catch(function (error) { if (error.response){ 
 							return error.response;
 						} });
+					}else{
+						// console.log('Обычная ссылка: ' + 'https://api.roddom15.ru/v1/user/register');
+						var response = 
+						await axios.post('https://api.roddom15.ru/v1/user/register', this.formValues).catch(function (error) { if (error.response){ 
+							return error.response;
+						} });
+					}
+					
 					if(response.status == 200){
 						this.notificationMess = response.data.message;
 						setTimeout(() => {
@@ -328,7 +441,7 @@ export default defineComponent({
 						}
 						// console.log(cacheUserMail);
 						const response = 
-							await axios.post('https://api.xn--80axb4d.online/v1/user/resend-login-code', cacheUserMail).catch(function (error) { if (error.response){
+							await axios.post('https://api.roddom15.ru/v1/user/resend-login-code', cacheUserMail).catch(function (error) { if (error.response){
 								return error.response;
 							} });
 						// console.log(response);
@@ -372,7 +485,7 @@ export default defineComponent({
 						code: values.code,
 					};
 					const response = 
-						await axios.post('https://api.xn--80axb4d.online/v1/user/login/code', filterCode).catch(function (error) { if (error.response){} });
+						await axios.post('https://api.roddom15.ru/v1/user/login/code', filterCode).catch(function (error) { if (error.response){} });
 					if(response){
 						this.$refs.forgotCodeInput.reset();
 						this.curStep = 4;
@@ -398,7 +511,7 @@ export default defineComponent({
 				setTimeout( async () => {
 					if(this.cacheUserData.access_token){
 						this.setAuthIn(this.cacheUserData);
-						const responseInfos = await axios.get('https://api.xn--80axb4d.online/v1/app/info', {
+						const responseInfos = await axios.get('https://api.roddom15.ru/v1/app/info', {
 							headers: {
 								Authorization: this.cacheUserData.token_type + ' ' + this.cacheUserData.access_token,
 							}
@@ -410,7 +523,7 @@ export default defineComponent({
 							this.curStep += 1;
 							this.finishReg = false;
 							this.setLogPage();
-							this.$router.push("/");
+							// this.$router.push("/");
 						}else{
 							this.notificationErrorMess = 'Во время входа произошла ошибка.';
 							setTimeout(() => {
@@ -430,7 +543,7 @@ export default defineComponent({
 			}
 			// try{
 			// 	setTimeout( async () => {
-			// 		const response = await axios.post('https://api.xn--80axb4d.online/v1/user/register', this.formValues);
+			// 		const response = await axios.post('https://api.roddom15.ru/v1/user/register', this.formValues);
 			// 		this.curStep += 1;
 			// 		this.finishReg = false;
 			// 	}, 500 );
@@ -456,13 +569,46 @@ export default defineComponent({
 		})
 	},
 
+
+	mounted(){ 
+		this.getCurrentReferal();
+	},
+
+
+	// watch:{
+	// 	$route(to, from) {
+	// 		this.getCurrentReferal(to.params);
+	// 		// console.log('To:');
+	// 		// console.log(to.params.id);
+	// 		// console.log('From:');
+	// 		// console.log(from);
+	// 	},
+	// }
+
+
 });
 </script>
 
 <style lang="scss" scoped>
 
 .mainContainer{
+
+	.empty_layout{
+		position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    max-width: 600px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 100vh;
+    height: 100vh;
+    background-color: #fff;
+    z-index: 10;
+	}
 	.contentWrap{
+		z-index: 15;
 
 		.topLine{
 			background-color: #ffeaeba8;

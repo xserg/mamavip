@@ -1,21 +1,29 @@
 <template>
 
 	<div class="bottomLine flexWrap">
-		<router-link class="theButton leftButton buttonTransparent fontFamilyB left_button" :class="{active: this.curTab == 'home'}" to="/" @click="setHomeTab(), setRouterAnimate()">
+
+		<router-link class="theButton leftButton buttonTransparent fontFamilyB left_button" :class="{active: this.getCurrTab == 'home'}" to="/" @click="setRouterAnimate()">
 			<span class="the_icon home_icon"></span>
 			<span class="the_title">Главное</span>
 		</router-link>
-		<router-link class="theButton rightButton buttonTransparent fontFamilyB right_button" :class="{active: this.curTab == 'profile'}" to="/profile" @click="setProfileTab(), setRouterAnimate()">
+
+		<router-link class="theButton buttonTransparent fontFamilyB" :class="{active: this.getCurrTab == 'favour'}" to="/profile/saved" @click="setRouterAnimate()">
+			<span class="the_icon saved_icon"></span>
+			<span class="the_title">Сохраненное</span>
+		</router-link>
+
+		<router-link class="theButton rightButton buttonTransparent fontFamilyB right_button" :class="{active: this.getCurrTab == 'profile'}" to="/profile" @click="setRouterAnimate()">
 			<span class="the_icon profile_icon"></span>
 			<span class="the_title">Профиль</span>
 		</router-link>
+
 	</div>
 
 </template>
 
 <script>
 
-import {mapState, mapMutations} from 'vuex';
+import {mapState, mapMutations, mapGetters} from 'vuex';
 
 export default {
 
@@ -23,8 +31,6 @@ export default {
 
 	methods:{
 		...mapMutations({
-			setHomeTab: 'setHomeTab',
-			setProfileTab: 'setProfileTab',
 			setRouterAnimate: 'setRouterAnimate',
 		}),
 	},
@@ -32,6 +38,9 @@ export default {
 	computed:{
 		...mapState({
 			curTab: state => state.curTab,
+		}),
+		...mapGetters({
+			getCurrTab: 'getCurrTab',
 		}),
 	},
 }
@@ -86,6 +95,9 @@ export default {
 					&.profile_icon{
 						background-image: url('../../assets/icons/icon-profile-g.svg');
 					}
+					&.saved_icon{
+						background-image: url('../../assets/icons/bookmark-g.svg');
+					}
 				}
 				.the_title{}
 				&.active{
@@ -96,6 +108,9 @@ export default {
 						}
 						&.profile_icon{
 							background-image: url('../../assets/icons/icon-profile-a.svg');
+						}
+						&.saved_icon{
+							background-image: url('../../assets/icons/bookmark.svg');
 						}
 					}
 				}

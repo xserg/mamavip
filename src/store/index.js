@@ -11,7 +11,8 @@ export default createStore({
 		availableTimer: '',
 
 		infos: [],
-		currUser: '',
+		catalogPrices: [],
+		currUser: [],
 		// currUserToken: '',
 		categoryy: [],
 
@@ -29,6 +30,10 @@ export default createStore({
   },
 
   getters: {
+
+		getCurrTab(state){
+			return state.curTab;
+		},
 
 		getEditingStatus(state){
 			return state.editingStatus;
@@ -51,9 +56,16 @@ export default createStore({
 		getCurrUser(state){
 			return state.currUser;
 		},
+		getCurrNotificationStatus(state){
+			return state.currUser.user.is_notification_read;
+		},
 		getInfos(state){
 			return state.infos;
 		},
+		getCatalogPrices(state){
+			return state.catalogPrices;
+		},
+
 		getLoadingStatus(state){
 			return state.loadingStatus;
 		},
@@ -65,6 +77,8 @@ export default createStore({
 		getOldLecture(state){
 			return state.oldLecture;
 		},
+
+		
 
   },
 
@@ -145,6 +159,12 @@ export default createStore({
 			state.infos = data;
 		},
 
+		setCatalogPrices(state, data){
+			state.catalogPrices = data;
+		},
+
+		
+
 
 		setUserData(state, data){
 			state.currUser.user = data.data;
@@ -172,7 +192,7 @@ export default createStore({
 			
 			// actions.fetchInfos();
 
-			// const responseInfos = axios.get('https://api.xn--80axb4d.online/v1/app/info', {
+			// const responseInfos = axios.get('https://api.roddom15.ru/v1/app/info', {
 			// 	headers: {
 			// 		Authorization: user.token_type + ' ' + user.access_token,
 			// 	}
@@ -189,14 +209,20 @@ export default createStore({
 			// state.currUser.user.baby_born = user.baby_born;
 		},
 
+		
 		setHomeTab(state){
 			state.curTab = 'home';
+			window.scrollTo(0,0);
+		},
+		setFavourTab(state){
+			state.curTab = 'favour';
 			window.scrollTo(0,0);
 		},
 		setProfileTab(state){
 			state.curTab = 'profile';
 			window.scrollTo(0,0);
 		},
+		
 
 		lockHeight(state){	
 			state.heightLock = true;
@@ -224,54 +250,66 @@ export default createStore({
 		},
 
 		async fetchUserData({state, commit}){
-			try{
-				commit('setLoadingStatus', true);
-				setTimeout( async () => {
-					const response = await axios.get('https://api.xn--80axb4d.online/v1/user/profile', {
-						headers: {
-							Authorization: state.currUser.token_type + ' ' + state.currUser.access_token,
+			if(state.currUser.token_type && state.currUser.access_token){
+				try{
+					commit('setLoadingStatus', true);
+					setTimeout( async () => {
+						const response = await axios.get('https://api.roddom15.ru/v1/user/profile', {
+							headers: {
+								Authorization: state.currUser.token_type + ' ' + state.currUser.access_token,
+							}
+						}).catch(function (error) { if (error.response.status == 401){  commit('setAuthOut')  } });
+						// console.log(response);
+						commit('setUserData', response.data);
+						if(response.data.data.next_free_lecture_available){
+							commit('setAvailableTimer', response.data.data.next_free_lecture_available)
+						}else{
+							commit('setAvailableTimer', false)
 						}
-					}).catch(function (error) { if (error.response.status == 401){  commit('setAuthOut')  } });
-					// console.log(response);
-					commit('setUserData', response.data);
-					if(response.data.data.next_free_lecture_available){
-						commit('setAvailableTimer', response.data.data.next_free_lecture_available)
-					}else{
-						commit('setAvailableTimer', false)
-					}
-					commit('setLoadingStatus', false);
-				}, 50 )	
-			} 
-			catch(e){} 
-			finally {}
+						commit('setLoadingStatus', false);
+					}, 50 )	
+				} 
+				catch(e){} 
+				finally {}
+			}else{
+				// console.log('Вход не выполнен');
+			}
 
 			
 		},
 
 		async fetchInfos({state, commit}){
-			try{
-				commit('setLoadingStatus', true);
-				commit('setInfos', '');
-				setTimeout( async () => {
-					const response = await axios.get('https://api.xn--80axb4d.online/v1/app/info', {
-						headers: {
-							Authorization: state.currUser.token_type + ' ' + state.currUser.access_token,
-						}
-					}).catch(function (error) { if (error.response.status == 401){  commit('setAuthOut')  } });
-					commit('setInfos', response.data);
-					commit('setLoadingStatus', false);
-				}, 50 )
-				
-			} catch(e){
-				console.log(e);
-			} finally {}
+			if(state.currUser.token_type && state.currUser.access_token){
+				try{
+					commit('setLoadingStatus', true);
+					commit('setInfos', '');
+					setTimeout( async () => {
+						const response = await axios.get('https://api.roddom15.ru/v1/app/info', {
+							headers: {
+								Authorization: state.currUser.token_type + ' ' + state.currUser.access_token,
+							}
+						}).catch(function (error) { if (error.response.status == 401){  commit('setAuthOut')  } });
+						commit('setInfos', response.data);
+						commit('setLoadingStatus', false);
+					}, 50 )
+					
+				} catch(e){
+					console.log(e);
+				} finally {}
+			}else{
+				// console.log('Вход не выполнен');
+			}
 		},
+
+
+
+		
 
 		// async fetchInfos({state, commit}){
 		// 	console.log('Запущен фетчинфос');
 		// 	try{
 		// 		setTimeout( async () => {
-		// 			const response = await axios.get('https://api.xn--80axb4d.online/v1/app/info', {
+		// 			const response = await axios.get('https://api.roddom15.ru/v1/app/info', {
 		// 				headers: {
 		// 					Authorization: state.currUser.token_type + ' ' + state.currUser.access_token,
 		// 				}
@@ -291,7 +329,7 @@ export default createStore({
 		// 		// пишем коммит, так как работаем с экшеном,
 		// 		// значением берем функцию setLoading из мутаций, вторым параметром передаем то, что хотим присвоить
 		// 		setTimeout( async () => {
-		// 			const response = await axios.post('https://api.xn--80axb4d.online/v1/user/login', {
+		// 			const response = await axios.post('https://api.roddom15.ru/v1/user/login', {
 		// 			});
 		// 			// commit('setTotalPages', Math.ceil(response.headers['x-total-count'] / state.limit));
 				

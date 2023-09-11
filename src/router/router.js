@@ -6,7 +6,12 @@ import ProfileSaved from '@/pages/ProfileSaved.vue'
 import ProfileBought from '@/pages/ProfileBought.vue'
 import ProfileViewed from '@/pages/ProfileViewed.vue'
 import ProfileHelp from '@/pages/ProfileHelp.vue'
+import ProfileNotifications from '@/pages/ProfileNotifications.vue'
+import ProfilePartner from '@/pages/ProfilePartner.vue'
 import ProfileAbout from '@/pages/ProfileAbout.vue'
+import ProfileSupport from '@/pages/ProfileSupport.vue'
+import ProfileSupportRequest from '@/pages/ProfileSupportRequest.vue'
+import ProfileSupportNew from '@/pages/ProfileSupportNew.vue'
 
 import ProfileEdit from '@/pages/ProfileEdit.vue'
 
@@ -19,10 +24,15 @@ import Category from '@/pages/Category.vue'
 import SubCategory from '@/pages/SubCategory.vue'
 import Lecture from '@/pages/Lecture.vue'
 import Policy from '@/pages/Policy.vue'
+import Form from '@/pages/Form.vue'
 import Prices from '@/pages/Prices.vue'
+import CatalogPrices from '@/pages/CatalogPrices.vue'
 import CategoryPrices from '@/pages/CategoryPrices.vue'
+import SubcategoryPrices from '@/pages/SubcategoryPrices.vue'
+import PromopackPrices from '@/pages/PromopackPrices.vue'
 import Faq from '@/pages/Faq.vue'
 import NotFound from '@/pages/NotFound.vue'
+import InAuth from '@/pages/InAuth.vue'
 
 
 const routes = [
@@ -43,14 +53,34 @@ const routes = [
     component: Policy
   },
 	{
+    path: '/form/',
+    name: 'form',
+    component: Form
+  },
+	{
     path: '/prices/',
     name: 'prices',
     component: Prices
   },
 	{
+    path: '/catalog_prices/',
+    name: 'catalog_prices',
+    component: CatalogPrices
+  },
+	{
     path: '/category_prices/',
     name: 'category_prices',
     component: CategoryPrices
+  },
+	{
+    path: '/subcategory_prices/',
+    name: 'subcategory_prices',
+    component: SubcategoryPrices
+  },
+	{
+    path: '/promopack_prices/',
+    name: 'promopack_prices',
+    component: PromopackPrices
   },
 	{
     path: '/profile/help/question',
@@ -61,6 +91,11 @@ const routes = [
     path: '/catalog/',
     name: 'catalog',
     component: Catalog
+  },
+	{
+    path: '/register',
+    name: 'inauth',
+    component: InAuth
   },
 	{
     path: '/catalog/:slug',
@@ -101,6 +136,31 @@ const routes = [
     path: '/profile/help/',
     name: 'help',
     component: ProfileHelp
+  },
+	{
+    path: '/profile/support/',
+    name: 'support',
+    component: ProfileSupport
+  },
+	{
+    path: '/profile/support/:id',
+    name: 'request',
+    component: ProfileSupportRequest
+  },
+	{
+    path: '/profile/support/new',
+    name: 'newrequest',
+    component: ProfileSupportNew
+  },
+	{
+    path: '/profile/notifications/',
+    name: 'notifications',
+    component: ProfileNotifications
+  },
+	{
+    path: '/profile/partner/',
+    name: 'partner',
+    component: ProfilePartner
   },
 	{
     path: '/profile/about/',

@@ -61,8 +61,6 @@ export default({
 	width: calc(100% + 16px);
 	padding: 16px 8px 16px;
 	flex-wrap: wrap;
-	margin-left: -8px;
-	margin-right: -8px;
 	transition: all .45s cubic-bezier(1, -0.15, 0.63, 0.99);;
 	opacity: 0;
 	&.active{

@@ -19,15 +19,18 @@
 			<div class="contentSubWrap" >
 				<div class="topWrap content_box info_box marginB12">
 					<div class="img_wrap">
-						<img class="the_img" v-if="this.currentSubCategory.preview_picture" :src="this.currentSubCategory.preview_picture  ? 'https://api.xn--80axb4d.online/storage/' + this.currentSubCategory.preview_picture : ''" alt="subcategory_image" />
+						<img class="the_img" v-if="this.currentSubCategory.preview_picture" :src="this.currentSubCategory.preview_picture  ? 'https://api.roddom15.ru/storage/' + this.currentSubCategory.preview_picture : ''" alt="subcategory_image" />
 						<span class="empty_icon"></span>
 					</div>
 					<span class="the_title fontSize20 fontFamilyEB">{{ this.currentSubCategory.title }}</span>
 					<div class="the_subtitle fontSize14 marginB12" v-html="this.currentSubCategory.description"/>
 					<!-- <span class="the_subtitle fontSize14 marginB12">{{ this.currentSubCategory.description }}</span> -->
-					<span class="theButton buttonPrimary buttonOptimal marginAuto marginB12" v-if="currentSubCategoryList.data && this.currentSubCategory.prices[0].price_for_category !== null" @click="$router.push('/category_prices/'), setRouterAnimate()">Купить от {{ this.currentSubCategory.prices[0].price_for_category }}₽</span>
+
+					<!-- <span class="theButton buttonPrimary buttonOptimal marginAuto marginB12" v-if="currentSubCategoryList.data && this.currentSubCategory.prices[0].price_for_category !== null" @click="$router.push('/category_prices/'), setRouterAnimate()">Купить от {{ this.currentSubCategory.prices[0].price_for_category }}₽</span>
 					<span class="theButton buttonPrimary buttonOptimal marginAuto marginB12" v-if="currentSubCategoryList.data && this.currentSubCategory.prices[0].price_for_category == null && this.currentSubCategory.prices[1].price_for_category !== null" @click="$router.push('/category_prices/'), setRouterAnimate()">Купить от {{ this.currentSubCategory.prices[1].price_for_category }}₽</span>
-					<span class="theButton buttonPrimary buttonOptimal marginAuto marginB12" v-if="currentSubCategoryList.data && this.currentSubCategory.prices[0].price_for_category == null && this.currentSubCategory.prices[1].price_for_category == null && this.currentSubCategory.prices[2].price_for_category !== null" @click="$router.push('/category_prices/'), setRouterAnimate()">Купить от {{ this.currentSubCategory.prices[2].price_for_category }}₽</span>
+					<span class="theButton buttonPrimary buttonOptimal marginAuto marginB12" v-if="currentSubCategoryList.data && this.currentSubCategory.prices[0].price_for_category == null && this.currentSubCategory.prices[1].price_for_category == null && this.currentSubCategory.prices[2].price_for_category !== null" @click="$router.push('/category_prices/'), setRouterAnimate()">Купить от {{ this.currentSubCategory.prices[2].price_for_category }}₽</span> -->
+
+					<span v-if="currentSubCategory.parent_id !== 38" class="theButton buttonPrimary buttonOptimal marginAuto marginB12" @click="$router.push('/subcategory_prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].buy_subcategory }}</span>
 
 				</div>
 
@@ -46,10 +49,12 @@
 					<div class="bottomWrap content_box elements_box" >
 						<!-- ЛЕКТОРЫ -->
 						<div class="teachers_box bottomWrap marginB12">
-							<span class="the_title fontFamilyEB fontSize20 blockWrap">{{ this.getInfos.data.app_info[0].out_lectors_title }}</span>
+							<!-- <span class="the_title fontFamilyEB fontSize20 blockWrap">{{ this.getInfos.data.app_info[0].out_lectors_title }}</span> -->
+							<span class="the_title fontFamilyEB fontSize20 blockWrap">Лекторы категории</span>
 							<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
-							<div class="element_box" v-if="catTeachersList.data && catTeachersList.data.length">
-								<teacher-slider v-if="catTeachersList.data" :teachers="catTeachersList.data"/>
+							<div class="contentSubWrapTeachers" v-if="catTeachersList.data && catTeachersList.data.length">
+								<teacher-element class="the_element" v-for="teacher in catTeachersList.data" :key="teacher" :teacher="teacher" />
+								<!-- <teacher-slider v-if="catTeachersList.data" :teachers="catTeachersList.data"/> -->
 							</div>
 							<div v-else class="roller_box">
 								<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
@@ -122,6 +127,7 @@
 
 import ElementsList from '@/components/ElementsList';
 import TeacherSlider from '@/components/TeacherSlider';
+import TeacherElement from '@/components/TeacherElement';
 
 import {mapState, mapGetters, mapMutations, mapActions} from 'vuex';
 
@@ -132,7 +138,8 @@ export default({
 
 	components: {
 		ElementsList,
-		TeacherSlider
+		TeacherSlider,
+		TeacherElement,
 	}, 
 
 	props: {
@@ -325,6 +332,8 @@ export default({
 						margin-right: auto;
 					}
 					.theButton{
+						padding-left: 24px;
+						padding-right: 24px;
 						margin-top: 24px;
 					}
 				}
@@ -418,6 +427,32 @@ export default({
 				.the_title{
 					margin-bottom: 16px;
 				}
+				.contentSubWrapTeachers{
+					width: 100%;
+					padding: 5px;
+					// background-color: #F3F5F6;
+					display: grid;
+					// -ms-grid-columns: 1fr[2];
+					grid-template-columns: repeat(3,1fr);
+					grid-gap: 12px;
+					// flex-wrap: wrap;
+					.the_element{
+						width: 100%;
+						min-width: 100%;
+						margin-bottom: 10px;
+						height: auto;
+						.the_title::before{
+							display: none;
+						}
+					}
+					.the_element_box{
+						width: 60%;
+						min-width: 60%;
+						padding-top: 60%;
+						margin-bottom: 8px;
+					}
+				}
+
 			}
 		}
 	}
@@ -425,6 +460,17 @@ export default({
 
 
 /* -------- @media ----------- */
+
+@media screen and (max-width: 550px) {
+
+.mainContainer.catalogSubCategory .contentWrap .contentSubWrap .teachers_box .contentSubWrapTeachers{
+	grid-template-columns: repeat(2,1fr);
+}
+
+}
+
+
+
 
 @media screen and (max-width: 480px) {
 
@@ -438,6 +484,8 @@ export default({
 
 
 }
+
+
 
 
 </style>

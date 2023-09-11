@@ -64,33 +64,38 @@
 				<div class="contentCheck" v-if="getCurrUser.user.name !== null">
 					
 					<div class="kinescope_wrap" v-if="getCurrentLecture.content_type.type == 'kinescope' || getCurrentLecture.content_type.title == 'kinescope'">
-						<div class="topWrap content_box info_box marginB12">
-
-							<div class="video_wrap" :class="{active: this.startLecture }" v-if="getCurrentLecture.is_free == 0 || getCurrentLecture.purchase_info.is_purchased == 1 || !getAvailableTimer || getTodayLecture == getCurrentLecture.id">
-								<div class="video_starter" @click="startWatchLecture" v-if="getCurrentLecture.is_free == 1 && !getAvailableTimer || getCurrentLecture.purchase_info.is_purchased == 1 || getTodayLecture == getCurrentLecture.id"></div>
+						<div class="topWrap content_box info_box marginB12"> <!-- :class="{active: this.startLecture }" -->
+							<!-- <div class="video_iframe_kinescope">
+								<iframe 
+									:src="currentLectureLink" 
+									frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
+								>
+								</iframe>
+							</div> -->
+							<div class="video_wrap" :class="{active: this.startLecture }" v-if="!getCurrentLecture.is_free || getCurrentLecture.purchase_info.is_purchased || !getAvailableTimer || getTodayLecture == getCurrentLecture.id">
+								<div class="video_starter" @click="startWatchLecture" v-if="getCurrentLecture.is_free && !getAvailableTimer || getCurrentLecture.purchase_info.is_purchased || getTodayLecture == getCurrentLecture.id"></div>
 								<!-- <div class="video_starter" @click="startWatchLecture"></div> -->
-								<img class="video_preview" v-if="getCurrentLecture.preview_picture" :src="getCurrentLecture.preview_picture ? 'https://api.xn--80axb4d.online/storage/' + getCurrentLecture.preview_picture : ''" alt="preview" />
+								<img class="video_preview" v-if="getCurrentLecture.preview_picture" :src="getCurrentLecture.preview_picture ? 'https://api.roddom15.ru/storage/' + getCurrentLecture.preview_picture : ''" alt="preview" />
 								<span class="video_nopreview" v-else alt="preview" />
 								<div class="video_iframe">
 									<iframe 
 										:src="currentLectureLink" 
-										frameborder="0" 
-										allow="autoplay; fullscreen; picture-in-picture; encrypted-media;" 
-										allowfullscreen>
+										frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
+									>
 									</iframe>
 								</div>
 							</div>
 							<div class="notavailable_wrap topWrap" v-else>
 								<div class="message_wrap">
 									<span class="mess_icon"></span>
-									<span class="mess_title fontFamilyEB">График просмотра</span>
-									<span class="mess_desc">Вы уже выбрали материал на сегодня.<br>Следующий бесплатный будет доступен через<br>{{ getAvailableTimer.hours }} ч. {{ getAvailableTimer.minutes }} мин. {{ getAvailableTimer.seconds }} сек.</span>
+									<span class="mess_title fontFamilyEB">{{ getInfos.data.app_info[0].view_schedule }}</span>
+									<span class="mess_desc">{{ getInfos.data.app_info[0].watched_already }}<br>{{ getInfos.data.app_info[0].next_free_lecture_available_at }}<br>{{ getAvailableTimer.hours }} ч. {{ getAvailableTimer.minutes }} мин. {{ getAvailableTimer.seconds }} сек.</span>
 								</div>
 							</div>
 
 							<div class="top_titles">
 								<span class="the_status" :class="{active: theWatched }">Просмотрено</span>
-								<span class="the_status promo_mark" :class="{promo_active: this.getCurrentLecture.is_promo == 1 }">На акции</span>
+								<span class="the_status promo_mark" :class="{promo_active: this.getCurrentLecture.is_promo }">На акции</span>
 								<!-- Средняя общая оценка: <span class="the_status rating" :class="{active: getCurrentLecture.rates.rate_user !== null}" v-if="getCurrentLecture.rates.rate_avg !== null ">{{ Number(getCurrentLecture.rates.rate_avg/2).toFixed(1) + '/' + 10/2  }}</span> -->
 								<span class="the_status rating" :class="{active: getCurrentLecture.rates.rate_user !== null}" v-if="getCurrentLecture.rates.rate_user !== null ">{{ Number(getCurrentLecture.rates.rate_user/2).toFixed(0) + '/' + 10/2  }}</span>
 								<span class="the_status rating" :class="{active: getCurrentLecture.rates.rate_user !== null}" v-else>{{ '-' }}</span>
@@ -112,9 +117,9 @@
 							<!-- Если карточка не куплена -->
 							<div v-else>
 								<!-- Если бесплатная -->
-								<div class="buttons_wrap" v-if="getCurrentLecture.payment_type.type == 'free'">
+								<div class="buttons_wrap" v-if="getCurrentLecture.is_free">
 									<!-- Если уже какая-то карточка просмотрена сегодня -->
-									<div v-if="getAvailableTimer && getCurrentLecture.id !== getTodayLecture">
+									<!-- <div v-if="getAvailableTimer && getCurrentLecture.id !== getTodayLecture">
 										<div class="tarif_one" v-if="getCurrentLecture.show_tariff_1">
 											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[0].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[0].common_price_for_one_lecture) }}₽</span>
 											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[0].custom_price_for_one_lecture) }}₽</span>
@@ -127,23 +132,23 @@
 											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[2].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[2].common_price_for_one_lecture) }}₽</span>
 											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[2].custom_price_for_one_lecture) }}₽</span>
 										</div>
-									</div>
+									</div> -->
 									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-if="localRating >= 1" @click="showPopup">Сменить оценку</span>
 									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-else @click="showPopup">Оценить</span>
 								</div>
 								<!-- Если карточка платная -->
 								<div class="buttons_wrap" v-else>
 									<div class="tarif_one" v-if="getCurrentLecture.show_tariff_1">
-										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[0].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[0].common_price_for_one_lecture) }}₽</span>
-										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[0].custom_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[0].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].watch_from }} {{ Math.round(getCurrentLecture.prices[0].common_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].watch_from }} {{ Math.round(getCurrentLecture.prices[0].custom_price_for_one_lecture) }}₽</span>
 									</div>
 									<div class="tarif_one" v-if="!getCurrentLecture.show_tariff_1 && getCurrentLecture.show_tariff_2">
-										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[1].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[1].common_price_for_one_lecture) }}₽</span>
-										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[1].custom_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[1].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].watch_from }} {{ Math.round(getCurrentLecture.prices[1].common_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].watch_from }} {{ Math.round(getCurrentLecture.prices[1].custom_price_for_one_lecture) }}₽</span>
 									</div>
 									<div class="tarif_one" v-if="!getCurrentLecture.show_tariff_1 && !getCurrentLecture.show_tariff_2 && getCurrentLecture.show_tariff_3">
-										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[2].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[2].common_price_for_one_lecture) }}₽</span>
-										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[2].custom_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[2].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].watch_from }} {{ Math.round(getCurrentLecture.prices[2].common_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].watch_from }} {{ Math.round(getCurrentLecture.prices[2].custom_price_for_one_lecture) }}₽</span>
 									</div>
 									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-if="localRating >= 1" @click="showPopup">Сменить оценку</span>
 									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-else @click="showPopup">Оценить</span>
@@ -158,10 +163,10 @@
 					<div class="pdf_wrap" v-if="getCurrentLecture.content_type.type == 'pdf' || getCurrentLecture.content_type.title == 'pdf'">
 						<div class="topWrap content_box info_box marginB12">
 
-							<div class="video_wrap" :class="{active: this.startLecture }" v-if="getCurrentLecture.is_free == 0 || getCurrentLecture.purchase_info.is_purchased == 1 || !getAvailableTimer || getTodayLecture == getCurrentLecture.id">
-								<div class="pdf_downloader" @click="startWatchLecture" v-if="getCurrentLecture.is_free == 1 && !getAvailableTimer || getCurrentLecture.purchase_info.is_purchased == 1 || getTodayLecture == getCurrentLecture.id"></div>
+							<div class="video_wrap" :class="{active: this.startLecture }" v-if="getCurrentLecture.is_free || getCurrentLecture.purchase_info.is_purchased || !getAvailableTimer || getTodayLecture == getCurrentLecture.id">
+								<div class="pdf_downloader" @click="startWatchLecture" v-if="getCurrentLecture.is_free && !getAvailableTimer || getCurrentLecture.purchase_info.is_purchased || getTodayLecture == getCurrentLecture.id"></div>
 								<!-- <div class="video_starter" @click="startWatchLecture"></div> -->
-								<img class="video_preview" v-if="getCurrentLecture.preview_picture" :src="getCurrentLecture.preview_picture ? 'https://api.xn--80axb4d.online/storage/' + getCurrentLecture.preview_picture : ''" alt="preview" />
+								<img class="video_preview" v-if="getCurrentLecture.preview_picture" :src="getCurrentLecture.preview_picture ? 'https://api.roddom15.ru/storage/' + getCurrentLecture.preview_picture : ''" alt="preview" />
 								<span class="video_nopreview" v-else alt="preview" />
 								<div class="video_iframe">
 									<iframe 
@@ -175,14 +180,14 @@
 							<div class="notavailable_wrap topWrap" v-else>
 								<div class="message_wrap">
 									<span class="mess_icon"></span>
-									<span class="mess_title fontFamilyEB">График просмотра</span>
-									<span class="mess_desc">Вы уже выбрали материал на сегодня.<br>Следующий бесплатный будет доступен через<br>{{ getAvailableTimer.hours }} ч. {{ getAvailableTimer.minutes }} мин. {{ getAvailableTimer.seconds }} сек.</span>
+									<span class="mess_title fontFamilyEB">{{ getInfos.data.app_info[0].view_schedule }}</span>
+									<span class="mess_desc">{{ getInfos.data.app_info[0].watched_already }}<br>{{ getInfos.data.app_info[0].next_free_lecture_available_at }}<br>{{ getAvailableTimer.hours }} ч. {{ getAvailableTimer.minutes }} мин. {{ getAvailableTimer.seconds }} сек.</span>
 								</div>
 							</div>
 
 							<div class="top_titles">
 								<span class="the_status" :class="{active: theWatched }">Просмотрено</span>
-								<span class="the_status promo_mark" :class="{promo_active: this.getCurrentLecture.is_promo == 1 }">На акции</span>
+								<span class="the_status promo_mark" :class="{promo_active: this.getCurrentLecture.is_promo }">На акции</span>
 								<!-- Средняя общая оценка: <span class="the_status rating" :class="{active: getCurrentLecture.rates.rate_user !== null}" v-if="getCurrentLecture.rates.rate_avg !== null ">{{ Number(getCurrentLecture.rates.rate_avg/2).toFixed(1) + '/' + 10/2  }}</span> -->
 								<span class="the_status rating" :class="{active: getCurrentLecture.rates.rate_user !== null}" v-if="getCurrentLecture.rates.rate_user !== null ">{{ Number(getCurrentLecture.rates.rate_user/2).toFixed(0) + '/' + 10/2  }}</span>
 								<span class="the_status rating" :class="{active: getCurrentLecture.rates.rate_user !== null}" v-else>{{ '-' }}</span>
@@ -204,9 +209,9 @@
 							<!-- Если карточка не куплена -->
 							<div v-else>
 								<!-- Если бесплатная -->
-								<div class="buttons_wrap" v-if="getCurrentLecture.payment_type.type == 'free'">
+								<div class="buttons_wrap" v-if="getCurrentLecture.is_free">
 									<!-- Если уже какая-то карточка просмотрена сегодня -->
-									<div v-if="getAvailableTimer && getCurrentLecture.id !== getTodayLecture">
+									<!-- <div v-if="getAvailableTimer && getCurrentLecture.id !== getTodayLecture">
 										<div class="tarif_one" v-if="getCurrentLecture.show_tariff_1">
 											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[0].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Скачать от {{ Math.round(getCurrentLecture.prices[0].common_price_for_one_lecture) }}₽</span>
 											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Скачать от {{ Math.round(getCurrentLecture.prices[0].custom_price_for_one_lecture) }}₽</span>
@@ -219,7 +224,7 @@
 											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[2].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Скачать от {{ Math.round(getCurrentLecture.prices[2].common_price_for_one_lecture) }}₽</span>
 											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Скачать от {{ Math.round(getCurrentLecture.prices[2].custom_price_for_one_lecture) }}₽</span>
 										</div>
-									</div>
+									</div> -->
 									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-if="localRating >= 1" @click="showPopup">Сменить оценку</span>
 									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-else @click="showPopup">Оценить</span>
 								</div>
@@ -249,10 +254,10 @@
 					<div class="iframe_wrap" v-if="getCurrentLecture.content_type.type == 'embed' || getCurrentLecture.content_type.title == 'embed'">
 						<div class="topWrap content_box info_box marginB12">
 
-							<div class="video_wrap" :class="{active: this.startLecture }" v-if="getCurrentLecture.is_free == 0 || getCurrentLecture.purchase_info.is_purchased == 1 || !getAvailableTimer || getTodayLecture == getCurrentLecture.id ">
-								<div class="video_starter" @click="startWatchLecture" v-if="getCurrentLecture.is_free == 1 && !getAvailableTimer || getCurrentLecture.purchase_info.is_purchased == 1 || getTodayLecture == getCurrentLecture.id"></div>
+							<div class="video_wrap" :class="{active: this.startLecture }" v-if="getCurrentLecture.is_free || getCurrentLecture.purchase_info.is_purchased || !getAvailableTimer || getTodayLecture == getCurrentLecture.id ">
+								<div class="video_starter" @click="startWatchLecture" v-if="getCurrentLecture.is_free && !getAvailableTimer || getCurrentLecture.purchase_info.is_purchased || getTodayLecture == getCurrentLecture.id"></div>
 								<!-- <div class="video_starter" @click="startWatchLecture"></div> -->
-								<img class="video_preview" v-if="getCurrentLecture.preview_picture" :src="getCurrentLecture.preview_picture ? 'https://api.xn--80axb4d.online/storage/' + getCurrentLecture.preview_picture : ''" alt="preview" />
+								<img class="video_preview" v-if="getCurrentLecture.preview_picture" :src="getCurrentLecture.preview_picture ? 'https://api.roddom15.ru/storage/' + getCurrentLecture.preview_picture : ''" alt="preview" />
 								<span class="video_nopreview" v-else alt="preview" />
 								<div class="video_iframe">
 									<div class="iframe_box" v-html="currentLectureEmbedLink"></div>
@@ -261,14 +266,14 @@
 							<div class="notavailable_wrap topWrap" v-else>
 								<div class="message_wrap">
 									<span class="mess_icon"></span>
-									<span class="mess_title fontFamilyEB">График просмотра</span>
-									<span class="mess_desc">Вы уже выбрали материал на сегодня.<br>Следующий бесплатный будет доступен через<br>{{ getAvailableTimer.hours }} ч. {{ getAvailableTimer.minutes }} мин. {{ getAvailableTimer.seconds }} сек.</span>
+									<span class="mess_title fontFamilyEB">{{ getInfos.data.app_info[0].view_schedule }}</span>
+									<span class="mess_desc">{{ getInfos.data.app_info[0].watched_already }}<br>{{ getInfos.data.app_info[0].next_free_lecture_available_at }}<br>{{ getAvailableTimer.hours }} ч. {{ getAvailableTimer.minutes }} мин. {{ getAvailableTimer.seconds }} сек.</span>
 								</div>
 							</div>
 
 							<div class="top_titles">
 								<span class="the_status" :class="{active: theWatched }">Просмотрено</span>
-								<span class="the_status promo_mark" :class="{promo_active: this.getCurrentLecture.is_promo == 1 }">На акции</span>
+								<span class="the_status promo_mark" :class="{promo_active: this.getCurrentLecture.is_promo }">На акции</span>
 								<!-- Средняя общая оценка: <span class="the_status rating" :class="{active: getCurrentLecture.rates.rate_user !== null}" v-if="getCurrentLecture.rates.rate_avg !== null ">{{ Number(getCurrentLecture.rates.rate_avg/2).toFixed(1) + '/' + 10/2  }}</span> -->
 								<span class="the_status rating" :class="{active: getCurrentLecture.rates.rate_user !== null}" v-if="getCurrentLecture.rates.rate_user !== null ">{{ Number(getCurrentLecture.rates.rate_user/2).toFixed(0) + '/' + 10/2  }}</span>
 								<span class="the_status rating" :class="{active: getCurrentLecture.rates.rate_user !== null}" v-else>{{ '-' }}</span>
@@ -289,9 +294,10 @@
 							<!-- Если карточка не куплена -->
 							<div v-else>
 								<!-- Если бесплатная -->
-								<div class="buttons_wrap" v-if="getCurrentLecture.payment_type.type == 'free'">
+								<!-- <div class="buttons_wrap" v-if="getCurrentLecture.payment_type.type == 'free'"> -->
+								<div class="buttons_wrap" v-if="getCurrentLecture.is_free">
 									<!-- Если уже какая-то карточка просмотрена сегодня -->
-									<div v-if="getAvailableTimer && getCurrentLecture.id !== getTodayLecture">
+									<!-- <div v-if="getAvailableTimer && getCurrentLecture.id !== getTodayLecture">
 										<div class="tarif_one" v-if="getCurrentLecture.show_tariff_1">
 											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[0].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[0].common_price_for_one_lecture) }}₽</span>
 											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[0].custom_price_for_one_lecture) }}₽</span>
@@ -304,23 +310,23 @@
 											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[2].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[2].common_price_for_one_lecture) }}₽</span>
 											<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[2].custom_price_for_one_lecture) }}₽</span>
 										</div>
-									</div>
+									</div> -->
 									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-if="localRating >= 1" @click="showPopup">Сменить оценку</span>
 									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-else @click="showPopup">Оценить</span>
 								</div>
 								<!-- Если карточка платная -->
 								<div class="buttons_wrap" v-else>
 									<div class="tarif_one" v-if="getCurrentLecture.show_tariff_1">
-										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[0].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[0].common_price_for_one_lecture) }}₽</span>
-										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[0].custom_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[0].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].watch_from }} {{ Math.round(getCurrentLecture.prices[0].common_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].watch_from }} {{ Math.round(getCurrentLecture.prices[0].custom_price_for_one_lecture) }}₽</span>
 									</div>
 									<div class="tarif_one" v-if="!getCurrentLecture.show_tariff_1 && getCurrentLecture.show_tariff_2">
-										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[1].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[1].common_price_for_one_lecture) }}₽</span>
-										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[1].custom_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[1].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].watch_from }} {{ Math.round(getCurrentLecture.prices[1].common_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].watch_from }} {{ Math.round(getCurrentLecture.prices[1].custom_price_for_one_lecture) }}₽</span>
 									</div>
 									<div class="tarif_one" v-if="!getCurrentLecture.show_tariff_1 && !getCurrentLecture.show_tariff_2 && getCurrentLecture.show_tariff_3">
-										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[2].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[2].common_price_for_one_lecture) }}₽</span>
-										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">Смотреть от {{ Math.round(getCurrentLecture.prices[2].custom_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-if="getCurrentLecture.prices[2].custom_price_for_one_lecture == null" @click="$router.push('/prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].watch_from }} {{ Math.round(getCurrentLecture.prices[2].common_price_for_one_lecture) }}₽</span>
+										<span class="theButton buttonPrimary buttonOptimal marginAuto" v-else @click="$router.push('/prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].watch_from }} {{ Math.round(getCurrentLecture.prices[2].custom_price_for_one_lecture) }}₽</span>
 									</div>
 									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-if="localRating >= 1" @click="showPopup">Сменить оценку</span>
 									<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" :class="{active: theWatched}" v-else @click="showPopup">Оценить</span>
@@ -345,7 +351,7 @@
 						<div class="userinfo_box" v-if="getCurrentLecture.lector">
 							<a class="userinfo_card" @click=" this.fetchCurrentLector(getCurrentLecture.lector.id), $router.push('/lectors/' + getCurrentLecture.lector.id ), setRouterAnimate">
 								<div class="card_photo_wrap" v-if="getCurrentLecture.lector.photo" :class="{filled: getCurrentLecture.lector.photo}">
-									<img :src="getCurrentLecture.lector.photo ? 'https://api.xn--80axb4d.online/storage/' + getCurrentLecture.lector.photo : ''" alt="lector_photo">
+									<img :src="getCurrentLecture.lector.photo ? 'https://api.roddom15.ru/storage/' + getCurrentLecture.lector.photo : ''" alt="lector_photo">
 								</div>
 								<div class="card_info_wrap">
 									<!-- <span class="card_name">Заполните профиль</span> -->
@@ -376,7 +382,7 @@
 							<label class="inputWrap" :class="{notValid: errors.mess }">
 								<div class="inputBox">
 									<Field ref="feedbackField" v-slot="{ field }" v-model="comment" name="mess">
-										<textarea v-bind="field" name="comment" placeholder="Ваше сообщение"/>
+										<textarea class="fontFamilyR" v-bind="field" name="comment" placeholder="Ваше сообщение"/>
 										<!-- <div v-if="errors[0]">{{errors[0]}}</div> -->
 									</Field>
 									<!-- <Field name="mess" type="textarea" onkeypress="this.value=this.value.substring(0,5)" placeholder="Сообщение" /> -->
@@ -531,7 +537,7 @@ export default defineComponent({
 			}
 		},
 		preRating(value){
-			console.log(value);
+			// console.log(value);
 			this.localRating = Math.round(value)/2;
 		},
 		sendRating(){
@@ -541,15 +547,16 @@ export default defineComponent({
 				}
 				try{
 					setTimeout( async () => {
-						const response = await axios.post(' https://api.xn--80axb4d.online/v1/lecture/' + this.getCurrentLecture.id + '/rate', filterRating, {
+						const response = await axios.post(' https://api.roddom15.ru/v1/lecture/' + this.getCurrentLecture.id + '/rate', filterRating, {
 							headers: {
 								Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							}
 						}).catch(function (error) { if (error.response){} });
 						if(response){
-							console.log(response);
+							// console.log(response);
 							this.thePopup = false;
 							this.notificationMess = this.getInfos.data.app_info[0].thanks_for_rate;
+							
 							setTimeout(() => {
 							this.showNotification = true;
 							}, 400);
@@ -588,7 +595,7 @@ export default defineComponent({
 			// console.log(fiterValues);
 			try{
 				setTimeout( async () => {
-					const response = await axios.post(' https://api.xn--80axb4d.online/v1/lecture/' + this.getCurrentLecture.id + '/feedback', fiterValues, {
+					const response = await axios.post(' https://api.roddom15.ru/v1/lecture/' + this.getCurrentLecture.id + '/feedback', fiterValues, {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}
@@ -701,7 +708,7 @@ export default defineComponent({
 			try{
 				setTimeout( async () => {
 
-					const response = await axios.post('https://api.xn--80axb4d.online/v1/lecture/' + this.getCurrentLecture.id + '/watch', {}, {
+					const response = await axios.post('https://api.roddom15.ru/v1/lecture/' + this.getCurrentLecture.id + '/watch', {}, {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}
@@ -713,7 +720,7 @@ export default defineComponent({
 					// 	'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
 					// 	'Access-Control-Allow-Origin': '*',
 					// };
-					// const response = await axios.post('https://api.xn--80axb4d.online/v1/lecture/' + this.getCurrentLecture.id + '/watch', {}, { headers }
+					// const response = await axios.post('https://api.roddom15.ru/v1/lecture/' + this.getCurrentLecture.id + '/watch', {}, { headers }
 					// );
 
 					// console.log(response);
@@ -723,11 +730,11 @@ export default defineComponent({
 							this.currentLectureLink = 'https://kinescope.io/embed/' + response.data.data['content'];
 							this.setTodayLecture(this.getCurrentLecture.id);
 						}else if(this.getCurrentLecture.content_type.type == 'pdf' || this.getCurrentLecture.content_type.title == 'pdf'){
-							// const pdflink = 'https://xn--80axb4d.online/' + response.data.data['content'];
+							// const pdflink = 'https://roddom15.ru/' + response.data.data['content'];
 							// this.$router.push(pdflink);
 							const pdflink = response.data.data['content'];
 							const anchor = document.createElement('a');
-							anchor.href = 'https://api.xn--80axb4d.online/storage/' + pdflink;
+							anchor.href = 'https://api.roddom15.ru/storage/' + pdflink;
 							// console.log(pdflink);
 							anchor.target="_self";
 							anchor.click();
@@ -770,7 +777,7 @@ export default defineComponent({
 							'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
 							'Access-Control-Allow-Origin': '*',
 						};
-						const response = axios.delete('https://api.xn--80axb4d.online/v1/lecture/' + this.getCurrentLecture.id + '/save', { headers });
+						const response = axios.delete('https://api.roddom15.ru/v1/lecture/' + this.getCurrentLecture.id + '/save', { headers });
 
 						// console.log(response);
 
@@ -799,7 +806,7 @@ export default defineComponent({
 							'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
 							'Access-Control-Allow-Origin': '*',
 						};
-						const response = axios.put('https://api.xn--80axb4d.online/v1/lecture/' + this.getCurrentLecture.id + '/save', {}, { headers });
+						const response = axios.put('https://api.roddom15.ru/v1/lecture/' + this.getCurrentLecture.id + '/save', {}, { headers });
 
 						// console.log(response);
 
@@ -849,7 +856,7 @@ export default defineComponent({
 							'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
 							'Access-Control-Allow-Origin': '*',
 						};
-						const response = axios.delete('https://api.xn--80axb4d.online/v1/lecture/' + this.getCurrentLecture.id + '/list-watch', { headers });
+						const response = axios.delete('https://api.roddom15.ru/v1/lecture/' + this.getCurrentLecture.id + '/list-watch', { headers });
 
 						// console.log(response);
 
@@ -878,7 +885,7 @@ export default defineComponent({
 							'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
 							'Access-Control-Allow-Origin': '*',
 						};
-						const response = axios.put('https://api.xn--80axb4d.online/v1/lecture/' + this.getCurrentLecture.id + '/list-watch', {}, { headers });
+						const response = axios.put('https://api.roddom15.ru/v1/lecture/' + this.getCurrentLecture.id + '/list-watch', {}, { headers });
 
 						// console.log(response);
 
@@ -1009,6 +1016,7 @@ export default defineComponent({
 
 		$route(to, from) {
 			this.fetchCurrentLecture(to.params.id);
+			this.startLecture = false;
       // console.log('To:');
 			// console.log(to.params.id);
 			// console.log('From:');
@@ -1110,6 +1118,12 @@ export default defineComponent({
 						background-position: center;
 						background-image: url('../assets/icons/star-pull.svg');
 						margin: 0 3px;
+						transition: all .28s ease;
+						opacity: 1;
+						cursor: pointer;
+						&:hover{
+							opacity: .92;
+						}
 						&.active{
 							background-image: url('../assets/icons/star.svg');
 						}
@@ -1154,6 +1168,25 @@ export default defineComponent({
 				background-color: #FFF;
 				padding-bottom: 5px;
 				// margin-bottom: 12px;
+			}
+			.kinescope_wrap{
+				.content_box{
+					&.active{
+						.video_iframe_kinescope{
+							opacity: 1;
+							visibility: visible;
+							display: block;
+						}
+						.video_wrap.active{
+							display: none;
+						}
+					}
+					.video_iframe_kinescope{
+						opacity: 0;
+						visibility: hidden;
+						display: none;
+					}
+				}
 			}
 			&.contentCompleteProfile {
 				background-color: #FFF;
@@ -1224,6 +1257,20 @@ export default defineComponent({
 							color: #23292DB2;
 							text-align: center;
 						}
+					}
+				}
+				.video_iframe_kinescope{
+					width: 100%;
+					height: 100%;
+					position: relative;
+					left: 0;
+					top: 0;
+					z-index: 5;
+					opacity: 0;
+					visibility: hidden;
+					iframe{
+						width: 100%;
+						height: 100%;
 					}
 				}
 				.video_wrap{
@@ -1438,7 +1485,7 @@ export default defineComponent({
 				.buttons_wrap{
 					padding: 0 16px 28px;
 					.theButton.setRating{
-						display: block;
+						display: table;
 						margin-top: 6px;
 						height: 0;
 						overflow: hidden;
@@ -1669,6 +1716,9 @@ export default defineComponent({
 						letter-spacing: 0.32px;
 						margin-top: 0;
 						max-width: calc(600px - 32px);
+						font-size: 13px;
+						font-family: unset;
+						// font-family: Manrope, Arial, sans-serif;
 					}
 					textarea:focus, textarea:focus-within, textarea:active, textarea:focus-visible, textarea:target {
 						border: 2px solid #FEABB0;

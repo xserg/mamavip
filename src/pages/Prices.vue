@@ -15,33 +15,43 @@
 
 					<div class="content_box info_box marginB12">
 						<div class="video_wrap">
-							<img class="video_preview" :v-if="getCurrentLecture.preview_picture" :src="getCurrentLecture.preview_picture ? 'https://api.xn--80axb4d.online/storage/' + getCurrentLecture.preview_picture : ''" alt="preview" />
+							<img class="video_preview" v-if="getCurrentLecture.preview_picture && getCurrentLecture.preview_picture !== ''" :src="getCurrentLecture.preview_picture ? 'https://api.roddom15.ru/storage/' + getCurrentLecture.preview_picture : ''" alt="preview" />
 						</div>
 					</div>
 
-					<p>Вы можете приобрести доступ к этому видео на необходимый вам промежуток времени.</p>
+					<p style="text-align:center;">{{ getInfos.data.app_info[0].buy_page_description }}</p>
 					<br>
 					<br>
 					<!-- <span v-if="!getCurrentLecture.prices.price_by_promo && getCurrentLecture.prices.price_by_category && !getCurrentLecture.prices.price_by_promo[0]" @click="buyLecture(this.getInfos.data.app_periods[0])" class="theButton buttonPrimary buttonOptimal marginAuto">Купить {{getInfos.data.app_info[0].tarif_title_1}}: {{ Math.round(getCurrentLecture.prices.price_by_category[0].price_for_lecture) }}₽</span>
 					<span v-if="getCurrentLecture.prices.price_by_promo[0]" @click="buyLecture(this.getInfos.data.app_periods[0])" class="theButton buttonPrimary buttonOptimal marginAuto">Купить {{getInfos.data.app_info[0].tarif_title_1}}: {{ Math.round(getCurrentLecture.prices.price_by_promo[0].price_for_promo_lecture) }}₽</span> -->
 					<!-- <span v-if="!getCurrentLecture.prices.price_by_promo && getCurrentLecture.prices.price_by_category && !getCurrentLecture.prices.price_by_promo[0]" @click="buyLecture(this.getInfos.data.app_periods[0])" class="theButton buttonPrimary buttonOptimal marginAuto">Купить {{getInfos.data.app_info[0].tarif_title_1}}: {{ Math.round(getCurrentLecture.prices.price_by_category[0].price_for_lecture) }}₽</span>
 					<span v-if="getCurrentLecture.prices.price_by_promo[0]" @click="buyLecture(this.getInfos.data.app_periods[0])" class="theButton buttonPrimary buttonOptimal marginAuto">Купить {{getInfos.data.app_info[0].tarif_title_1}}: {{ Math.round(getCurrentLecture.prices.price_by_promo[0].price_for_promo_lecture) }}₽</span> -->
-					<span v-if="getCurrentLecture.prices[0].custom_price_for_one_lecture == null" @click="buyLecture(this.getInfos.data.app_periods[0])" class="theButton buttonSecondary buttonOptimal marginAuto">Купить {{getInfos.data.app_info[0].tarif_title_1}}: {{ Math.round(getCurrentLecture.prices[0].common_price_for_one_lecture) }}₽</span>
-					<span v-else @click="buyLecture(this.getInfos.data.app_periods[0])" class="theButton buttonSecondary buttonOptimal marginAuto">Купить {{getInfos.data.app_info[0].tarif_title_1}}: {{ Math.round(getCurrentLecture.prices[0].custom_price_for_one_lecture) }}₽</span>
-					<br>
+					
+					<span v-if="getCurrentLecture.prices[0].custom_price_for_one_lecture == null" @click="buyLecture(this.getInfos.data.app_periods[0])" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_1}}: {{ Math.round(getCurrentLecture.prices[0].common_price_for_one_lecture) }}₽</span>
+					<span v-else @click="buyLecture(this.getInfos.data.app_periods[0])" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_1}}: {{ Math.round(getCurrentLecture.prices[0].custom_price_for_one_lecture) }}₽</span>
+					<p style="text-align:center;font-size:13px;margin-top:6px;display: block;max-width:380px;margin-left:auto;margin-right:auto;color:#575757">{{ splitedButtonDesc[0] }}<strong>{{getInfos.data.app_periods[0]}}</strong>{{ splitedButtonDesc[1] }}{{ splitedButtonDesc[2] }}{{ splitedButtonDesc[3] }}{{ splitedButtonDesc[4] }} <span v-if="getCurrentLecture.is_promo">Ваша экономия составит {{ getCurrentLecture.prices[0].common_price_for_one_lecture - getCurrentLecture.prices[0].custom_price_for_one_lecture }} рублей</span></p>
 					<br>
 					<div></div>
-					<span v-if="getCurrentLecture.prices[1].custom_price_for_one_lecture == null" @click="buyLecture(this.getInfos.data.app_periods[1])" class="theButton buttonSecondary buttonOptimal marginAuto">Купить {{getInfos.data.app_info[0].tarif_title_2}}: {{ Math.round(getCurrentLecture.prices[1].common_price_for_one_lecture) }}₽</span>
-					<span v-else @click="buyLecture(this.getInfos.data.app_periods[1])" class="theButton buttonSecondary buttonOptimal marginAuto">Купить {{getInfos.data.app_info[0].tarif_title_2}}: {{ Math.round(getCurrentLecture.prices[1].custom_price_for_one_lecture) }}₽</span>
+					
+					<span v-if="getCurrentLecture.prices[1].custom_price_for_one_lecture == null" @click="buyLecture(this.getInfos.data.app_periods[1])" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_2}}: {{ Math.round(getCurrentLecture.prices[1].common_price_for_one_lecture) }}₽</span>
+					<span v-else @click="buyLecture(this.getInfos.data.app_periods[1])" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить {{getInfos.data.app_info[0].tarif_title_2}}: -->{{ Math.round(getCurrentLecture.prices[1].custom_price_for_one_lecture) }}₽</span>
+					<p style="text-align:center;font-size:13px;margin-top:6px;display: block;max-width:380px;margin-left:auto;margin-right:auto;color:#575757">{{ splitedButtonDesc[0] }}<strong>{{getInfos.data.app_periods[1]}}</strong>{{ splitedButtonDesc[1] }}{{ splitedButtonDesc[2] }}{{ splitedButtonDesc[3] }}{{ splitedButtonDesc[4] }} <span v-if="getCurrentLecture.is_promo">Ваша экономия составит {{ getCurrentLecture.prices[1].common_price_for_one_lecture - getCurrentLecture.prices[1].custom_price_for_one_lecture }} рублей</span></p>
 					<br>
-					<br>
-					<span v-if="getCurrentLecture.prices[2].custom_price_for_one_lecture == null" @click="buyLecture(this.getInfos.data.app_periods[2])" class="theButton buttonSecondary buttonOptimal marginAuto">Купить {{getInfos.data.app_info[0].tarif_title_3}}: {{ Math.round(getCurrentLecture.prices[2].common_price_for_one_lecture) }}₽</span>
-					<span v-else @click="buyLecture(this.getInfos.data.app_periods[2])" class="theButton buttonSecondary buttonOptimal marginAuto">Купить {{getInfos.data.app_info[0].tarif_title_3}}: {{ Math.round(getCurrentLecture.prices[2].custom_price_for_one_lecture) }}₽</span>
+					
+					<span v-if="getCurrentLecture.prices[2].custom_price_for_one_lecture == null" @click="buyLecture(this.getInfos.data.app_periods[2])" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_3}}: {{ Math.round(getCurrentLecture.prices[2].common_price_for_one_lecture) }}₽</span>
+					<span v-else @click="buyLecture(this.getInfos.data.app_periods[2])" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_3}}: {{ Math.round(getCurrentLecture.prices[2].custom_price_for_one_lecture) }}₽</span>
+					<p style="text-align:center;font-size:13px;margin-top:6px;display: block;max-width:380px;margin-left:auto;margin-right:auto;color:#575757">{{ splitedButtonDesc[0] }}<strong>{{getInfos.data.app_periods[2]}}</strong>{{ splitedButtonDesc[1] }}{{ splitedButtonDesc[2] }}{{ splitedButtonDesc[3] }}{{ splitedButtonDesc[4] }} <span v-if="getCurrentLecture.is_promo">Ваша экономия составит {{ getCurrentLecture.prices[2].common_price_for_one_lecture - getCurrentLecture.prices[2].custom_price_for_one_lecture }} рублей</span></p>
 					<!-- <span v-if="!getCurrentLecture.prices.price_by_promo && getCurrentLecture.prices.price_by_category && !getCurrentLecture.prices.price_by_promo[2]" @click="buyLecture(this.getInfos.data.app_periods[2])" class="theButton buttonSecondary buttonOptimal marginAuto">Купить {{getInfos.data.app_info[0].tarif_title_3}}: {{ Math.round(getCurrentLecture.prices.price_by_category[2].price_for_lecture) }}₽</span>
 					<span v-if="getCurrentLecture.prices.price_by_promo[2]" @click="buyLecture(this.getInfos.data.app_periods[2])" class="theButton buttonSecondary buttonOptimal marginAuto">Купить {{getInfos.data.app_info[0].tarif_title_3}}: {{ Math.round(getCurrentLecture.prices.price_by_promo[2].price_for_promo_lecture) }}₽</span> -->
 					<br>
 
+
 					<!-- <a ref="activeLinkButton" class="activeBuyButton" :href="this.activeLink" target="_blank">Покупка</a> -->
+				</div>
+
+				<div class="usebabyconins_wrap" :class="{active: useBabyconins}" @click="switchBabyconins">
+					<div class="checkbox_wrap"><!-- <input type="checkbox" name="yes_babycoins" class="checkbox" checked> --></div>
+					<div class="the_title">На балансе <span style="font-weight:600;">{{ getCurrUser.user.ref.points_available }} бебикоинов</span>, использовать имеющиеся при оплате материалов.</div>
 				</div>
 
 			</div>
@@ -84,6 +94,9 @@ export default {
 		return{
 			// hasElements: false,
 			activeLink: '',
+			splitedButtonDesc: '',
+			splitedEconomyDesc: '',
+			useBabyconins: false,
 		}
 	},
 
@@ -104,7 +117,11 @@ export default {
 						'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
 						'Access-Control-Allow-Origin': '*',
 					};
-					const response = await axios.post('https://api.xn--80axb4d.online/v1/lecture/' + this.getCurrentLecture.id + '/buy/' + time, {}, { headers });
+					if(this.useBabyconins && this.getCurrUser.user.ref.points_available > 0){
+						var response = await axios.post('https://api.roddom15.ru/v1/lecture/' + this.getCurrentLecture.id + '/buy/' + time, {ref_points: this.getCurrUser.user.ref.points_available}, { headers });
+					}else{
+						var response = await axios.post('https://api.roddom15.ru/v1/lecture/' + this.getCurrentLecture.id + '/buy/' + time, {}, { headers });
+					}
 					
 					if(response){
 						window.open(response.data.link,"_self");
@@ -124,7 +141,7 @@ export default {
 		loadStaticInfo(){
       try{
         setTimeout( async () => {
-          const responseInfos = await axios.get('https://api.xn--80axb4d.online/v1/app/info', {
+          const responseInfos = await axios.get('https://api.roddom15.ru/v1/app/info', {
             headers: {
               Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
             }
@@ -134,7 +151,24 @@ export default {
       }
       catch(e){} 
       finally {}
-    }
+    },
+
+
+		splitDesc(buttonDesc){
+			this.splitedButtonDesc = buttonDesc.split('x');
+		},
+
+		splitEconomy(economyDesc){
+			this.splitedEconomyDesc = economyDesc.split('x');
+		},
+
+		switchBabyconins(){
+			if(this.useBabyconins){
+				this.useBabyconins = false;
+			}else{
+				this.useBabyconins = true;
+			}
+		},
 
 
 		
@@ -155,6 +189,8 @@ export default {
 
 	mounted(){
 		this.loadStaticInfo();
+		this.splitDesc(this.getInfos.data.app_info[0].buy_page_under_btn_description);
+		this.splitEconomy(this.getInfos.data.app_info[0].your_profit_is_roubles);
 	}
 }
 </script>
@@ -177,6 +213,56 @@ export default {
 		}
 		.contentSubWrap{
 			padding: 32px 16px;
+			.usebabyconins_wrap{
+				margin-top: 20px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				transition: all .26s ease;
+				cursor: pointer;
+				&:hover{
+					opacity: .92;
+				}
+				&.active .checkbox_wrap::before{
+					opacity: 1;
+				}
+				.checkbox_wrap{
+					display: block;
+					position: relative;
+					width: 15px;
+					height: 15px;
+					min-width: 15px;
+					border-radius: 4px;
+					background-color: #FFEAEB;
+					border: 1px solid #f9b2b7;
+					margin-right: 8px;
+					&::before{
+						opacity: 0;
+						transition: all .14s ease;
+						content: '';
+						display: block;
+						width: 100%;
+						height: 100%;
+						top: 0;
+						left: 0;
+						position: absolute;
+						background-image: url('../assets/icons/done2.svg');
+						background-repeat: no-repeat;
+						background-position: center;
+						background-size: contain;
+					}
+					// input{
+					// 	width: 0;
+					// 	height: 0;
+					// }
+				}
+				.the_title{
+					line-height: 125%;
+					display: block;
+					font-size: 13px;
+					color: rgb(87, 87, 87);
+				}
+			}
 			p{
 				line-height: 150%;
 			}

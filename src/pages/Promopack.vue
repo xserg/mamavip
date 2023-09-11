@@ -19,7 +19,8 @@
 				<div class="infoWrap">
 					<h2>Наша акционная подборка видео для Вас</h2>
 					<p>Вы можете приобрести все видео разом из текущего раздела по специальной цене, а также каждое отдельное видео!</p>
-					<span class="theButton buttonPrimary buttonOptimal marginAuto marginB12" @click="$router.push('/category_prices/'), setRouterAnimate()">Купить от {{ this.getPromopack.prices[0].price }}₽</span>
+					<!-- <span class="theButton buttonPrimary buttonOptimal marginAuto marginB12" @click="$router.push('/category_prices/'), setRouterAnimate()">Купить от {{ this.getPromopack.prices[0].price }}₽</span> -->
+					<span class="theButton buttonPrimary buttonOptimal marginAuto marginB12" @click="$router.push('/promopack_prices/'), setRouterAnimate()">Купить все акционные материалы со скидкой</span>
 				</div>
 			</div>
 
@@ -81,7 +82,7 @@ export default {
 		loadStaticInfo(){
 			try{
 				setTimeout( async () => {
-					const responseInfos = await axios.get('https://api.xn--80axb4d.online/v1/app/info', {
+					const responseInfos = await axios.get('https://api.roddom15.ru/v1/app/info', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}

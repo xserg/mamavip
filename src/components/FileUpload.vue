@@ -152,7 +152,7 @@ export default {
 				if(newPhoto.includes('data:image')){
 					this.localPhoto = newPhoto;
 				}else{
-					this.localPhoto = 'https://api.xn--80axb4d.online/storage/' + newPhoto + '?' + Date.now();
+					this.localPhoto = 'https://api.roddom15.ru/storage/' + newPhoto + '?' + Date.now();
 				}
 			}
 		},
@@ -193,7 +193,7 @@ export default {
 					formdata.append("photo", thePhoto, 'photo.jpg');
 					formdata.append('_method', 'PUT');
 
-					const response = await axios.post('https://api.xn--80axb4d.online/v1/user/photo', formdata, {
+					const response = await axios.post('https://api.roddom15.ru/v1/user/photo', formdata, {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							'Content-Type': 'multipart/form-data',
@@ -220,7 +220,7 @@ export default {
 			}else{
 				setTimeout( async () => {
 
-					const response = await axios.delete('https://api.xn--80axb4d.online/v1/user/photo', {
+					const response = await axios.delete('https://api.roddom15.ru/v1/user/photo', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							'Content-Type': 'multipart/form-data',
@@ -239,7 +239,7 @@ export default {
 					// formdata.append("photo", thePhoto);
 					// formdata.append('_method', 'PUT');
 
-					// const response = await axios.post('https://api.xn--80axb4d.online/v1/user/photo', formdata, {
+					// const response = await axios.post('https://api.roddom15.ru/v1/user/photo', formdata, {
 					// 	headers: {
 					// 		Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 					// 		'Content-Type': 'multipart/form-data',
@@ -351,7 +351,7 @@ export default {
 								if(reader.result.includes('data:image')){
 									this.localPhoto = reader.result;
 								}else{
-									this.localPhoto = 'https://api.xn--80axb4d.online/storage/' + reader.result + '?' + Date.now();
+									this.localPhoto = 'https://api.roddom15.ru/storage/' + reader.result + '?' + Date.now();
 								}
 							}
 							

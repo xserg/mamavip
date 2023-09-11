@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://api.xn--80axb4d.online/v1/user/';
+const API_URL = 'https://api.roddom15.ru/v1/user/';
 
 class AuthService {
   login(user) {

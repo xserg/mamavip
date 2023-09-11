@@ -78,6 +78,7 @@ export default {
 		justify-content: flex-start;
 		.contentSubWrap{
 			padding: 32px 16px;
+			width: 100%;
 			p{
 				line-height: 150%;
 			}

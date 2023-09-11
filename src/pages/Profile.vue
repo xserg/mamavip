@@ -31,7 +31,7 @@
 					<div class="userinfo_box" v-else>
 						<div class="userinfo_card">
 							<div v-if="this.getCurrUser.user.photo_small" class="card_photo_wrap filled">
-								<img :src="this.getCurrUser.user.photo_small ? 'https://api.xn--80axb4d.online/storage/' + this.getCurrUser.user.photo_small + '?' + Date.now() : ''" alt="profile_image">
+								<img :src="this.getCurrUser.user.photo_small ? 'https://api.roddom15.ru/storage/' + this.getCurrUser.user.photo_small + '?' + Date.now() : ''" alt="profile_image">
 							</div>
 							<span v-else class="card_photo_wrap"></span>
 							<div class="card_info_wrap">
@@ -92,10 +92,38 @@
 				</div>
 
 				<div class="moreinfo_wrap midWrap marginB12">
+					<router-link class="link_button" to="/profile/partner" @click="setRouterAnimate">
+						<div class="left_wrap">
+							<span class="the_icon partner_icon"></span>
+							<span class="the_title">Партнерская программа</span>
+						</div>
+						<span class="the_count"></span>
+					</router-link>
+					<router-link class="link_button" to="/form" @click="setRouterAnimate">
+						<div class="left_wrap">
+							<span class="the_icon info_icon"></span>
+							<span class="the_title">Мой План родов</span>
+						</div>
+						<span class="the_count"></span>
+					</router-link>
 					<router-link class="link_button" to="/profile/help" @click="setRouterAnimate">
 						<div class="left_wrap">
 							<span class="the_icon help_icon"></span>
 							<span class="the_title">Помощь</span>
+						</div>
+						<span class="the_count"></span>
+					</router-link>
+					<router-link class="link_button" to="/profile/notifications" @click="setRouterAnimate">
+						<div class="left_wrap">
+							<span class="the_icon help_icon"></span>
+							<span class="the_title">История оповещений</span>
+						</div>
+						<span class="the_count"></span>
+					</router-link>
+					<router-link class="link_button" to="/profile/support" @click="setRouterAnimate">
+						<div class="left_wrap">
+							<span class="the_icon info_icon"></span>
+							<span class="the_title">Поддержка</span>
 						</div>
 						<span class="the_count"></span>
 					</router-link>
@@ -246,7 +274,7 @@ export default {
 			try{
 				setTimeout( () => {
 					const response = 
-						axios.put('https://api.xn--80axb4d.online/v1/user/profile', user, {
+						axios.put('https://api.roddom15.ru/v1/user/profile', user, {
 							headers: {
 								Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 								'Content-Type': 'application/json',
@@ -331,7 +359,7 @@ export default {
 				setTimeout( () => {
 					// console.log('Запустили выход из системы');
 					const response = 
-						axios.delete('https://api.xn--80axb4d.online/v1/user/logout', {
+						axios.delete('https://api.roddom15.ru/v1/user/logout', {
 							headers: {
 								Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 								'Content-Type': 'application/json',
@@ -511,6 +539,9 @@ export default {
 					}
 					&.help_icon{
 						background-image: url('../assets/icons/profile-help.svg');
+					}
+					&.partner_icon{
+						background-image: url('../assets/icons/profile-partner.svg');
 					}
 					&.info_icon{
 						background-image: url('../assets/icons/profile-info.svg');

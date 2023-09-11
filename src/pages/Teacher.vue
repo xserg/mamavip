@@ -76,7 +76,7 @@
 					<!-- @click="handleClickY($event)" -->
 						<div class="the_slide_box"
 						> 
-							<img :src="post.preview_picture ? 'https://api.xn--80axb4d.online/storage/' + post.preview_picture : ''" alt="element">
+							<img :src="post.preview_picture ? 'https://api.roddom15.ru/storage/' + post.preview_picture : ''" alt="element">
 						</div>
 					</div>
 				</agile>
@@ -87,7 +87,7 @@
 			<div class="contentSubWrap" v-if="!loadingStatus && getCurrentLector.id && !currLoadingStatus && this.getInfos">
 
 				<div class="photo_wrap topWrap marginB12">
-					<img v-if="getCurrentLector.photo" class="the_photo blockWrap the_photo_has" :src="getCurrentLector.photo ? 'https://api.xn--80axb4d.online/storage/' + getCurrentLector.photo : ''" >
+					<img v-if="getCurrentLector.photo" class="the_photo blockWrap the_photo_has" :src="getCurrentLector.photo ? 'https://api.roddom15.ru/storage/' + getCurrentLector.photo : ''" >
 					<span v-else class="the_photo theButton buttonTransparent blockWrap"></span>
 
 					<!-- Средняя общая оценка: <span class="the_status rating" :class="{active: getCurrentLector.rates.rate_user !== null}" v-if="getCurrentLector.rates.rate_avg !== null ">{{ Number(getCurrentLector.rates.rate_avg/2).toFixed(1) + '/' + 10/2  }}</span> -->
@@ -135,7 +135,7 @@
 								@click="handleClick(index, $event)"
 							>
 								<div class="the_element_box"> 
-									<img :src="post.preview_picture ? 'https://api.xn--80axb4d.online/storage/' + post.preview_picture : ''" alt="element">
+									<img :src="post.preview_picture ? 'https://api.roddom15.ru/storage/' + post.preview_picture : ''" alt="element">
 								</div>
 							</div>
 						</agile>
@@ -331,7 +331,7 @@ export default {
 				}
 				try{
 					setTimeout( async () => {
-						const response = await axios.post('https://api.xn--80axb4d.online/v1/lector/' + this.getCurrentLector.id + '/rate', filterRating, {
+						const response = await axios.post('https://api.roddom15.ru/v1/lector/' + this.getCurrentLector.id + '/rate', filterRating, {
 							headers: {
 								Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							}

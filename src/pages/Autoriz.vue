@@ -79,7 +79,7 @@
 				<div class="topLine flexWrap">
 					<span class="theButton leftButton buttonBack" @click="loginStep"></span>
 					<h1 class="theTitle alignCenter">Восстановить пароль</h1>
-					<button class="theButton rightButton buttonTransparent fontFamilyB">Далее</button>
+					<span class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</span>
 				</div>
 
 				<div class="contentSubWrap">
@@ -95,6 +95,7 @@
 							</div>
 								<ErrorMessage class="errorTitle" name="email" />
 						</label>
+						<button class="theButton buttonOptimal marginAuto buttonPrimary fontFamilyB marginB20" style="margin-bottom:32px;margin-top:20px">Далее</button>
 					</div>
 				</div>
 			
@@ -125,7 +126,7 @@
 				<div class="topLine flexWrap">
 					<span class="theButton leftButton buttonBack" @click="forgotStep"></span>
 					<h1 class="theTitle alignCenter">Восстановить пароль</h1>
-					<button class="theButton rightButton buttonTransparent fontFamilyB">Далее</button>
+					<span class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</span>
 				</div>
 
 				<div class="contentSubWrap">
@@ -136,14 +137,15 @@
 						<label class="inputWrap" :class="{notValid: errors.code }">
 							<span class="label">Код</span>
 							<div class="inputBox">
-								<Field ref="forgotCodeInput" name="code" type="number" onkeypress="this.value=this.value.substring(0,5)" placeholder="123456" />
+								<Field ref="forgotCodeInput" name="code" type="number" onkeypress="this.value=this.value.substring(0,11)" placeholder="123456" />
 							</div>
 								<ErrorMessage class="errorTitle" name="code" />
 						</label>
+						<button class="theButton buttonOptimal marginAuto buttonPrimary fontFamilyB marginB20" style="margin-bottom:42px;margin-top:12px">Далее</button>
 					</div>
 
 					<div class="infoWrap">
-						<span class="theButton buttonWhite" :class="{disabled: !this.resendCode }" @click="onResendCode">Запросить код повторно <b :class="{hiddenWrap: this.resendCode }">{{this.timer.minutes}}:{{this.timer.seconds.value < 10 ? '0' + this.timer.seconds.value : this.timer.seconds}}</b></span>
+						<span class="theButton buttonWhite buttonOptimal" :class="{disabled: !this.resendCode }" @click="onResendCode">Запросить код повторно <b :class="{hiddenWrap: this.resendCode }">{{this.timer.minutes}}:{{this.timer.seconds.value < 10 ? '0' + this.timer.seconds.value : this.timer.seconds}}</b></span>
 						<p class="fontSize12 alignCenter">Проверьте папку «Спам», если не видите письма</p>
 					</div>
 
@@ -195,7 +197,7 @@
 				<div class="topLine flexWrap">
 					<span class="theButton leftButton buttonBack" @click="loginStep"></span>
 					<h1 class="theTitle alignCenter">Аутентификация профиля</h1>
-					<button class="theButton rightButton buttonTransparent fontFamilyB">Далее</button>
+					<span class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</span>
 				</div>
 
 				<div class="contentSubWrap">
@@ -206,14 +208,15 @@
 						<label class="inputWrap" :class="{notValid: errors.code2 }">
 							<span class="label">Код</span>
 							<div class="inputBox">
-								<Field ref="forgotCodeInput2" name="code2" type="number" onkeypress="this.value=this.value.substring(0,5)" placeholder="123456" />
+								<Field ref="forgotCodeInput2" name="code2" type="number" onkeypress="this.value=this.value.substring(0,11)" placeholder="123456" />
 							</div>
 								<ErrorMessage class="errorTitle" name="code2" />
 						</label>
+						<button class="theButton buttonOptimal marginAuto buttonPrimary fontFamilyB marginB20" style="margin-bottom:32px;margin-top:20px">Далее</button>
 					</div>
 
 					<div class="infoWrap">
-						<span class="theButton buttonWhite" :class="{disabled: !this.resendCode2 }" @click="onResendCode2">Запросить код повторно <b :class="{hiddenWrap: this.resendCode2 }">{{this.timer.minutes}}:{{this.timer.seconds.value < 10 ? '0' + this.timer.seconds.value : this.timer.seconds}}</b></span>
+						<span class="theButton buttonWhite buttonOptimal" :class="{disabled: !this.resendCode2 }" @click="onResendCode2">Запросить код повторно <b :class="{hiddenWrap: this.resendCode2 }">{{this.timer.minutes}}:{{this.timer.seconds.value < 10 ? '0' + this.timer.seconds.value : this.timer.seconds}}</b></span>
 						<p class="fontSize12 alignCenter">Проверьте папку «Спам», если не видите письма</p>
 					</div>
 
@@ -235,7 +238,7 @@
 				<div class="topLine flexWrap">
 					<span class="theButton leftButton buttonGhost"></span>
 					<h1 class="theTitle alignCenter">Новый пароль</h1>
-					<button class="theButton rightButton buttonTransparent fontFamilyB">Готово</button>
+					<span class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Готово</span>
 				</div>
 
 				<div class="contentSubWrap">
@@ -259,6 +262,7 @@
 							</div>
 							<ErrorMessage class="errorTitle" name="confirm_newpass" />
 						</label>
+						<button class="theButton buttonOptimal marginAuto buttonPrimary fontFamilyB marginB20" style="margin-bottom:32px;margin-top:20px">Готово</button>
 					</div>
 				</div>
 			
@@ -367,10 +371,10 @@ export default defineComponent({
       email: yup.string().required('Пожалуйста, заполните это поле').email('Пожалуйста, введите корректный email').typeError('Поле Email обязателен').label('Email'),
 		});
 		const schema_code = yup.object({
-      code: yup.string().required('Введите код подтверждения').min(6, 'Код должен состоять из 6 символов').max(6, 'Код должен состоять из 6 символов').typeError().label('Код из письма'),
+      code: yup.string().required('Введите код подтверждения').min(6, 'Код должен состоять из 6 символов').max(12, 'Код должен состоять из 6 символов').typeError().label('Код из письма'),
 		});
 		const schema_code2 = yup.object({
-      code2: yup.string().required('Введите код подтверждения').min(6, 'Код должен состоять из 6 символов').max(6, 'Код должен состоять из 6 символов').typeError().label('Код из письма'),
+      code2: yup.string().required('Введите код подтверждения').min(6, 'Код должен состоять из 6 символов').max(12, 'Код должен состоять из 6 символов').typeError().label('Код из письма'),
 		});
 		const schema_newpass = yup.object({
       newpass: yup.string().required('Пожалуйста, заполните это поле').min(8, 'Поле должно содержать не менее 8 символов').label('Пароль'),
@@ -433,7 +437,7 @@ export default defineComponent({
 			// this.fetchAuth(user);
 			try{
 				setTimeout( async () => {
-					const response = await axios.post('https://api.xn--80axb4d.online/v1/user/login', this.cacheUserData).catch(function (error) { if (error.response){} });
+					const response = await axios.post('https://api.roddom15.ru/v1/user/login', this.cacheUserData).catch(function (error) { if (error.response){} });
 					if(response){
 						// console.log(response);
 						this.notificationMessage = response.data.message;
@@ -451,7 +455,7 @@ export default defineComponent({
 
 						// this.setAuthIn(response.data);
 						// setTimeout( async () => {
-						// const responseInfos = await axios.get('https://api.xn--80axb4d.online/v1/app/info', {
+						// const responseInfos = await axios.get('https://api.roddom15.ru/v1/app/info', {
 						// 		headers: {
 						// 			Authorization: response.data.token_type + ' ' + response.data.access_token,
 						// 		}
@@ -473,7 +477,7 @@ export default defineComponent({
 					// this.setCurUserContent(response.data);
 				}, 50 );
 
-				// const responseInfos = axios.get('https://api.xn--80axb4d.online/v1/app/info', {
+				// const responseInfos = axios.get('https://api.roddom15.ru/v1/app/info', {
 				// 	headers: {
 				// 		Authorization: user.token_type + ' ' + user.access_token,
 				// 	}
@@ -531,7 +535,7 @@ export default defineComponent({
 			try{
 				setTimeout( async () => {
 					// console.log('Запрос на КОД');
-					const response = await axios.post('https://api.xn--80axb4d.online/v1/password/forgot', this.curResetValues).catch(function (error) { if (error.response){} });
+					const response = await axios.post('https://api.roddom15.ru/v1/password/forgot', this.curResetValues).catch(function (error) { if (error.response){} });
 					// console.log(response);
 					if(response){
 						setTimeout(() => {
@@ -576,7 +580,7 @@ export default defineComponent({
 					setTimeout( async () => {
 						// console.log('Повторный запрос на КОД');
 						const response = 
-							await axios.post('https://api.xn--80axb4d.online/v1/user/login', this.cacheUserData).catch(function (error) { if (error.response){} });
+							await axios.post('https://api.roddom15.ru/v1/user/login', this.cacheUserData).catch(function (error) { if (error.response){} });
 						// console.log(response);
 						if(response){
 							setTimeout(() => {
@@ -626,20 +630,46 @@ export default defineComponent({
 			try{
 				setTimeout( async () => {
 					this.curResetCode2 = values.code;
+					var device = navigator.platform;	
+					var deviceMemory = navigator.deviceMemory;
+					var language = navigator.language;
+					var hardwareConcurrency = navigator.hardwareConcurrency;
+
+					if(device && device !== ''){
+						var filterDevice = device;
+					}else{
+						var filterDevice = 'Unknown ';
+					}
+
+					if(deviceMemory && deviceMemory !== ''){
+						var filterDevice = filterDevice + ' Memory ' + deviceMemory;
+					}
+
+					if(hardwareConcurrency && hardwareConcurrency !== ''){
+						var filterDevice = filterDevice + ' CPU '+ hardwareConcurrency;
+					}
+
+					if(language && language !== ''){
+						var filterDevice = filterDevice + ' Lang '+ language;
+					}
+					
+
+
 					const filterCode = {
 						code: values.code2,
+						device_name: filterDevice,
 					};
 					// console.log(filterCode);
 					// console.log('Отправка кода на сброс пароля');
 					const response = 
-						await axios.post('https://api.xn--80axb4d.online/v1/user/login/code', filterCode).catch(function (error) { if (error.response){  } });
+						await axios.post('https://api.roddom15.ru/v1/user/login/code', filterCode).catch(function (error) { if (error.response){  } });
 					// console.log(response);
 					if(response){
 						this.$refs.forgotCodeInput2.reset();
 						// this.showErrors = true;
 						this.setAuthIn(response.data);
 						setTimeout( async () => {
-						const responseInfos = await axios.get('https://api.xn--80axb4d.online/v1/app/info', {
+						const responseInfos = await axios.get('https://api.roddom15.ru/v1/app/info', {
 								headers: {
 									Authorization: response.data.token_type + ' ' + response.data.access_token,
 								}
@@ -678,7 +708,7 @@ export default defineComponent({
 					setTimeout( async () => {
 						// console.log('Повторный запрос на КОД');
 						const response = 
-							await axios.post('https://api.xn--80axb4d.online/v1/password/forgot', this.curResetValues).catch(function (error) { if (error.response){} });
+							await axios.post('https://api.roddom15.ru/v1/password/forgot', this.curResetValues).catch(function (error) { if (error.response){} });
 						// console.log(response);
 						if(response){
 							setTimeout(() => {
@@ -701,7 +731,6 @@ export default defineComponent({
 							}, 3000);
 						}
 						
-
 					}, 50 );
 				} catch(e){
 					// console.log(e);
@@ -730,7 +759,7 @@ export default defineComponent({
 					this.curResetCode = values.code;
 					// console.log('Отправка кода на сброс пароля');
 					const response = 
-						await axios.post('https://api.xn--80axb4d.online/v1/password/check', values).catch(function (error) { if (error.response){} });
+						await axios.post('https://api.roddom15.ru/v1/password/check', values).catch(function (error) { if (error.response){} });
 					// console.log(response);
 					if(response){
 						this.$refs.forgotCodeInput.reset();
@@ -768,7 +797,7 @@ export default defineComponent({
 					// console.log(params);
 
 					const response = 
-						await axios.post('https://api.xn--80axb4d.online/v1/password/reset', params).catch(function (error) { if (error.response){} });
+						await axios.post('https://api.roddom15.ru/v1/password/reset', params).catch(function (error) { if (error.response){} });
 					// console.log(response);
 					if(response){
 						this.curStep = 'auth_login';
@@ -801,6 +830,21 @@ export default defineComponent({
 			this.showNotification = false;
 		},
 
+		checkReferal(){
+
+			const urlPath = window.location.search;
+			var refFilter = '';
+			const urlParams = new URLSearchParams(urlPath);
+			if( urlParams.has('ref') ){
+					refFilter = urlParams.get('ref');
+			}
+			
+			if(refFilter && refFilter !== ''){
+				this.setRegPage();
+			}
+
+		},
+
 	},
 
 	computed:{
@@ -825,9 +869,10 @@ export default defineComponent({
   },
 
 
-	// mounted(){
-	// 	this.setTimes();
-	// },
+	mounted(){
+		this.checkReferal();
+		// this.setTimes();
+	},
 
 
 	// watch:{

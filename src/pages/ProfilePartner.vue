@@ -10,25 +10,25 @@
 					</div>
 				</div>
 
-			<div class="topLine flexWrap">
-				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
-				<h1 class="theTitle alignCenter">О приложении</h1>
-				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
-			</div>
-
-
 			<div class="topLine flexWrap popupWrap" v-if="popupInfo && !getLoadingStatus && this.getInfos.data">
 				<a @click="switchPopupInfo(false)" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">{{ this.getInfos.data.app_info[0].app_show_qr_title }}</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div> 
 
+			<div class="topLine flexWrap">
+				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
+				<h1 class="theTitle alignCenter">Партнерская программа</h1>
+				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
+			</div>
+
+
 			<div class="contentSubWrap popupWrap" v-if="popupInfo && !getLoadingStatus && this.getInfos.data">
 				<div class="infoWrap">
 					<!-- <h2>{{ this.getCurrentFaq.title }}</h2> -->
 					<!-- <img :src="this.getInfos.data.app_info[0].app_show_qr_link ? 'https://api.roddom15.ru/storage/' + this.getInfos.data.app_info[0].app_show_qr_link : '' "/> -->
 					<div class="qr_wrap" v-html="this.getCurrUser.user.ref.ref_link_qr"/>
-					<span class="share_qr" @click="shareQR()">Поделиться</span>
+					<span class="share_qr">Поделиться</span>
 				</div>
 			</div>
 
@@ -41,28 +41,43 @@
 
 			<div class="contentSubWrap" v-if="!getLoadingStatus && this.getInfos.data">
 				<div class="title_wrap topWrap marginB12 flexWrap">
+					<div class="img_wrap">
+						<img class="the_img" v-if="this.getInfos.data.app_info[0].ref_system_preview_picture" :src="this.getInfos.data.app_info[0].ref_system_preview_picture  ? 'https://api.roddom15.ru/storage/' + this.getInfos.data.app_info[0].ref_system_preview_picture : ''" alt="subcategory_image" />
+					</div>
 					<!-- <span class="the_title fontSize20 fontFamilyEB">{{ this.getInfos.data.app_info[0].app_title }}</span> -->
-					<span class="the_subtitle fontSize32 fontFamilyEB">{{ this.getInfos.data.app_info[0].app_title }}</span>
+					<span class="the_subtitle fontSize20 fontFamilyEB">{{ this.getInfos.data.app_info[0].ref_system_title }}</span>
+					<div class="info_wrap" v-html="this.getInfos.data.app_info[0].ref_system_description"></div>
 				</div>
-				<div class="info_wrap marginB12 midWrap" v-html="this.getInfos.data.app_info[0].about_app" />
+				<!-- <div class="info_wrap marginB12 midWrap" v-html="this.getInfos.data.app_info[0].ref_system_description" /> -->
 					<!-- <p>{{ this.getInfos.data.app_info[0].about_app }}</p>
 				</div> -->
-				<div class="author_wrap marginB12 midWrap">
-					<span class="the_title fontSize14">Автор</span>
-					<span class="the_value fontFamilyEB">{{ this.getInfos.data.app_info[0].app_author_name }}</span>
-				</div>
-				<div class="links_wrap bottomWrap">
-					<!-- <div class="link_wrap" @click="copyLink"> -->
+
+				<div class="info_wrap links_wrap marginB12 midWrap">
 					<div class="link_wrap" @click="copyReferal">
-						<span class="the_title fontSize14">{{ this.getInfos.data.app_info[0].app_link_share_title }}</span>
-						<span id="linkforcopy" class="the_value fontFamilyEB">{{ this.getInfos.data.app_info[0].app_link_share_link }}</span>
+						<span class="the_title fontSize14">Ссылка на партнерскую программу</span>
+						<span class="the_value fontFamilyEB">https://roddom15.ru/</span>
 					</div>
-					<!-- this.getInfos.data.app_info[0].app_link_share_link -->
 					<div class="link_wrap the_qr" @click="switchPopupInfo(true)">
-						<span class="the_title fontSize14">{{ this.getInfos.data.app_info[0].app_show_qr_title }}</span>
+						<span class="the_title fontSize14">QR-код на партнерскую программу</span>
 						<span class="the_value fontFamilyEB">{{ this.getInfos.data.app_info[0].app_link_share_link }}</span>
 					</div>
 				</div>
+
+				
+				<div class="info_wrap referal_wrap bottomWrap">
+
+					<span class="the_title the_main blockWrap currBalance fontSize16 fontFamilyEB">Детали</span>
+
+					<div class="the_title blockWrap currBalance">Ваш баланс: <span class="fontFamilyB">{{ getCurrUser.user.ref.points_available }} бебикоинов</span></div>
+					<div class="the_title blockWrap currReferal">Приглашено пользователей: <span class="fontFamilyB">{{ getCurrUser.user.ref.referrals_count }}</span></div>
+					<div class="the_title blockWrap currSubReferal marginB20" style="margin-bottom:30px;">Всего приглашено по программе: <span class="fontFamilyB">{{ getCurrUser.user.ref.referrals_of_referrals_count }}</span></div>
+
+					<!-- <span class="theButton buttonPrimary buttonOptimal fontSize14" @click="copyReferal">Скопировать партнерскую ссылку</span> -->
+					<!-- <div class="link_wrap" @click="copyReferal"></div> -->
+				</div>
+
+
+				
 			</div>
 
 			<!-- <bottom-line></bottom-line> -->
@@ -73,10 +88,11 @@
 
 <script>
 // @ is an alias to /src
+import axios from 'axios';
 import {mapGetters, mapMutations, mapActions} from 'vuex';
 
 export default {
-  name: 'ProfileAbout',
+  name: 'ProfilePartner',
 
 	data(){
 		return{
@@ -98,53 +114,8 @@ export default {
 			fetchInfos: 'fetchInfos',
 		}),
 
-
-		shareQR() {
-      // iife here
-			const response = fetch('https://api.roddom15.ru/storage/' + this.getInfos.data.app_info[0].app_show_qr_link);
-			const blob = response.blob();
-			const filesArray = [
-				new File(
-					[blob],
-					'qr.jpg',
-					{
-						type: "image/jpeg",
-						lastModified: new Date().getTime()
-					}
-			)
-			];
-			const shareData = {
-				files: filesArray,
-			};
-			navigator.share(shareData);
-
-    },
-
-		copyLink(){
-			if (navigator.share) {
-				navigator.share({
-					title: 'roddom15.ru',
-					text: 'Школа "Мам и Пап"',
-					url: 'https://roddom15.ru/',
-				});
-				setTimeout(() => {
-					this.showNotification = true;
-					this.notificationMess = 'Скопировано'
-				}, 400);
-				setTimeout(() => {
-					this.showNotification = false;
-				}, 3000);
-			}else{
-				const copyText = document.getElementById("linkforcopy").textContent;
-      	navigator.clipboard.writeText(copyText);
-				setTimeout(() => {
-					this.showNotification = true;
-					this.notificationMess = 'Скопировано'
-				}, 400);
-				setTimeout(() => {
-					this.showNotification = false;
-				}, 3000);
-			}
+		switchPopupInfo(bool){
+			this.popupInfo = bool;
 		},
 
 		splitInviteDesc(inviteDesc){
@@ -191,6 +162,11 @@ export default {
 			}
 		},
 
+
+		hideMessages(){
+			this.showNotification = false;
+		},
+
 		loadStaticInfo(){
 			try{
 				setTimeout( async () => {
@@ -206,14 +182,24 @@ export default {
 			finally {}
 		},
 
+		// checkDevice(){
+		// 	const os = navigator.platform;
+		// 	console.log(os);
 
-		switchPopupInfo(bool){
-			this.popupInfo = bool;
-		},
+		// 	const deviceMemory = navigator.deviceMemory;
+		// 	console.log('Memory ' + deviceMemory);
 
-		hideMessages(){
-			this.showNotification = false;
-		},
+		// 	const language = navigator.language;
+		// 	console.log(language);
+
+		// 	const hardwareConcurrency = navigator.hardwareConcurrency ;
+		// 	console.log('CPU ' + hardwareConcurrency);
+
+		// 	// const userAgent = navigator.userAgent ;
+		// 	// console.log('userAgent ' + userAgent);
+
+			
+		// },
 
 	},
 
@@ -229,21 +215,10 @@ export default {
   },
 
 	mounted(){
-		this.fetchInfos();
-		if(this.getInfos.data){
-			this.splitInviteDesc(this.getInfos.data.app_info[0].user_invites_you_to_join);
-		}
-	},
-
-	watch:{
-		getInfos: {
-			handler(newVal){
-				if(this.getInfos){
-					this.splitInviteDesc(this.getInfos.data.app_info[0].user_invites_you_to_join);
-				}
-			},
-			deep: true
-		}
+		// this.fetchInfos();
+		this.loadStaticInfo();
+		this.splitInviteDesc(this.getInfos.data.app_info[0].user_invites_you_to_join);
+		// this.checkDevice();
 	},
 
 
@@ -288,7 +263,6 @@ export default {
 				width: 100%;
 				max-width: 320px;
 				margin: 16px auto;
-
 			}
 			.qr_wrap{
 				width: 250px;
@@ -327,11 +301,13 @@ export default {
 				}
 			}
 		}
+
 		.contentSubWrap{
 			width: 100%;
 			padding: 16px 0px;
 			padding: 0;
 			background-color: #F3F5F6;
+
 			.title_wrap{
 				background-color: #FFF;
 				padding: 16px;
@@ -339,12 +315,67 @@ export default {
 				flex-direction: column;
 				align-items: center;
 				justify-content: center;
-				text-align: center;
 				padding-top: 18px;
 				padding-bottom: 18px;
+				.img_wrap{
+					width: 100%;
+					padding-top: 32.5%;
+					position: relative;
+					margin-bottom: 12px;
+					// border: 1px solid rgba(35, 41, 45, 0.1);
+					overflow: hidden;
+					border-radius: 8px;
+					background-color: #FFEAEB;
+					.empty_icon{
+						position: absolute;
+						z-index: 5;
+						bottom: 12px;
+						left: 16px;
+						border-radius: 50%;
+						background-image: url('./../assets/icons/folder.svg');
+						background-size: contain;
+						background-repeat: no-repeat;
+						background-position: center;
+						display: block;
+						width: 32px;
+						height: 32px;
+						
+					}
+					img{
+						width: 100%;
+						height: 100%;
+						object-fit: cover;
+						position: absolute;
+						top: 0;
+						left: 0;
+						right: 0;
+						bottom: 0;
+						z-index: 10;
+						border: 1px solid rgba(35, 41, 45, 0.1);
+						overflow: hidden;
+						border-radius: 8px;
+					}
+				}
 				.the_title, .the_subtitle{
-					color: #23292D;
-					text-align: center;
+					color: #23292dcf;
+					width: 100%;
+				}
+				.info_wrap{
+					width: 100%;
+					padding-top: 8px;
+					padding-left: 0;
+					padding-right: 0;
+					padding-bottom: 10px;
+				}
+			}
+			.referal_wrap{
+				.the_title{
+					color: #23292dcf;
+					// font-weight: 600;
+					margin-bottom: 4px;
+					&.the_main{
+						margin-bottom: 8px;
+					}
 				}
 			}
 			.info_wrap{
@@ -370,8 +401,9 @@ export default {
 			}
 			.links_wrap{
 				background-color: #FFF;
-				padding: 16px;
-				padding-bottom: 46px;
+				// padding: 16px;
+				// padding-bottom: 46px;
+				// padding-top: 0;
 				.link_wrap{
 					margin-bottom: 16px;
 					position: relative;

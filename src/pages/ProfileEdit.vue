@@ -61,6 +61,14 @@
 									<ErrorMessage class="errorTitle" name="name" />
 								</label>
 
+								<label class="inputWrap">
+									<span class="label">Email</span>
+									<div class="inputBox">
+										<input name="email" placeholder="Email" disabled :value="this.getCurrUser.user.email" />
+									</div>
+
+								</label>
+
 								<label class="inputWrap" :class="{notValid: errors.birthdate }">
 									<span class="label">Дата вашего рождения</span>
 									<div class="inputBox inputDate">
@@ -98,14 +106,14 @@
 							</div>
 							<div class="formWrap">
 
-								<label class="inputWrap"  :class="{hiddenWrap: getIsMotherLocal == 1, notValid: errors.pregnancy_weeks }">
+								<label class="inputWrap"  :class="{ghostWrap: getIsMotherLocal == 1, noneHeight: getIsMotherLocal == 1, notValid: errors.pregnancy_weeks }">
 									<span class="label">Какой срок?</span>
 									<div class="inputBox">
 										<Field ref="bornFalse" name="pregnancy_weeks" type="number" placeholder="В неделях" v-model="pregnancyWeeks" />
 									</div>
 									<ErrorMessage class="errorTitle" name="pregnancy_weeks" />
 								</label>
-								<label class="inputWrap"  :class="{hiddenWrap: getIsMotherLocal == 0, notValid: errors.baby_born }">
+								<label class="inputWrap"  :class="{ghostWrap: getIsMotherLocal == 0, noneHeight: getIsMotherLocal == 0, notValid: errors.baby_born }">
 									<span class="label">Когда родился малыш?</span>
 									<div class="inputBox babyBorned">
 										<Field ref="bornTrue" name="baby_born" type="date" placeholder="Выберите дату..." :value="this.getCurrUser.user.baby_born" />
@@ -117,6 +125,7 @@
 
 							<div class="profile_dates">
 								<span class="profile_title">Информация о профиле</span>
+								<span class="reg_date" style="font-weight:600">Баланс babycoins: {{ getCurrUser.user.ref.points_available }}</span>
 								<span class="reg_date">Дата регистрации: {{ date_reg }}</span>
 								<span class="setinfo_date">Дата заполнения профиля: {{ date_upd }}</span>
 							</div>
@@ -186,7 +195,7 @@ export default {
 		const schema = yup.object().shape({
 			name: yup.string().required('Пожалуйста, заполните это поле').typeError('Поле обязателено').min(2, 'Поле должно содержать не менее 2 символов').label('Имя'),
 			birthdate: yup.date().typeError('Введите дату рождения').max(new Date(), 'Выберите корректную дату').label('День рождения'),
-			is_mother: yup.string().required('Пожалуйста, заполните это поле').typeError('Поле обязателено').min(1, 'Введите корректные данные').max(1, 'Введите корректные данные').label('Ребенок рожден'),
+			is_mother: yup.string().required('Пожалуйста, заполните это поле').typeError('Поле обязателено').label('Ребенок рожден'),
 			pregnancy_weeks: yup.string().typeError('Введите количество недель').label('Количество недель'),
 			// baby_born: yup.string().typeError('Введите дату рождения малыша'),
 
@@ -235,6 +244,7 @@ export default {
 			showNotificationPhoto: false,
 			popupToDelete: 'false',
 			pregnancyWeeks: 0,
+			baby_coins: '',
 			date_reg: '',
 			date_upd: '',
 		}
@@ -323,7 +333,7 @@ export default {
 			
 			try{
 				setTimeout( async () => {
-					const response = await axios.delete('https://api.xn--80axb4d.online/v1/user', {
+					const response = await axios.delete('https://api.roddom15.ru/v1/user', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							'Content-Type': 'application/json',
@@ -364,6 +374,9 @@ export default {
 		},
 
 		onSubmit(user) {
+			if(!user.is_mother){
+				user.is_mother = 0;
+			}
 			if(user.pregnancy_weeks){
 				user.pregnancy_weeks = Math.round(user.pregnancy_weeks);
 			}else{
@@ -391,7 +404,7 @@ export default {
 			}
 
 			try{
-				console.log(user);
+				// console.log(user);
 				// const values = {
 				// 	baby_born: "2022-10-10",
 				// 	birthdate: "1992-03-20",
@@ -402,7 +415,7 @@ export default {
 				// };
 				setTimeout( async () => {
 					const response = await
-						axios.put('https://api.xn--80axb4d.online/v1/user/profile', user, {
+						axios.put('https://api.roddom15.ru/v1/user/profile', user, {
 							headers: {
 								Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 								'Content-Type': 'application/json',
@@ -718,6 +731,12 @@ export default {
 						display: none;
 					}
 				}
+				.noneHeight{
+					height: 0;
+					overflow: hidden;
+					max-height: 0;
+					padding-bottom: 0;
+				}
 
 				.errorTitle{}
 			}
@@ -795,6 +814,27 @@ export default {
 			}
 		}
 	}
+
+}
+
+
+
+@media screen and (max-width: 550px) {
+
+.mainContainer{
+	.contentWrap{
+		.topLine{
+			.theTitle{
+				width: 40%;
+				max-width: 40%;
+				min-width: 40%;
+			}
+			.theButton.leftButton{
+				font-size: 13px;
+			}
+		}
+	}
+}
 
 }
 

@@ -4,7 +4,7 @@
 		<!-- @mousedown="handleMouseDown(event)" -->
 		<div class="the_element_box">
 			<!-- <img src="./../assets/images/element.jpg" alt="element"> -->
-			<img v-if="filterCatalogElement.preview_picture" :src="filterCatalogElement.preview_picture ? 'https://api.xn--80axb4d.online/storage/' + filterCatalogElement.preview_picture : ''" alt="element">
+			<img v-if="filterCatalogElement.preview_picture" :src="filterCatalogElement.preview_picture ? 'https://api.roddom15.ru/storage/' + filterCatalogElement.preview_picture : ''" alt="element">
 			<span class="post_noimg" v-else ></span>
 		</div>
 		<div class="the_title fontSize16 fontFamilyEB" style="font-size:15px !important;">{{ filterCatalogElement.title }}</div> 

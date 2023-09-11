@@ -17,7 +17,7 @@
 		</div>
 		<div class="the_element_box">
 			<!-- <img src="./../assets/images/element.jpg" alt="element"> -->
-			<img v-if="post.preview_picture" :src="post.preview_picture ? 'https://api.xn--80axb4d.online/storage/' + post.preview_picture : ''" alt="element">
+			<img v-if="post.preview_picture" :src="post.preview_picture ? 'https://api.roddom15.ru/storage/' + post.preview_picture : ''" alt="element">
 			<span class="star" :class="{active: post.is_promo == 1}"></span>
 		</div>
 		<span class="the_title fontSize16 fontFamilyEB">{{ post.title }}</span>
