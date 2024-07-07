@@ -3,9 +3,10 @@
 	<div class="the_element marginB12" @mousedown="handleMouseDown" @click="handleClick">
 		<div class="info_line flexWrap">
 			<div class="icons flexWrap">
-				<span class="viewed blockWrap" :class="{hiddenWrap: post.list_watched !== 1 }"></span>
+				<span class="viewed blockWrap" :class="{hiddenWrap: !post.list_watched }"></span>
 				<!-- <span class="bought blockWrap" :class="{hiddenWrap: !getCurrUser.user.purchased_lectures.find(item => item.id === post.id )}"></span> -->
-				<span class="premium blockWrap" :class="{hiddenWrap: post.is_free == 1 }"></span>
+				<span class="premium blockWrap" v-if="!post.purchase_info.is_purchased" :class="{hiddenWrap: post.is_free == 1 }"></span>
+				<span class="purchased blockWrap" v-if="post.purchase_info.is_purchased"></span>
 			</div>
 			<span class="download" v-if="post.content_type && post.content_type.type == 'pdf'"></span>
 			<span class="download" v-if="post.content_type && post.content_type.title == 'pdf'"></span>
@@ -17,23 +18,23 @@
 		</div>
 		<div class="the_element_box">
 			<!-- <img src="./../assets/images/element.jpg" alt="element"> -->
-			<img v-if="post.preview_picture" :src="post.preview_picture ? 'https://api.roddom15.ru/storage/' + post.preview_picture : ''" alt="element">
+			<img v-if="post.preview_picture" :src="post.preview_picture ?  post.preview_picture : ''" alt="element">
 			<span class="star" :class="{active: post.is_promo == 1}"></span>
 		</div>
 		<span class="the_title fontSize16 fontFamilyEB">{{ post.title }}</span>
 		<!-- <span class="the_title fontSize14 fontFamilyEB">Короткий заголовок у элемента</span> -->
 	</div>
-	
-	
+
+
 </template>
 
 
 <script>
 import {mapGetters, mapActions, mapMutations} from 'vuex';
-import router from "@/router/router"; 
+import router from "@/router/router";
 export default({
 
-	name: 'Element', 
+	name: 'Element',
 
 	props: {
 		post: {
@@ -67,7 +68,7 @@ export default({
 		// 	}, 500);
 		// },
 
-		routeToElement(){ 
+		routeToElement(){
 			this.$router.push('/videos/' + this.post.id);
 			// location.reload();
 		},
@@ -199,7 +200,26 @@ export default({
 					background-position: center;
 				}
 			}
-			
+
+			.purchased{
+				background: #FD7C84;
+				box-shadow: 0px 2px 4px rgba(253, 124, 132, 0.5);
+				width: 34px;
+				height: 19.5px;
+				border-radius: 10px;
+				padding: 2px 10px;
+				&::before{
+					display: block;
+					content: '';
+					width: 15px;
+					height: 15px;
+					background-image: url('../assets/icons/premium_checked2.png');
+					background-size: contain;
+					background-repeat: no-repeat;
+					background-position: center;
+				}
+			}
+
 		}
 		.play{
 			width: 40px;
@@ -294,7 +314,7 @@ export default({
     text-overflow: ellipsis;
     font-size: 0.96rem;
     overflow: hidden;
-		white-space: normal; 
+		white-space: normal;
     -webkit-line-clamp: 2;
     display: -webkit-box;
     -webkit-box-orient: vertical;

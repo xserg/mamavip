@@ -1,7 +1,7 @@
 <template>
   <div class="mainContainer">
 
-		<div class="contentWrap">
+		<div class="contentWrap" style="min-height:calc(100vh - 45px);">
 
 			<div class="topLine flexWrap">
 				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
@@ -9,51 +9,80 @@
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			<div class="contentSubWrap" v-if="getCurrUser.user.name !== null">
+
+			<div class="topLine flexWrap popupWrap" v-if="popupInfo">
+				<a @click="switchPopupInfo(false, '')" class="theButton leftButton buttonTransparent buttonBack" />
+				<h1 class="theTitle alignCenter">Оплата</h1>
+				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
+			</div> 
+
+			<div class="contentSubWrap popupWrap" :class="{active_popup: popupInfo}" v-show="popupInfo">
+				<div class="infoWrap ">
+					<span class="blockWrap marginB12"></span>
+					<h2 class="alignCenter" style="margin-bottom:4px;">Выберите способ оплаты</h2>
+					<img class="the_img" src="./../assets/images/emptyState.png" alt="bg">
+				
+					<!-- <h4 class="alignCenter" style="margin-top:20px;margin-bottom:20px;font-size:15px;"></h4> -->
+					<span class="blockWrap theButton buttonPrimary buttonOptimal marginAuto" style="margin-top:20px;margin-bottom:16px;" @click="buyCategory(this.forBuy)">Оплата сразу</span>
+					<span class="tinkoffButton blockWrap theButton buttonSecondary buttonOptimal marginAuto" :class="{disabled: this.forBuyPrice < this.getInfos.data.app_info[0].credit_minimal_sum }" @click="buyTinkoff(this.forBuy)">Оплата в рассрочку</span>
+					<span class="tinkoff_info alignCenter buttonOptimal marginAuto" style="font-size:13px;margin-top:12px;color:#2C3F51;" v-if="this.forBuyPrice < this.getInfos.data.app_info[0].credit_minimal_sum">Рассрочка доступна при оформлении заказа от {{ this.getInfos.data.app_info[0].credit_minimal_sum }} рублей.</span>
+					
+					<div class="special_option marginAuto">
+						<span class="the_desc alignCenter">{{ this.getInfos.data.app_info[0].category_special_price_text }}</span>
+						<span class="theButton buttonSecondary" @click="buyCatalog(), setRouterAnimate()">Купить весь курс</span>
+					</div>
+					
+				</div>
+			</div>
+
+
+
+			<div class="contentSubWrap" :class="{active_popup: popupInfo}" v-if="getCurrUser.user.name !== null">
 				<div class="infoWrap">
 					<h2>{{ currentCategory.title }}</h2>
 
 					<div class="content_box info_box marginB12">
 						<div class="video_wrap">
-							<img class="video_preview" v-if="currentCategory.preview_picture && currentCategory.preview_picture !== ''" :src="currentCategory.preview_picture ? 'https://roddom15.ru/storage/' + currentCategory.preview_picture : ''" alt="preview" />
+							<img class="video_preview" v-if="currentCategory.preview_picture" :src="currentCategory.preview_picture ? 'https://api.roddom1.vip/storage/' + currentCategory.preview_picture : ''" alt="category_image">
+							<!-- <img class="video_preview" v-if="currentCategory.preview_picture && currentCategory.preview_picture !== ''" :src="currentCategory.preview_picture ? 'https://roddom1.vip/storage/' + currentCategory.preview_picture : ''" alt="preview" /> -->
 						</div>
 					</div>
 
 					<p style="text-align:center;margin-bottom:10px;">{{ getInfos.data.app_info[0].buy_page_description }}</p>
-					<p class="important_message" style="text-align:center;">{{ splitedCountDesc[0] }} <strong>{{ currentCategory.lectures_count }}</strong> {{ splitedCountDesc[1] }}{{ splitedCountDesc[2] }}{{ splitedCountDesc[3] }}</p>
+					<p class="important_message" style="text-align:center;">{{ splitedCountDesc[0] }} <strong>{{ currentCategory.lectures_count }}</strong> {{ splitedCountDesc[1] }}{{ splitedCountDesc[2] }}{{ splitedCountDesc[3] }}<br><span v-if="currentCategory.prices[0] && currentCategory.prices[0].discount.already_purchased_count > 0">У вас уже есть доступ к <strong>{{ currentCategory.prices[0].discount.already_purchased_count }}</strong> материалу(ам), будет приобретено <strong>{{ Number(currentCategory.lectures_count - currentCategory.prices[0].discount.already_purchased_count) }}</strong> недостающий(их).</span></p>
 					<br>
 					<br>
 					<div v-if="currentCategory.is_promo == true">
-					<span v-if="currentCategory.prices[0]" @click="buyCategory(this.getInfos.data.app_periods[0])" class="theButton buttonPrimary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_1}}: {{ Math.round(currentCategory.prices[0].price_for_category_promo) }}₽</span>
+					<span v-if="currentCategory.prices[0]" @click="switchPopupInfo(true, this.getInfos.data.app_periods[0], Math.round(currentCategory.prices[0].price_for_category_promo), 0)" class="theButton buttonPrimary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_1}}: {{ Math.round(currentCategory.prices[0].price_for_category_promo) }}₽</span>
 					<p style="text-align:center;font-size:13px;margin-top:6px;display: block;max-width:380px;margin-left:auto;margin-right:auto;color:#575757">{{ splitedButtonDesc[0] }}<strong>{{getInfos.data.app_periods[0]}}</strong>{{ splitedButtonDesc[1] }}{{ splitedButtonDesc[2] }}{{ splitedButtonDesc[3] }}{{ splitedButtonDesc[4] }} <span v-if="currentCategory.is_promo == true">{{ splitedEconomyDesc[0] }} {{ Math.round(currentCategory.prices[0].price_for_category - currentCategory.prices[0].price_for_category_promo) }} {{ splitedEconomyDesc[1] }}{{ splitedEconomyDesc[2] }}{{ splitedEconomyDesc[3] }}</span></p>
 					</div>
 					<div v-else>
-					<span v-if="currentCategory.prices[0]" @click="buyCategory(this.getInfos.data.app_periods[0])" class="theButton buttonPrimary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_1}}: {{ Math.round(currentCategory.prices[0].price_for_category) }}₽</span>
+					<span v-if="currentCategory.prices[0]" @click="switchPopupInfo(true, this.getInfos.data.app_periods[0], Math.round(currentCategory.prices[0].price_for_category), 0)" class="theButton buttonPrimary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_1}}: {{ Math.round(currentCategory.prices[0].price_for_category) }}₽</span>
 					<p style="text-align:center;font-size:13px;margin-top:6px;display: block;max-width:380px;margin-left:auto;margin-right:auto;color:#575757">{{ splitedButtonDesc[0] }}<strong>{{getInfos.data.app_periods[0]}}</strong>{{ splitedButtonDesc[1] }}{{ splitedButtonDesc[2] }}{{ splitedButtonDesc[3] }}{{ splitedButtonDesc[4] }} <span v-if="currentCategory.is_promo == true">{{ splitedEconomyDesc[0] }} {{ Math.round(currentCategory.prices[0].price_for_category - currentCategory.prices[0].price_for_category_promo) }} {{ splitedEconomyDesc[1] }}{{ splitedEconomyDesc[2] }}{{ splitedEconomyDesc[3] }}</span></p>
 					</div>
 					<br>
 					<div v-if="currentCategory.is_promo == true">
-					<span v-if="currentCategory.prices[1]" @click="buyCategory(this.getInfos.data.app_periods[1])" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_2}}: {{ Math.round(currentCategory.prices[1].price_for_category_promo) }}₽</span>
+					<span v-if="currentCategory.prices[1]" @click="switchPopupInfo(true, this.getInfos.data.app_periods[1], Math.round(currentCategory.prices[1].price_for_category_promo), 1)" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_2}}: {{ Math.round(currentCategory.prices[1].price_for_category_promo) }}₽</span>
 					<p style="text-align:center;font-size:13px;margin-top:6px;display: block;max-width:380px;margin-left:auto;margin-right:auto;color:#575757">{{ splitedButtonDesc[0] }}<strong>{{getInfos.data.app_periods[1]}}</strong>{{ splitedButtonDesc[1] }}{{ splitedButtonDesc[2] }}{{ splitedButtonDesc[3] }}{{ splitedButtonDesc[4] }} <span v-if="currentCategory.is_promo == true">{{ splitedEconomyDesc[0] }} {{ Math.round(currentCategory.prices[1].price_for_category - currentCategory.prices[1].price_for_category_promo) }} {{ splitedEconomyDesc[1] }}{{ splitedEconomyDesc[2] }}{{ splitedEconomyDesc[3] }}</span></p>
 					</div>
 					<div v-else>
-					<span v-if="currentCategory.prices[1]" @click="buyCategory(this.getInfos.data.app_periods[1])" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_2}}: {{ Math.round(currentCategory.prices[1].price_for_category) }}₽</span>
+					<span v-if="currentCategory.prices[1]" @click="switchPopupInfo(true, this.getInfos.data.app_periods[1], Math.round(currentCategory.prices[1].price_for_category, 1))" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_2}}: {{ Math.round(currentCategory.prices[1].price_for_category) }}₽</span>
 					<p style="text-align:center;font-size:13px;margin-top:6px;display: block;max-width:380px;margin-left:auto;margin-right:auto;color:#575757">{{ splitedButtonDesc[0] }}<strong>{{getInfos.data.app_periods[1]}}</strong>{{ splitedButtonDesc[1] }}{{ splitedButtonDesc[2] }}{{ splitedButtonDesc[3] }}{{ splitedButtonDesc[4] }} <span v-if="currentCategory.is_promo == true">{{ splitedEconomyDesc[0] }} {{ Math.round(currentCategory.prices[1].price_for_category - currentCategory.prices[1].price_for_category_promo) }} {{ splitedEconomyDesc[1] }}{{ splitedEconomyDesc[2] }}{{ splitedEconomyDesc[3] }}</span></p>
 					</div>
 					<br>
 					<div v-if="currentCategory.is_promo == true">
-					<span v-if="currentCategory.prices[2]" @click="buyCategory(this.getInfos.data.app_periods[2])" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_3}}: {{ Math.round(currentCategory.prices[2].price_for_category_promo) }}₽</span>
+					<span v-if="currentCategory.prices[2]" @click="switchPopupInfo(true, this.getInfos.data.app_periods[2], Math.round(currentCategory.prices[2].price_for_category_promo), 2)" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_3}}: {{ Math.round(currentCategory.prices[2].price_for_category_promo) }}₽</span>
 					<p style="text-align:center;font-size:13px;margin-top:6px;display: block;max-width:380px;margin-left:auto;margin-right:auto;color:#575757">{{ splitedButtonDesc[0] }}<strong>{{getInfos.data.app_periods[2]}}</strong>{{ splitedButtonDesc[1] }}{{ splitedButtonDesc[2] }}{{ splitedButtonDesc[3] }}{{ splitedButtonDesc[4] }} <span v-if="currentCategory.is_promo == true">{{ splitedEconomyDesc[0] }} {{ Math.round(currentCategory.prices[2].price_for_category - currentCategory.prices[2].price_for_category_promo) }} {{ splitedEconomyDesc[1] }}{{ splitedEconomyDesc[2] }}{{ splitedEconomyDesc[3] }}</span></p>
 					</div>
 					<div v-else>
-					<span v-if="currentCategory.prices[2]" @click="buyCategory(this.getInfos.data.app_periods[2])" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_3}}: {{ Math.round(currentCategory.prices[2].price_for_category) }}₽</span>
+					<span v-if="currentCategory.prices[2]" @click="switchPopupInfo(true, this.getInfos.data.app_periods[2], Math.round(currentCategory.prices[2].price_for_category), 2)" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_3}}: {{ Math.round(currentCategory.prices[2].price_for_category) }}₽</span>
 					<p style="text-align:center;font-size:13px;margin-top:6px;display: block;max-width:380px;margin-left:auto;margin-right:auto;color:#575757">{{ splitedButtonDesc[0] }}<strong>{{getInfos.data.app_periods[2]}}</strong>{{ splitedButtonDesc[1] }}{{ splitedButtonDesc[2] }}{{ splitedButtonDesc[3] }}{{ splitedButtonDesc[4] }} <span v-if="currentCategory.is_promo == true">{{ splitedEconomyDesc[0] }} {{ Math.round(currentCategory.prices[2].price_for_category - currentCategory.prices[2].price_for_category_promo) }} {{ splitedEconomyDesc[1] }}{{ splitedEconomyDesc[2] }}{{ splitedEconomyDesc[3] }}</span></p>
 					</div>
 					<br>
 
 					<div class="usebabyconins_wrap" :class="{active: useBabyconins}" @click="switchBabyconins">
 						<div class="checkbox_wrap"><!-- <input type="checkbox" name="yes_babycoins" class="checkbox" checked> --></div>
-						<div class="the_title">На балансе <span style="font-weight:600;">{{ getCurrUser.user.ref.points_available }} бебикоинов</span>, использовать имеющиеся при оплате материалов.</div>
+						<div class="the_title">На балансе <span style="font-weight:600;">{{ getCurrUser.user.ref.points_available }} бебикоинов</span>, использовать имеющиеся при оплате материалов. Доступно только при покупке материалов с оплатой сразу.</div>
 					</div>
 					
 				</div>
@@ -83,6 +112,7 @@
 // @ is an alias to /src
 // import DefaultLikes from '@/components/DefaultLikes.vue'
 import axios from 'axios';
+import tinkoff from '@tcb-web/create-credit';
 import {mapState, mapMutations, mapGetters} from 'vuex';
 
 export default {
@@ -92,6 +122,9 @@ export default {
 
 	data(){
 		return{
+			forBuyPrice: 0,
+			forBuyType: 99,
+			popupInfo: false,
 			splitedButtonDesc: '',
 			splitedCountDesc: '',
 			splitedEconomyDesc: '',
@@ -107,6 +140,72 @@ export default {
 			setRouterAnimate: 'setRouterAnimate',
 		}),
 
+		buyCatalog(){
+			// setTimeout( async () => {
+			// 	this.fetchCurrentSubCategoryAndElements(this.getCurrentLecture.category_slug);
+			// }, 500);
+			this.$router.push('/catalog_prices/');
+		},
+
+
+		switchPopupInfo(bool, data, price, type){
+			this.popupInfo = bool;
+			this.forBuy = data;
+			this.forBuyPrice = price;
+			this.forBuyType = type;
+		},
+
+
+		buyTinkoff(period){
+			if(this.forBuyPrice >= this.getInfos.data.app_info[0].credit_minimal_sum){
+				try{
+					setTimeout( async () => {
+						const headers = { 
+							'Authorization': this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
+							'Content-Type': 'application/json',
+							'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
+							'Access-Control-Allow-Origin': '*',
+						};
+						var response = await axios.post('https://api.roddom1.vip/v1/category/' + this.currentCategory.id + '/buy/' + period + '/order', {}, { headers }).catch(function (error) { if (error.response.status !== 404){ console.log(error.response); } });
+						
+						if(response){
+							// console.log('Успешная отработка:');
+							// Приобретается материал по теме «Грудное вскармливание», сроком доступа на X дня(ей), Количество материалов X, Стоимость XXXXX рублей, Дополнительная скидка от приложения – ХХХХ рублей, Итого – ХХХХ рублей.
+							//const title = 'Приобретается доступ ко всем материалам каталога'  + ', сроком доступа на ' + this.forBuy + ' дня(ей), Количество материалов ' + x + ', Стоимость ' + x + ' рублей, Дополнительная скидка от приложения – ' + x + ' рублей, Итого – ' + x + 'рублей.';
+							const items_count = this.currentCategory.lectures_count;
+
+							if(this.currentCategory.is_promo == true){
+
+								var economy_price = Math.round(this.currentCategory.prices[this.forBuyType].price_for_category - this.currentCategory.prices[this.forBuyType].price_for_category_promo);
+								var default_price = Number(this.forBuyPrice + economy_price);
+								var final_price = Number(this.forBuyPrice + 0);
+								
+								var tinkoff_title = 'Приобретается материал по теме "' + this.currentCategory.title + '", сроком доступа на ' + this.forBuy + ' дня(ей), Количество материалов ' + items_count + ', Стоимость ' + default_price + ' рублей, Дополнительная скидка от приложения – ' + economy_price + ' рублей, Итого – ' + final_price + ' рублей.';
+							}else{
+								var final_price = Number(this.forBuyPrice + 0);
+								var tinkoff_title = 'Приобретается материал по теме "' + this.currentCategory.title + '", сроком доступа на ' + this.forBuy + ' дня(ей), Количество материалов ' + items_count + ', Итого – ' + final_price + ' рублей.';
+							}
+							
+							tinkoff.create({
+								orderNumber: response.data[0],
+								shopId: '99e38bba-6f25-4f10-b62a-4f05e32383b7',
+								showcaseId: '3432f3d3-6b9d-407c-a793-a5ac9137c53d',
+								items: [
+									{name: tinkoff_title, price: final_price, quantity: 1},
+								],
+								sum: final_price
+							});
+						}else{
+							// console.log('Ошибка отработки:');
+							// console.log(response);
+						}
+					}, 500 );
+				} catch(e){
+					console.log(e);
+				} finally {}
+			}
+		},
+
 
 			buyCategory(time){
 				try{
@@ -118,10 +217,10 @@ export default {
 							'Access-Control-Allow-Origin': '*',
 						};
 
-						if(this.useBabyconins && getCurrUser.user.ref.points_available > 0){
-							var response = await axios.post('https://api.roddom15.ru/v1/category/' + this.currentCategory.id + '/buy/' + time, {ref_points: this.getCurrUser.user.ref.points_available}, { headers });
+						if(this.useBabyconins && Number(this.getCurrUser.user.ref.points_available) > 0){
+							var response = await axios.post('https://api.roddom1.vip/v1/category/' + this.currentCategory.id + '/buy/' + time, {ref_points: Number(this.getCurrUser.user.ref.points_available)}, { headers });
 						}else{
-							var response = await axios.post('https://api.roddom15.ru/v1/category/' + this.currentCategory.id + '/buy/' + time, {}, { headers });
+							var response = await axios.post('https://api.roddom1.vip/v1/category/' + this.currentCategory.id + '/buy/' + time, {}, { headers });
 						}
 						
 						window.open(response.data.link,"_self");
@@ -134,7 +233,7 @@ export default {
 		loadStaticInfo(){
 			try{
 				setTimeout( async () => {
-					const responseInfos = await axios.get('https://api.roddom15.ru/v1/app/info', {
+					const responseInfos = await axios.get('https://api.roddom1.vip/v1/app/info', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}
@@ -204,13 +303,77 @@ export default {
 		.important_message{
 			color: #ff3d6f;
 			background: #fef5f6;
-			width: max-content;
+			width: 100%;
+			display: inline-block;
 			margin: 10px auto 5px;
 			padding: 8px 26px;
 			border-radius: 8px;
 		}
+
+		.topLine.popupWrap{
+			background-color: #FFF;
+			width: 100%;
+			z-index: 110;
+			position: fixed;
+			left: 0;
+			top: 0;
+		}
+		.contentSubWrap.popupWrap{
+			// min-height: calc(100vh - 45px);
+			padding: 0;
+			width: 100%;
+			z-index: 105;
+			position: absolute;
+			left: 0; 
+			top: 45px;
+			background-color: #F3F5F6;
+			background-color: #FFF;
+			padding: 8px 16px;
+			padding-bottom: 0px;
+			&.active_popup{
+				position: relative;
+				top: auto;
+				left: auto;
+				height: auto;
+				opacity: 1;
+				visibility: visible;
+			}
+			.the_img{
+				width: 56%;
+				max-width: 480px;
+				margin: 0 auto;
+				display: block;
+			}
+			.infoWrap{}
+			}
+			.special_option{
+				margin-top: 60px;
+				height: auto;
+				min-width: 288px;
+    		max-width: 395px;
+				display: flex;
+				flex-direction: column;
+				
+				.the_desc{
+					display: block;
+					height: max-content;
+					font-size: 13px;
+					margin-bottom: 14px;
+					color: rgb(44, 63, 81);
+				}
+				.theButton{
+					width: 100%;
+				}
+			}
 		.contentSubWrap{
+			&.active_popup{
+				height: 0;
+				opacity: 0;
+				visibility: hidden;
+				overflow: hidden;
+			}
 			padding: 32px 16px;
+			padding-bottom: 0;
 			p{
 				line-height: 150%;
 			}

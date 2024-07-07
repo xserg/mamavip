@@ -73,7 +73,7 @@ export default {
 				try{
 					setTimeout( async () => {
 						const response = 
-						await axios.post('https://api.roddom15.ru/v1/threads', {}, {
+						await axios.post('https://api.roddom1.vip/v1/threads', {}, {
 							headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}}).catch(function (error) { if (error.response){
@@ -85,7 +85,7 @@ export default {
 							// this.messValue = '';
 							setTimeout( async () => {
 								const messresponse = 
-								await axios.put('https://api.roddom15.ru/v1/threads/' + response.data.id, {message: newThreadMess}, {
+								await axios.put('https://api.roddom1.vip/v1/threads/' + response.data.id, {message: newThreadMess}, {
 									headers: {
 										Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 										'Content-Type': 'application/json',
@@ -164,6 +164,7 @@ export default {
 			padding: 16px 0px;
 			padding: 0;
 			background-color: #F3F5F6;
+			margin-bottom: 30px;
 			// background-color: #fff;
 			.title_wrap{
 				background-color: #FFF;

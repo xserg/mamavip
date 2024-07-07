@@ -16,10 +16,10 @@
 				<span class="theButton close_button" @click="hideMessages"></span>
 			</div>
 		</div>
-		
+
 
 		<Form @submit="onSubmit" :validation-schema="schema" v-if="curStep == 1 || curStep == 2">
-		
+
 			<div class="contentWrap stepRegFirst" v-show="curStep == 1">
 
 				<div class="topLine flexWrap">
@@ -35,6 +35,13 @@
 						<h2 class="pageSubtitle alignCenter fontSize32 fontFamilyEB">"Нежность"</h2>
 					</div>
 					<div class="formWrap">
+						<label class="inputWrap">
+							<span class="label">Введите номер полиса</span>
+							<div class="inputBox">
+								<Field name="polis" />
+							</div>
+							<ErrorMessage class="errorTitle" name="polis" />
+						</label>
 							<label class="inputWrap">
 								<span class="label">Введите email</span>
 								<div class="inputBox">
@@ -75,7 +82,7 @@
 
 
 			<div class="contentWrap stepRegSecond" v-show="curStep == 2">
-			
+
 				<div class="topLine flexWrap">
 					<span class="theButton leftButton buttonTransparent" style="text-align:left;" @click="prevStep">Назад</span>
 					<h1 class="theTitle alignCenter">Прочтите соглашение</h1>
@@ -99,18 +106,18 @@
 				<div v-else class="roller_box">
 					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 				</div>
-				
+
 			</div>
 		</Form>
 
 		<Form class="contentWrap stepRegCode" @submit="onSendCode" v-slot="{ errors }" :validation-schema="schema_code" v-show="curStep == 3">
-			
+
 			<div class="topLine flexWrap">
 				<span class="theButton leftButton buttonBack" @click="prevStep"></span>
 				<h1 class="theTitle alignCenter">Аутентификация почты</h1>
 				<span class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</span>
 			</div>
-			
+
 			<div class="contentSubWrap">
 				<div class="titleLine">
 					<h2 class="pageTitle fontSize20 alignCenter fontFamilyEB marginB12">Введите код из письма</h2>
@@ -132,7 +139,7 @@
 				</div>
 
 				<div class="infoWrap testingWrap">
-				</div> 
+				</div>
 			</div>
 		</Form>
 
@@ -171,7 +178,7 @@ import * as yup from 'yup';
 // import { object, string, ref} from 'yup';
 
 import { useTimer, useStopwatch, useTime } from 'vue-timer-hook';
-
+import base from "@/base";
 
 export default defineComponent({
 
@@ -213,6 +220,7 @@ export default defineComponent({
       code: yup.string().required('Введите код подтверждения').min(6, 'Код должен состоять из 6 символов').max(12, 'Код должен состоять из 6 символов').typeError().label('Код из письма'),
 		});
 		const schema = yup.object({
+			polis: yup.string().min(16, 'Поле должно содержать не менее 16 цифр').required('Пожалуйста, заполните это поле').matches(/^[0-9]+$/, "Must be only digits").typeError('Ввелите цифры').label('Полис'),
       email: yup.string().required('Пожалуйста, заполните это поле').email('Пожалуйста, введите корректный email').typeError('Поле Email обязателен').label('Email'),
 			// name: string().required('Поле обязательно на заполнение').label('Имя'),
 			password: yup.string().required('Пожалуйста, заполните это поле').min(8, 'Поле должно содержать не менее 8 символов').label('Пароль'),
@@ -248,7 +256,7 @@ export default defineComponent({
 			// 	confirmPassword: '',
 			// 	phone: '',
 			// },
-			
+
 		}
 	},
 
@@ -305,8 +313,8 @@ export default defineComponent({
 			this.agreementDataLoading = true;
 			try{
 				setTimeout( async () => {
-					const response = 
-						await axios.get('https://api.roddom15.ru/v1/app/agreement').catch(function (error) { if (error.response){} });
+					const response =
+						await axios.get(base.API_URL + '/app/agreement').catch(function (error) { if (error.response){} });
 					if(response){
 						this.agreementData = response.data.data;
 						this.agreementDataLoading = false;
@@ -337,8 +345,8 @@ export default defineComponent({
 
 			try{
 				setTimeout( async () => {
-					const response = 
-						await axios.get('https://api.roddom15.ru/v1/app/agreement').catch(function (error) { if (error.response){} });
+					const response =
+						await axios.get(base.API_URL + '/app/agreement').catch(function (error) { if (error.response){} });
 					if(response){
 						this.agreementData = response.data.data;
 						this.agreementDataLoading = false;
@@ -366,7 +374,7 @@ export default defineComponent({
 			this.curStep += 1;
 			// const route = useRoute();
 			// console.log(route.params);
-			
+
 		},
 
 		getCurrentReferal(){
@@ -391,19 +399,19 @@ export default defineComponent({
 			try{
 				setTimeout( async () => {
 					if(this.currReferal){
-						// console.log('Реферальная ссылка: ' + 'https://api.roddom15.ru/v1/user/register?ref=' + this.currReferal);
-						var response = 
-						await axios.post('https://api.roddom15.ru/v1/user/register?ref=' + this.currReferal, this.formValues).catch(function (error) { if (error.response){ 
+						// console.log('Реферальная ссылка: ' + 'https://api.roddom1.vip/v1/user/register?ref=' + this.currReferal);
+						var response =
+						await axios.post(base.API_URL + '/user/register?ref=' + this.currReferal, this.formValues).catch(function (error) { if (error.response){
 							return error.response;
 						} });
 					}else{
-						// console.log('Обычная ссылка: ' + 'https://api.roddom15.ru/v1/user/register');
-						var response = 
-						await axios.post('https://api.roddom15.ru/v1/user/register', this.formValues).catch(function (error) { if (error.response){ 
+						// console.log('Обычная ссылка: ' + 'https://api.roddom1.vip/v1/user/register');
+						var response =
+						await axios.post(base.API_URL + '/user/register', this.formValues).catch(function (error) { if (error.response){
 							return error.response;
 						} });
 					}
-					
+
 					if(response.status == 200){
 						this.notificationMess = response.data.message;
 						setTimeout(() => {
@@ -440,8 +448,8 @@ export default defineComponent({
 							email: this.formValues.email,
 						}
 						// console.log(cacheUserMail);
-						const response = 
-							await axios.post('https://api.roddom15.ru/v1/user/resend-login-code', cacheUserMail).catch(function (error) { if (error.response){
+						const response =
+							await axios.post(base.API_URL + '/user/resend-login-code', cacheUserMail).catch(function (error) { if (error.response){
 								return error.response;
 							} });
 						// console.log(response);
@@ -484,8 +492,8 @@ export default defineComponent({
 					const filterCode = {
 						code: values.code,
 					};
-					const response = 
-						await axios.post('https://api.roddom15.ru/v1/user/login/code', filterCode).catch(function (error) { if (error.response){} });
+					const response =
+						await axios.post(base.API_URL + '/user/login/code', filterCode).catch(function (error) { if (error.response){} });
 					if(response){
 						this.$refs.forgotCodeInput.reset();
 						this.curStep = 4;
@@ -511,7 +519,7 @@ export default defineComponent({
 				setTimeout( async () => {
 					if(this.cacheUserData.access_token){
 						this.setAuthIn(this.cacheUserData);
-						const responseInfos = await axios.get('https://api.roddom15.ru/v1/app/info', {
+						const responseInfos = await axios.get(base.API_URL + '/app/info', {
 							headers: {
 								Authorization: this.cacheUserData.token_type + ' ' + this.cacheUserData.access_token,
 							}
@@ -536,14 +544,14 @@ export default defineComponent({
 						}
 					}
 				}, 50 );
-				
+
 			}catch(e){
 				console.log(e);
 			} finally {
 			}
 			// try{
 			// 	setTimeout( async () => {
-			// 		const response = await axios.post('https://api.roddom15.ru/v1/user/register', this.formValues);
+			// 		const response = await axios.post('https://api.roddom1.vip/v1/user/register', this.formValues);
 			// 		this.curStep += 1;
 			// 		this.finishReg = false;
 			// 	}, 500 );
@@ -570,7 +578,7 @@ export default defineComponent({
 	},
 
 
-	mounted(){ 
+	mounted(){
 		this.getCurrentReferal();
 	},
 

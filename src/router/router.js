@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/pages/Home.vue'
 import Profile from '@/pages/Profile.vue'
+import Search from '@/pages/Search.vue'
 
 import ProfileSaved from '@/pages/ProfileSaved.vue'
 import ProfileBought from '@/pages/ProfileBought.vue'
@@ -46,6 +47,11 @@ const routes = [
     //     left: 0,
     //   },
     // },
+  },
+	{
+    path: '/search/',
+    name: 'search',
+    component: Search
   },
 	{
     path: '/policy/',
@@ -198,7 +204,7 @@ const routes = [
 		component: NotFound,
 	},
 
-	
+
 ]
 
 

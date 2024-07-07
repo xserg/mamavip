@@ -4,7 +4,7 @@
 
 		<div class="contentWrap">
 
-			<!-- <div class="topLine flexWrap"> 
+			<!-- <div class="topLine flexWrap">
 				<router-link class="theButton leftButton buttonTransparent buttonBack" to="/"></router-link>
 				<h1 class="theTitle alignCenter">Каталог лекций</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
@@ -14,7 +14,8 @@
 			<div class="topLine flexWrap" v-if="popupInfo && !currLoadingStatus && currentCategoryList.data">
 				<a @click="switchPopupInfo(false)" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">{{ currentCategory.title }}</h1>
-				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
+				<!-- <button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button> -->
+				<router-link to="/search" @click="setRouterAnimate" class="theButton rightButton buttonTransparent fontFamilyB buttonSearch"></router-link>
 			</div>
 
 			<div class="contentSubWrap popupWrap" v-if="popupInfo && !currLoadingStatus && currentCategoryList.data">
@@ -30,9 +31,9 @@
 					<!-- <router-link class="theButton buttonBack theWhite" to="/catalog" /> -->
 					<a @click="$router.go(-1), setRouterAnimate()" class="theButton buttonBack theWhite" />
 					<!-- <img src="./../assets/images/category.jpg" alt=""> -->
-					<img v-if="currentCategory.preview_picture" :src="currentCategory.preview_picture ? 'https://api.roddom15.ru/storage/' + currentCategory.preview_picture : ''" alt="category_image">
+					<img v-if="currentCategory.preview_picture" :src="currentCategory.preview_picture ? currentCategory.preview_picture : ''" alt="category_image">
 					<span class="empty_preview"></span>
-					
+
 				</div>
 				<div class="midWrap content_box info_box">
 					<span class="the_title fontSize20 fontFamilyEB">{{ currentCategory.title }}</span>
@@ -42,16 +43,17 @@
 					<!-- <span @click="switchPopupInfo(true)" class="the_moreicon">Подробнее</span> -->
 					<span @click="this.switchMoreInfo()" class="the_moreicon"> {{ moreButton }}</span>
 					<!-- <span class="the_subtitle fontSize14">{{ currentCategory.info }}</span> -->
-					<span v-if="currentCategory.id !== 38" class="theButton buttonPrimary buttonOptimal marginAuto marginB12" @click="$router.push('/category_prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].buy_category }}</span>
+					<div v-if="Number(currentCategory.prices[0].price_for_category) == 0 && Number(currentCategory.prices[1].price_for_category) == 0 && Number(currentCategory.prices[2].price_for_category) == 0"></div>
+					<div v-else><span v-if="currentCategory.id !== 38" class="theButton buttonPrimary buttonOptimal marginAuto marginB12" @click="$router.push('/category_prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].buy_category }}</span></div>
 				</div>
 				<div class="bottomWrap content_box categories_box" >
-					<catalog-sub-element 
-					v-for="subCategory in currentCategoryList.data" 
+					<catalog-sub-element
+					v-for="subCategory in currentCategoryList.data"
 					:key="subCategory.id"
 					:subCategory="subCategory"
 					/>
 				</div>
-				<!-- <catalog-element 
+				<!-- <catalog-element
 					v-for="post in catalogList"
 					:post="post"
 					:key="post.id"
@@ -65,11 +67,11 @@
 			</div>
 
 			<!-- <bottom-line></bottom-line> -->
-			
+
 		</div>
 	</div>
-	
-	
+
+
 </template>
 
 
@@ -82,11 +84,11 @@ import {mapState, mapGetters, mapMutations, mapActions} from 'vuex';
 
 export default({
 
-	name: 'Category', 
+	name: 'Category',
 
 	components: {
 		CatalogSubElement,
-	}, 
+	},
 
 	props: {
 		category: {
@@ -111,7 +113,7 @@ export default({
 			currLoadingStatus: 'content/currLoadingStatus',
 			getInfos: 'getInfos',
 			currentCategory: 'content/currentCategory',
-			currentCategoryList: 'content/currentCategoryList', 
+			currentCategoryList: 'content/currentCategoryList',
 		}),
 	},
 
@@ -166,7 +168,7 @@ export default({
 	position: relative;
 	.fixed{
 		overflow: hidden;
-		// height: 
+		// height:
 	}
 	.contentWrap{
 		padding: 0;
@@ -195,12 +197,12 @@ export default({
 				width: calc(100% - 60px);
 			}
 		}
-				
+
 		.contentSubWrap.popupWrap{
 			width: 100%;
 			z-index: 105;
 			position: fixed;
-			left: 0; 
+			left: 0;
 			top: 40px;
 			// height: calc(100% - 45px);
 			padding: 16px 16px;
@@ -311,7 +313,7 @@ export default({
 					background-color: #FFEAEB;
 					border-radius: 99px;
 					padding: 5px 10px 5px;
-					
+
 				}
 				.the_subtitle{
 					display: block;

@@ -3,6 +3,7 @@ import { useTimer, useStopwatch, useTime } from 'vue-timer-hook'
 // import { auth } from "@/store/auth.module";
 import axios from 'axios';
 import { createStore } from 'vuex'
+import base from "@/base";
 
 export default createStore({
   state: {
@@ -78,7 +79,7 @@ export default createStore({
 			return state.oldLecture;
 		},
 
-		
+
 
   },
 
@@ -110,7 +111,7 @@ export default createStore({
 		setAvailableTimer(state, timerYes){
 			const time = new Date();
 			const timeDiff = Math.floor((new Date(timerYes) - new Date()) / 1000);
-			// console.log(timeDiff); 
+			// console.log(timeDiff);
 			if(timeDiff > 0){
 				time.setSeconds(time.getSeconds() + timeDiff );
 				const timerCounter = useTimer(time);
@@ -149,7 +150,7 @@ export default createStore({
 				state.content.todayLecture = JSON.parse(localStorage.todayLecture)
 			}
 		},
-		
+
 		switchBabyBornStatus(state, bool){
 			state.isMotherLocal = bool;
 			// state.currUser.user.is_mother = bool;
@@ -163,7 +164,7 @@ export default createStore({
 			state.catalogPrices = data;
 		},
 
-		
+
 
 
 		setUserData(state, data){
@@ -179,20 +180,20 @@ export default createStore({
 			window.scrollTo(0,0);
 		},
 		setAuthOut(state){
-			state.currUser = [];
+			state.currUser.access_token = '';
 			window.scrollTo(0,0);
 		},
-		
+
 		setAuthIn(state, user){
 			window.scrollTo(0,0);
 			state.currUser = user;
 			// state.isAuth = true;
 			// state.currUserToken = user.access_token;
 			// state.content.currUserToken = user.data.access_token;
-			
+
 			// actions.fetchInfos();
 
-			// const responseInfos = axios.get('https://api.roddom15.ru/v1/app/info', {
+			// const responseInfos = axios.get('https://api.roddom1.vip/v1/app/info', {
 			// 	headers: {
 			// 		Authorization: user.token_type + ' ' + user.access_token,
 			// 	}
@@ -209,7 +210,7 @@ export default createStore({
 			// state.currUser.user.baby_born = user.baby_born;
 		},
 
-		
+
 		setHomeTab(state){
 			state.curTab = 'home';
 			window.scrollTo(0,0);
@@ -222,9 +223,9 @@ export default createStore({
 			state.curTab = 'profile';
 			window.scrollTo(0,0);
 		},
-		
 
-		lockHeight(state){	
+
+		lockHeight(state){
 			state.heightLock = true;
 		},
 		unlockHeight(state){
@@ -240,7 +241,7 @@ export default createStore({
 			}, 300);
 		}
 
-		
+
   },
   actions: {
 
@@ -254,7 +255,7 @@ export default createStore({
 				try{
 					commit('setLoadingStatus', true);
 					setTimeout( async () => {
-						const response = await axios.get('https://api.roddom15.ru/v1/user/profile', {
+						const response = await axios.get(base.API_URL + '/user/profile', {
 							headers: {
 								Authorization: state.currUser.token_type + ' ' + state.currUser.access_token,
 							}
@@ -267,15 +268,15 @@ export default createStore({
 							commit('setAvailableTimer', false)
 						}
 						commit('setLoadingStatus', false);
-					}, 50 )	
-				} 
-				catch(e){} 
+					}, 50 )
+				}
+				catch(e){}
 				finally {}
 			}else{
 				// console.log('Вход не выполнен');
 			}
 
-			
+
 		},
 
 		async fetchInfos({state, commit}){
@@ -284,7 +285,7 @@ export default createStore({
 					commit('setLoadingStatus', true);
 					commit('setInfos', '');
 					setTimeout( async () => {
-						const response = await axios.get('https://api.roddom15.ru/v1/app/info', {
+						const response = await axios.get(base.API_URL + '/app/info', {
 							headers: {
 								Authorization: state.currUser.token_type + ' ' + state.currUser.access_token,
 							}
@@ -292,7 +293,7 @@ export default createStore({
 						commit('setInfos', response.data);
 						commit('setLoadingStatus', false);
 					}, 50 )
-					
+
 				} catch(e){
 					console.log(e);
 				} finally {}
@@ -303,20 +304,20 @@ export default createStore({
 
 
 
-		
+
 
 		// async fetchInfos({state, commit}){
 		// 	console.log('Запущен фетчинфос');
 		// 	try{
 		// 		setTimeout( async () => {
-		// 			const response = await axios.get('https://api.roddom15.ru/v1/app/info', {
+		// 			const response = await axios.get('https://api.roddom1.vip/v1/app/info', {
 		// 				headers: {
 		// 					Authorization: state.currUser.token_type + ' ' + state.currUser.access_token,
 		// 				}
 		// 			});
 		// 			commit('setInfos', response.data);
 		// 		}, 1000 )
-				
+
 		// 	} catch(e){
 		// 		// console.log('Ошибка');
 		// 	} finally {}
@@ -329,14 +330,14 @@ export default createStore({
 		// 		// пишем коммит, так как работаем с экшеном,
 		// 		// значением берем функцию setLoading из мутаций, вторым параметром передаем то, что хотим присвоить
 		// 		setTimeout( async () => {
-		// 			const response = await axios.post('https://api.roddom15.ru/v1/user/login', {
+		// 			const response = await axios.post('https://api.roddom1.vip/v1/user/login', {
 		// 			});
 		// 			// commit('setTotalPages', Math.ceil(response.headers['x-total-count'] / state.limit));
-				
+
 		// 			commit('setAuthIn', response.data);
-					
+
 		// 		}, 1000 )
-				
+
 		// 	} catch(e){
 		// 		console.log(e);
 		// 	} finally {}

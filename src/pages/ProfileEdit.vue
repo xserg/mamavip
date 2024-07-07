@@ -1,6 +1,6 @@
 <template>
   <div class="mainContainer">
-		<div class="contentWrap" :class="{hiddenWrap: deleteAccount, fixed: this.popupToDelete}">
+		<div class="contentWrap" :class="{ fixed: this.popupToDelete}">
 
 				<div class="notificationWrap flexWrap fontSize14" :class="{ ghostWrap: !this.showNotification }">
 					<p>Изменения сохранены</p>
@@ -53,6 +53,14 @@
 						<div class="info_wrap midWrap marginB12">
 							<div class="formWrap">
 
+                <label class="inputWrap" :class="{notValid: errors.polis }">
+									<span class="label">Полис</span>
+									<div class="inputBox">
+										<Field name="polis" placeholder="полис" :value="this.getCurrUser.user.polis" disabled=disabled />
+									</div>
+									<ErrorMessage class="errorTitle" name="polis" />
+								</label>
+
 								<label class="inputWrap" :class="{notValid: errors.name }">
 									<span class="label">Как вас зовут?</span>
 									<div class="inputBox">
@@ -84,13 +92,13 @@
 										<!-- <Field v-model="mobile" name="mobile" v-slot="{ field }" type="tel" placeholder="+7">
 											<input v-bind="field">
 										</Field> -->
-										
+
 									</div>
 									<ErrorMessage class="errorTitle" name="phone" value="Ошибка" />
 								</label>
-								
+
 							</div>
-							
+
 						</div>
 
 
@@ -120,7 +128,7 @@
 									</div>
 									<!-- <ErrorMessage class="errorTitle" name="baby_born" /> -->
 								</label>
-								
+
 							</div>
 
 							<div class="profile_dates">
@@ -129,14 +137,14 @@
 								<span class="reg_date">Дата регистрации: {{ date_reg }}</span>
 								<span class="setinfo_date">Дата заполнения профиля: {{ date_upd }}</span>
 							</div>
-							
+
 						</div>
 
 						<button ref="mainSubmitButton" class="profileSubmitButton">Отправить</button>
 
 
 					</Form>
-			
+
 
 					<div class="delete_wrap bottomWrap">
 						<span class="theButton buttonTransparent fontSize16" @click="popupToDeleteAccount('true')">Удалить мой аккаунт</span>
@@ -147,7 +155,7 @@
 
 				<!-- <bottom-line></bottom-line> -->
 
-			
+
 		</div>
 
 
@@ -184,6 +192,7 @@ import FileUpload from "@/components/FileUpload.vue";
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as yup from 'yup';
 import "yup-phone";
+import base from "@/base";
 
 export default {
   name: 'ProfileEdit',
@@ -220,7 +229,7 @@ export default {
 				then: yup.string().phone("", true, 'Введите корректный номер телефона'),
 				otherwise: yup.string(),
 			}),
-			
+
 			// phone: yup.string().matches(phoneRegExp, 'Phone number is not valid')
 		},
 		[
@@ -228,7 +237,7 @@ export default {
 		]
 		);
 		return {
-			schema, 
+			schema,
 		}
 	},
 
@@ -303,7 +312,7 @@ export default {
 				this.showNotificationPhoto = false;
 			}, 3000);
     },
-		
+
 
 		setPregnancyWeeks(){
 			if(this.getCurrUser.user.pregnancy_start){
@@ -317,7 +326,7 @@ export default {
 			}else{
 				this.pregnancyWeeks = 0;
 			}
-			
+
 		},
 
 		// Удалить аккаунт
@@ -330,10 +339,10 @@ export default {
 
 
 		requestDeleteProfile() {
-			
+
 			try{
 				setTimeout( async () => {
-					const response = await axios.delete('https://api.roddom15.ru/v1/user', {
+					const response = await axios.delete(base.API_URL + '/user', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							'Content-Type': 'application/json',
@@ -353,7 +362,7 @@ export default {
 							this.showNotificationDelete = false;
 						}, 3000);
 					}
-					
+
 				}, 500 );
 
 			} catch(e){
@@ -403,6 +412,10 @@ export default {
 				user.baby_born = formattedToday;
 			}
 
+			if(user.pregnancy_weeks > 40){
+				user.pregnancy_weeks = 40;
+			}
+
 			try{
 				// console.log(user);
 				// const values = {
@@ -415,7 +428,7 @@ export default {
 				// };
 				setTimeout( async () => {
 					const response = await
-						axios.put('https://api.roddom15.ru/v1/user/profile', user, {
+						axios.put(base.API_URL + '/user/profile', user, {
 							headers: {
 								Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 								'Content-Type': 'application/json',
@@ -423,10 +436,10 @@ export default {
   							'Access-Control-Allow-Origin': '*',
 							}
 						}
-					).catch(function (error) { 
-					if (error.response.status == 401){  
-						commit('setAuthOut')  
-					} else if (error.response){ 
+					).catch(function (error) {
+					if (error.response.status == 401){
+						commit('setAuthOut')
+					} else if (error.response){
 						setTimeout(() => {
 							this.showErrors = true;
 						}, 400);
@@ -460,13 +473,13 @@ export default {
 								this.showNotification = false;
 							}, 3000);
 						}
-						
+
 					}
 
 					// console.log(response);
 
 					// this.fetchUserData();
-					
+
 
 				}, 50 );
 			} catch(e){
@@ -564,7 +577,7 @@ export default {
 			bottom: 60px;
 		}
 
-	
+
 		.contentSubWrap.profile_wrap{
 			width: 100%;
 			padding: 16px 0;
@@ -600,7 +613,7 @@ export default {
 				position: absolute;
 				overflow: hidden;
 			}
-			
+
 			.photo_wrap{
 				background-color: #FFF;
 				padding: 16px;
@@ -650,7 +663,7 @@ export default {
 			.info_wrap{
 				background-color: #FFF;
 				padding: 20px 16px;
-				
+
 			}
 
 			.more_wrap{
@@ -663,7 +676,7 @@ export default {
 						font-size: 13px;
 						margin-bottom: 10px;
 						display: block;
-						
+
 					}
 					.reg_date{
 						font-size: 12px;
@@ -740,7 +753,7 @@ export default {
 
 				.errorTitle{}
 			}
-				
+
 
 		}
 

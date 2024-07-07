@@ -19,16 +19,17 @@
 					<!-- <span class="the_title fontSize20 fontFamilyEB">{{ this.getInfos.data.app_info[0].app_title }}</span> -->
 					<span class="the_subtitle fontSize20 fontFamilyEB">{{ this.getInfos.data.app_info[0].app_title }}</span>
 				</div>
-				<div class="info_wrap bottomWrap" v-if="this.notificationsData.data[0].date" >
-					<div 
-						class="the_notification"
-						v-for="notification in this.notificationsData.data"
-						:key="notification.id"
-					>
-						<div class="the_content" v-html="notification.text"></div>
-						<span class="the_date">{{ notification.date.getDate() }}.{{ notification.date.getMonth() + 1 }}.{{ notification.date.getFullYear() }} </span>
+				<div v-if="this.notificationsData.data[0]">
+					<div class="info_wrap bottomWrap" v-if="this.notificationsData.data[0].date" >
+						<div 
+							class="the_notification"
+							v-for="notification in this.notificationsData.data"
+							:key="notification.id"
+						>
+							<div class="the_content" v-html="notification.text"></div>
+							<span class="the_date" v-if="notification.date">{{ notification.date.getDate() }}.{{ notification.date.getMonth() + 1 < 10 ? '0' + Number(notification.date.getMonth() + 1) : notification.date.getMonth() + 1 }}.{{ notification.date.getFullYear() }} </span>
+						</div>
 					</div>
-					
 				</div>
 					<!-- <p>{{ this.getInfos.data.app_info[0].about_app }}</p>
 				</div> -->
@@ -85,7 +86,7 @@ export default {
 		loadStaticInfo(){
 			try{
 				setTimeout( async () => {
-					const responseInfos = await axios.get('https://api.roddom15.ru/v1/app/info', {
+					const responseInfos = await axios.get('https://api.roddom1.vip/v1/app/info', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}
@@ -100,14 +101,19 @@ export default {
 		getNotifications(){
 			try{
 				setTimeout( async () => {
-					const responseInfos = await axios.get('https://api.roddom15.ru/v1/notifications', {
+					const responseInfos = await axios.get('https://api.roddom1.vip/v1/notifications', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}
 					});
 					if(responseInfos){
 						responseInfos.data.data.forEach(function(data, ind) {
-							responseInfos.data.data[ind].date = new Date(data.date);
+							// if(responseInfos.data.data[ind]){
+							// 	if(responseInfos.data.data[ind].date){
+									responseInfos.data.data[ind].date = new Date(data.date);
+							// 	}
+							// }
+							
 						});
 						this.notificationsData = responseInfos.data;
 					}
@@ -178,7 +184,7 @@ export default {
 			bottom: 60px;
 		}
 		.the_notification{
-			margin-bottom: 16px;
+			margin-bottom: 22px;
 			
 			 .the_content{
 				margin-bottom: 4px;
@@ -241,6 +247,7 @@ export default {
 				background-color: #FFF;
 				padding: 16px;
 				color: #23292DB2;
+				padding-top: 22px;
 				p{
 					line-height: 150%;
 				}

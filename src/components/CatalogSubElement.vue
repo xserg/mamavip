@@ -4,24 +4,24 @@
 		<div class="the_subcategory_wrap">
 			<div class="the_subcategory_subwrap">
 				<div class="the_subcategory_box">
-					<img v-if="subCategory.preview_picture" :src="subCategory.preview_picture ? 'https://api.roddom15.ru/storage/' + subCategory.preview_picture : ''" alt="preview_image">
+					<img v-if="subCategory.preview_picture" :src="subCategory.preview_picture ? subCategory.preview_picture : ''" alt="preview_image">
 					<div class="bottom_line fontFamilyEB">{{ subCategory.title }}</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	
-	
+
+
 </template>
 
 
 <script>
 import {mapMutations, mapActions} from 'vuex';
-import router from "@/router/router";  
+import router from "@/router/router";
 
 export default({
 
-	name: 'CatalogElement', 
+	name: 'CatalogElement',
 
 	props: {
 		subCategory: {
@@ -44,8 +44,8 @@ export default({
     }),
 		// ...mapActions({
     //   fetchSubCategoryElements: 'content/fetchSubCategoryElements',
-    // }), 
-		
+    // }),
+
 
 		routeToElement(){
 			router.push('/catalog/' + this.subCategory.parent_slug + '/' + this.subCategory.slug);
@@ -68,8 +68,8 @@ export default({
 				}, 50);
 				// console.log('Кликнули по подкатегории');
 				// this.setCurrentSubCategory(this.subCategory);
-				// this.fetchSubCategoryElements(this.subCategory.id); 
-				// console.log(this.subCategory); 
+				// this.fetchSubCategoryElements(this.subCategory.id);
+				// console.log(this.subCategory);
 			}
 			this.startX = 0;
 
@@ -100,7 +100,7 @@ export default({
 			position: relative;
 			// filter: drop-shadow(0px -1px 8px rgba(253, 124, 132, 0.7));
 		}
-		
+
 		&::before{
 			content: '';
 			width: 100px;
@@ -137,7 +137,7 @@ export default({
 				top: 50%;
 				z-index: 5;
 			}
-			
+
 			// overflow: hidden;
 			.bottom_line{
 				background: rgba(255, 255, 255, 0.7);
@@ -149,7 +149,7 @@ export default({
 				z-index: 10;
 			}
 		}
-		
+
 
 	}
 }

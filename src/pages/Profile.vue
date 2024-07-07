@@ -15,7 +15,7 @@
 
 			<div class="topLine flexWrap">
 				<span class="theButton leftButton buttonTransparent ghostWrap">Назад</span>
-				<h1 class="theTitle alignCenter">Профиль</h1>
+				<h1 class="theTitle alignCenter">Профиль </h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
@@ -31,7 +31,7 @@
 					<div class="userinfo_box" v-else>
 						<div class="userinfo_card">
 							<div v-if="this.getCurrUser.user.photo_small" class="card_photo_wrap filled">
-								<img :src="this.getCurrUser.user.photo_small ? 'https://api.roddom15.ru/storage/' + this.getCurrUser.user.photo_small + '?' + Date.now() : ''" alt="profile_image">
+								<img :src="this.getCurrUser.user.photo_small ? this.getCurrUser.user.photo_small + '?' + Date.now() : ''" alt="profile_image">
 							</div>
 							<span v-else class="card_photo_wrap"></span>
 							<div class="card_info_wrap">
@@ -41,7 +41,6 @@
 									<span class="card_button theButton buttonTransparent buttonOptimal"></span>
 								</div>
 								<p v-if="!this.getCurrUser.user.name" class="the_info blockWrap fontSize14 alignCenter">Это необходимо, чтобы пользоваться сервисом</p>
-
 								<!-- <span class="card_name">Екатерина</span> -->
 								<span class="card_status fontSize14" v-if="this.getCurrUser.user.is_mother == 0 && this.getCurrUser.user.name && pregnancyWeeks < 39">Ваш срок — примерно {{ pregnancyWeeks }} недель(-и) </span>
 								<span class="card_status fontSize14" v-if="this.getCurrUser.user.is_mother == 0 && this.getCurrUser.user.name && pregnancyWeeks >= 39">Вас уже можно поздравить?</span>
@@ -63,7 +62,7 @@
 								<button class="user_info_button theButton buttonPrimary fontSize16" v-if="this.getCurrUser.user.is_mother == 0 && pregnancyWeeks >= 39">Отметить рождение малыша</button>
 							</Form>
 						</div>
-						
+
 					</div>
 				</div>
 
@@ -148,7 +147,7 @@
 				</div>
 			</div>
 			<!-- <bottom-line></bottom-line> -->
-			
+
 		</div>
 
 
@@ -167,13 +166,11 @@
 					<span class="the_title fontFamilyEB alignCenter">Поздравляем с рождением малыша!</span>
 				</div>
 				<div class="moreelements_wrap bottomWrap">
-					<div class="videoSliderWrap">
+					<div class="videoSliderWrap" v-if="getRecommendeds && getRecommendeds !== 'e'">
 
 						<span class="the_title">Посмотрите лекции из подборки</span>
 						<span class="the_subtitle marginB12 fontFamilyEB">Рекомендованное</span>
-
-						<elements-slider v-if="getPromopack.data" :posts="getPromopack.data"/>
-
+						<elements-slider v-if="getRecommendeds.length > 0" :posts="getRecommendeds"/>
 						<span class="theButton buttonTertiary buttonOptimal" @click="finishSelebrate">Позже</span>
 
 					</div>
@@ -183,7 +180,7 @@
 		</div>
 
 
-		
+
 
 
 	</div>
@@ -199,33 +196,50 @@ import {mapState, mapMutations, mapGetters, mapActions} from 'vuex';
 
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as yup from 'yup';
-import "yup-phone";
+import base from "@/base";
 
 export default {
   name: 'Profile',
 
 
+	// setup(){
+	// 	// const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+	// 	const schema = yup.object().shape({
+	// 		name: yup.string().required('Пожалуйста, заполните это поле').typeError('Поле обязателено').min(2, 'Поле должно содержать не менее 2 символов').label('Имя'),
+	// 		birthdate: yup.date().typeError('Введите дату рождения').max(new Date(), 'Выберете корректную дату').label('День рождения'),
+	// 		is_mother: yup.string().required('Пожалуйста, заполните это поле').typeError('Поле обязателено').min(1, 'Введите корректные данные').max(1, 'Введите корректные данные').label('Ребенок рожден'),
+	// 		pregnancy_weeks: yup.number().min(0, 'Введите корректный срок').max(40, 'Введите корректный срок').typeError().label('Количество недель'),
+	// 		baby_born: yup.date().typeError('Введите дату рождения малыша').max(new Date(), "Выберете корректную дату").label('День рождения'),
+	// 		phone: yup.string().when('mobile', {
+	// 			is: (value) => value?.length > 0,
+	// 			then: yup.string().phone("", true, 'Введите корректный номер телефона'),
+	// 			otherwise: yup.string(),
+	// 		}),
+	// 		// phone: yup.string().matches(phoneRegExp, 'Phone number is not valid')
+	// 	},
+	// 	[
+	// 		['phone', 'phone'],
+	// 	]
+	// 	);
+	// 	return {
+	// 		schema,
+	// 	}
+	// },
+
 	setup(){
-		// const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
+
 		const schema = yup.object().shape({
 			name: yup.string().required('Пожалуйста, заполните это поле').typeError('Поле обязателено').min(2, 'Поле должно содержать не менее 2 символов').label('Имя'),
-			birthdate: yup.date().typeError('Введите дату рождения').max(new Date(), 'Выберете корректную дату').label('День рождения'),
-			is_mother: yup.string().required('Пожалуйста, заполните это поле').typeError('Поле обязателено').min(1, 'Введите корректные данные').max(1, 'Введите корректные данные').label('Ребенок рожден'),
-			pregnancy_weeks: yup.number().min(0, 'Введите корректный срок').max(40, 'Введите корректный срок').typeError().label('Количество недель'),
-			baby_born: yup.date().typeError('Введите дату рождения малыша').max(new Date(), "Выберете корректную дату").label('День рождения'),
-			phone: yup.string().when('mobile', {
-				is: (value) => value?.length > 0,
-				then: yup.string().phone("", true, 'Введите корректный номер телефона'),
-				otherwise: yup.string(),
-			}),
-			// phone: yup.string().matches(phoneRegExp, 'Phone number is not valid')
+			birthdate: yup.date().typeError('Введите дату рождения').max(new Date(), 'Выберите корректную дату').label('День рождения'),
+			is_mother: yup.string().required('Пожалуйста, заполните это поле').typeError('Поле обязателено').label('Ребенок рожден'),
+			pregnancy_weeks: yup.string().typeError('Введите количество недель').label('Количество недель'),
+			baby_born: yup.string().label('Дата рождения ребенка'),
+			phone: yup.string().label('Телефон'),
 		},
-		[
-			['phone', 'phone'],
-		]
 		);
 		return {
-			schema, 
+			schema,
 		}
 	},
 
@@ -261,20 +275,35 @@ export default {
 		}),
 		...mapActions({
 			fetchUserData: 'fetchUserData',
-			fetchPromopack: 'content/fetchPromopack',
+			fetchRecommendeds: 'content/fetchRecommendeds',
 		}),
 
 
 		celebrateBirthday(user) {
-			if(user.pregnancy_weeks){
-				user.pregnancy_weeks = Math.round(user.pregnancy_weeks);
-			}else{
-				user.pregnancy_weeks = 0;
-			}
 			try{
-				setTimeout( () => {
-					const response = 
-						axios.put('https://api.roddom15.ru/v1/user/profile', user, {
+
+				if(!user.is_mother || user.is_mother == 0){
+					user.is_mother = 1;
+				}
+
+				const today = new Date();
+				const yyyy = today.getFullYear();
+				let mm = today.getMonth() + 1; // Months start at 0!
+				let dd = today.getDate();
+
+				if (dd < 10){dd = '0' + dd};
+				if (mm < 10){mm = '0' + mm};
+
+				const formattedToday = yyyy + '-' + mm + '-' + dd;
+				user.baby_born = formattedToday;
+
+				if(user.pregnancy_weeks > 40){
+					user.pregnancy_weeks = 40;
+				}
+
+				setTimeout( async () => {
+					const response = await
+						axios.put(base.API_URL + '/user/profile', user, {
 							headers: {
 								Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 								'Content-Type': 'application/json',
@@ -283,8 +312,13 @@ export default {
 							}
 						}
 					);
-					this.fetchUserData();
-					this.celebrateWrap = true;
+
+					if(response){
+						this.fetchUserData();
+						this.celebrateWrap = true;
+						this.fetchRecommendeds();
+					}
+
 				}, 500 );
 			} catch(e){
 				console.log(e);
@@ -358,8 +392,8 @@ export default {
 			try{
 				setTimeout( () => {
 					// console.log('Запустили выход из системы');
-					const response = 
-						axios.delete('https://api.roddom15.ru/v1/user/logout', {
+					const response =
+						axios.delete(base.API_URL + '/user/logout', {
 							headers: {
 								Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 								'Content-Type': 'application/json',
@@ -370,7 +404,7 @@ export default {
 					);
 					// console.log(response);
 
-					this.setAuthOut(), 
+					this.setAuthOut(),
 					this.setLogPage()
 
 				}, 500 );
@@ -390,12 +424,12 @@ export default {
 			getCurrUser: 'getCurrUser',
 			getLoadingStatus: 'getLoadingStatus',
 			getPromopack: 'content/getPromopack',
+			getRecommendeds: 'content/getRecommendeds',
 		})
 	},
 
 	mounted(){
 		this.fetchUserData();
-		this.fetchPromopack(9);
 		this.setPregnancyWeeks();
 		this.setBabyAge();
 	},
@@ -495,7 +529,7 @@ export default {
 				width: 100%;
 				position: relative;
 				padding: 6px 12px;
-				padding-right: calc(24px + 26px); 
+				padding-right: calc(24px + 26px);
 				border-radius: 16px;
 				margin-bottom: 4px;
 				&::after{
@@ -553,7 +587,7 @@ export default {
 					color: #23292D;
 				}
 			}
-			
+
 			.userinfo_wrap{
 				background-color: #FFF;
 				padding: 16px;
@@ -613,7 +647,7 @@ export default {
 								width: 100%;
 								height: 100%;
 							}
-							
+
 						}
 						.card_info_wrap{
 							display: flex;
@@ -702,7 +736,7 @@ export default {
 						margin-bottom: 12px;
 						color: #23292D;
 						padding: 0 16px;
-						padding-right: calc(24px + 26px); 
+						padding-right: calc(24px + 26px);
 						position: relative;
 						line-height: 24px;
 						font-size: 16px;
@@ -729,7 +763,7 @@ export default {
 
 				}
 			}
-			
+
 		}
 
 	}

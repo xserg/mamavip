@@ -37,7 +37,7 @@
 							<span class="request_status closed">Закрыта</span>
 
 							<div class="request_mess"><span class="reqest_mess_author">{{ tread.messages[tread.messages.length - 1].author.name }}:</span> <span v-html="tread.messages[tread.messages.length - 1].message.substr(0, 90)"/></div>
-							<span class="request_create">{{ tread.created_at }}</span>
+							<span class="request_create">{{ tread.created_at.getDate() }}.{{ tread.created_at.getMonth() + 1 < 10 ? '0' + Number(tread.created_at.getMonth() + 1) : tread.created_at.getMonth() + 1}}.{{ tread.created_at.getFullYear() }}</span>
 						</div>
 					
 						<!-- <div class="the_request" @click="routeToRequest">
@@ -197,6 +197,7 @@ export default {
 				}
 				.requests_list{
 					margin-top: 18px;
+					margin-bottom: 40px;
 					.requests_title{
 						margin-bottom: 10px;
 						font-size: 15px;

@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+import base from "@/base";
 
 export const contentModule = {
 	state: () => ({
@@ -9,13 +10,19 @@ export const contentModule = {
 		requests: [],
 
 		statusIsLoading: false,
+		ajaxStatus: false,
 
 		lectureAccess: '',
+
+		viewedLectures: 0,
 
 		savedLecturs: [],
 		purchasedLecturs: [],
 		watchedLecturs: [],
 		notViewedLecturs: [],
+
+		searchRes: [],
+		searchResQuantity: '',
 
 		// Отсюда сейчас идут "фильтры" по НЕПРОСМОТРЕННЫЕ, КУПЛЕННЫЕ, СОХРАНЕННЫЕ, ПРОСМОТРЕННЫЕ
 		posts: [],
@@ -23,6 +30,7 @@ export const contentModule = {
 		notViewPosts: [],
 
 		recommended: [],
+		recommendeds: [],
 
 		// unknow
 		sertificatesStatus: false,
@@ -57,14 +65,14 @@ export const contentModule = {
 		},
 		currentCategoryElementsError: false,
 
-		// Текущая ПОДКАТЕГОРИЯ 
+		// Текущая ПОДКАТЕГОРИЯ
 		currentSubCategory: {},
 		currentSubCategoryError: false,
 
-		currentSubCategoryElements: { 
+		currentSubCategoryElements: {
 			data: [],
 		},
-		currentSubCategorySameElements: { 
+		currentSubCategorySameElements: {
 			data: [],
 		},
 		currentSubCategoryElementsError: false,
@@ -73,14 +81,14 @@ export const contentModule = {
 		currentLecture: {},
 		currentLectureError: {},
 
-		post: 
+		post:
 			{
 				id: '10',
 				title: 'Компонент',
 				preview: 'https://images.unsplash.com/photo-1674581648641-6362c00ac9ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80'
 			},
 
-	
+
 
 	}),
 	getters: {
@@ -98,6 +106,9 @@ export const contentModule = {
 		// Универсальный статус-состоние загрузки
 		currLoadingStatus(state){
 			return state.statusIsLoading;
+		},
+		getAjaxStatus(state){
+			return state.ajaxStatus;
 		},
 
 		// unknow
@@ -118,6 +129,10 @@ export const contentModule = {
 			}
 		},
 
+		getRecommendeds(state){
+			return state.recommendeds;
+		},
+
 		getSaved(state){
 			return state.savedLecturs;
 		},
@@ -130,8 +145,8 @@ export const contentModule = {
 		getNotViewed(state){
 			return state.notViewedLecturs;
 		},
-		
-	
+
+
 		sortedElementsPromopack(state){
 			return state.posts;
 		},
@@ -172,7 +187,7 @@ export const contentModule = {
 		currentSubCategory(state){
 			return state.currentSubCategory;
 		},
-		// Элементы Подкатегории 
+		// Элементы Подкатегории
 		currentSubCategoryList(state){
 			return state.currentSubCategoryElements;
 		},
@@ -183,7 +198,7 @@ export const contentModule = {
 			}else{
 				return state.currentSubCategorySameElements = [];
 			}
-			
+
 		},
 
 		getCurrentLecture(state){
@@ -197,12 +212,25 @@ export const contentModule = {
 			return state.requests;
 		},
 
+		getSearch(state){
+			return state.searchRes;
+		},
+		getSearchTotal(state){
+			return state.searchResQuantity;
+		},
+
+
+		getViewedLectures(state){
+			return state.viewedLectures;
+		},
+
+
 
 		// Временный вывод сертификатов (ПЕРЕДЕЛАТЬ ПОД ТЕКУЩЕГО ЛЕКТОРА)
 		sertificateslist(state){
 			return state.sertificates;
 		},
-		
+
 	},
 	mutations: {
 
@@ -216,6 +244,10 @@ export const contentModule = {
 		// Вкл/Выкл статус загрузки
 		setStatusLoading(state, bool) {
 			state.statusIsLoading = bool
+		},
+
+		setAjaxStatus(state, bool) {
+			state.ajaxStatus = bool
 		},
 
 		// unknow
@@ -263,6 +295,9 @@ export const contentModule = {
 
 		setRecommended(state, elements){
 			state.recommended = elements;
+		},
+		setRecommendeds(state, elements){
+			state.recommendeds = elements;
 		},
 
 		setSaved(state, elements){
@@ -342,6 +377,53 @@ export const contentModule = {
 
 		setThreadMess(state, mess){
 			state.threadMess = mess;
+		},
+
+		setSearch(state, res){
+			state.searchRes = res;
+		},
+		setSearchMore(state, res){
+			// console.log(res);
+			// state.searchRes = res;
+			// const arr = res;
+			// state.searchRes.push(arr);
+			// const newArray = state.searchRes.concat(res);
+			// state.searchRes = newArray;
+
+			// res.foreach(r => {
+			// 	state.searchRes.push(r);
+			// })
+
+			// const combinedArray = state.searchRes.concat(res);
+			// state.searchRes = combinedArray;
+
+			const arr1 = state.searchRes;
+			const arr2 = res;
+			const combinedArray = arr1.concat(arr2);
+			const combine = [...combinedArray.filter(item => item !== '')]
+			state.searchRes = combine;
+
+
+			// const arr1 = state.searchRes;
+			// const arr2 = res;
+			// const comine = [...arr1.filter(item => item), ...arr2.filter(item => item)];
+			// state.searchRes = comine;
+		},
+		setSearchTotal(state, count){
+			state.searchResQuantity = count;
+		},
+
+
+		setViewedLectures(state, count){
+			if(count){
+				const viewedLecturesArray = count.filter(p => p.list_watched == 1);
+				if(viewedLecturesArray.length){
+					state.viewedLectures = viewedLecturesArray.length;
+				}else{
+					state.viewedLectures = 0;
+				}
+			}
+			// this.currentSubCategoryList.data.length
 		}
 
 
@@ -353,16 +435,27 @@ export const contentModule = {
 			try{
 				commit('setStatusLoading', true);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.roddom15.ru/v1/threads', {
+					const response = await axios.get('https://api.roddom1.vip/v1/threads', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
 					});
-					commit('setRequests', response.data);
+					const requests = response.data;
+					requests.data = requests.data.reverse();
+
+					if(requests.data){
+						requests.data.forEach(function(data, ind) {
+							requests.data[ind].created_at = new Date(data.created_at);
+						});
+						commit('setRequests', requests);
+					}else{
+						commit('setRequests', requests);
+					}
+
 					commit('setStatusLoading', false);
 					commit('setCatalogError', false);
 				}, 50 )
-				
+
 			} catch(e){
 				commit('setStatusLoading', false);
 				commit('setCatalogError', true);
@@ -375,8 +468,8 @@ export const contentModule = {
 				commit('setStatusLoading', true);
 				commit('setLectureAccess', '');
 				setTimeout( async () => {
-					const response = await axios.post('https://api.roddom15.ru/v1/lecture/1/watch', {}, {
-					// const response = await axios.post('https://api.roddom15.ru/v1/lecture/' + lectureId + '/watch', {}, {
+					const response = await axios.post(base.API_URL + '/lecture/1/watch', {}, {
+					// const response = await axios.post('https://api.roddom1.vip/v1/lecture/' + lectureId + '/watch', {}, {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -385,7 +478,7 @@ export const contentModule = {
 					commit('setLectureAccess', response.data.data);
 					commit('setStatusLoading', false);
 				}, 50 )
-				
+
 			} catch(e){
 				console.log(e);
 			} finally {}
@@ -396,8 +489,8 @@ export const contentModule = {
 			try{
 				commit('setStatusLoading', true);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.roddom15.ru/v1/lectors?per_page=100', {
-					// const response = await axios.get('https://api.roddom15.ru/v1/lectors', {
+					const response = await axios.get(base.API_URL + '/lectors?per_page=100', {
+					// const response = await axios.get('https://api.roddom1.vip/v1/lectors', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -405,18 +498,18 @@ export const contentModule = {
 					commit('setLectors', response.data);
 					commit('setStatusLoading', false);
 				}, 50 )
-				
+
 			} catch(e){
 				console.log(e);
 			} finally {}
 		},
 
 		async fetchCatLectors({state, rootState, commit}, categorySlug){
-			console.log(categorySlug);
+			// console.log(categorySlug);
 			try{
 				commit('setStatusLoading', true);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.roddom15.ru/v1/lectors/category/' + categorySlug, {
+					const response = await axios.get(base.API_URL + '/lectors/category/' + categorySlug, {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -424,7 +517,7 @@ export const contentModule = {
 					commit('setCatLectors', response.data);
 					commit('setStatusLoading', false);
 				}, 50 )
-				
+
 			} catch(e){
 				console.log(e);
 			} finally {}
@@ -438,7 +531,7 @@ export const contentModule = {
 				commit('setEmptyCurrentLector');
 				commit('setEmptyCurrentLectorElements');
 				setTimeout( async () => {
-					const response = await axios.get('https://api.roddom15.ru/v1/lector/' + lectorId, {
+					const response = await axios.get(base.API_URL + '/lector/' + lectorId, {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -447,7 +540,7 @@ export const contentModule = {
 					commit('setStatusLoading', false);
 					commit('setSertificatesStatus', true);
 				},50 )
-				
+
 			} catch(e){
 				console.log(e);
 				commit('setStatusLoading', false);
@@ -461,7 +554,7 @@ export const contentModule = {
 				commit('setSertificatesStatus', false);
 				commit('setEmptyCurrentLectorElements');
 				setTimeout( async () => {
-					const response = await axios.get('https://api.roddom15.ru/v1/lectures?per_page=1000&page=1&filter%5Blector_id%5D=' + lectorId + '&sort=-created_at', {
+					const response = await axios.get(base.API_URL + '/lectures?per_page=1000&page=1&filter%5Blector_id%5D=' + lectorId + '&sort=-created_at', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -471,7 +564,7 @@ export const contentModule = {
 					commit('setSertificatesStatus', true);
 					commit('setCurrentLectorElementsError', false);
 				}, 50 )
-				
+
 			} catch(e){
 				commit('setStatusLoading', false);
 				commit('setCurrentLectorElementsError', true);
@@ -483,7 +576,7 @@ export const contentModule = {
 			try{
 				commit('setStatusLoading', true);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.roddom15.ru/v1/categories', {
+					const response = await axios.get(base.API_URL + '/categories', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -492,7 +585,7 @@ export const contentModule = {
 					commit('setStatusLoading', false);
 					commit('setCatalogError', false);
 				}, 50 )
-				
+
 			} catch(e){
 				commit('setStatusLoading', false);
 				commit('setCatalogError', true);
@@ -506,7 +599,7 @@ export const contentModule = {
 				commit('setStatusLoading', true);
 				// commit('setRecommended', emptyData);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.roddom15.ru/v1/lectures?per_page=30&page=1&filter%5Brecommended%5D=1', {
+					const response = await axios.get(base.API_URL + '/lectures?per_page=30&page=1&filter%5Brecommended%5D=1', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -528,16 +621,44 @@ export const contentModule = {
 		},
 
 
+		async fetchRecommendeds({rootState, state, commit}){
+			try{
+				// const emptyData = '';
+				commit('setStatusLoading', true);
+				// commit('setRecommended', emptyData);
+				setTimeout( async () => {
+					const response = await axios.get(base.API_URL + '/lectures?per_page=30&page=1&filter%5Brecommended%5D=9', {
+						headers: {
+							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+						}
+					}).catch(function (error) { if (error.response.status !== 404){  commit('setRecommended', 'e')  } });
+					// console.log(response.data.data);
+					if(response.data){
+						commit('setRecommendeds', response.data.data);
+					}
+				}, 50 )
+			} catch(e){
+				setTimeout( () => {
+					commit('setStatusLoading', false);
+				}, 50);
+			} finally {
+				setTimeout( () => {
+					commit('setStatusLoading', false);
+				}, 50);
+			}
+		},
 
 
-		// ПОЛУЧЕНИЕ КАТЕГОРИИ 
+
+
+		// ПОЛУЧЕНИЕ КАТЕГОРИИ
 		fetchCurrentCategory({state, rootState, commit}, slug){
 			try{
 				if(slug){
 					commit('setStatusLoading', true);
 					commit('setCurrentCategory', []);
 					setTimeout( async () => {
-						const response = await axios.get('https://api.roddom15.ru/v1/category/' + slug, {
+						const response = await axios.get(base.API_URL + '/category/' + slug, {
 							headers: {
 								Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 							}
@@ -561,7 +682,7 @@ export const contentModule = {
 						commit('setStatusLoading', true);
 						commit('setCurrentCategoryElements', []);
 						setTimeout( async () => {
-							const response = await axios.get('https://api.roddom15.ru/v1/category/' + slug, {
+							const response = await axios.get(base.API_URL + '/category/' + slug, {
 								headers: {
 									Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 								}
@@ -576,8 +697,8 @@ export const contentModule = {
 					commit('setCurrentCategoryElementsError', true);
 				} finally {}
 		},
- 
- 
+
+
 
 		//Подгрузка ПодкатегориИ
 		fetchCurrentSubCategory({state, rootState, commit}, slug){
@@ -586,7 +707,7 @@ export const contentModule = {
 						commit('setStatusLoading', true);
 						commit('setCurrentSubCategory', '');
 						setTimeout( async () => {
-							const response = await axios.get('https://api.roddom15.ru/v1/category/' + slug, {
+							const response = await axios.get(base.API_URL + '/category/' + slug, {
 								headers: {
 									Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 								}
@@ -608,7 +729,7 @@ export const contentModule = {
 						commit('setStatusLoading', true);
 						commit('setCurrentSubCategoryElements', '');
 						setTimeout( async () => {
-						const response = await axios.get('https://api.roddom15.ru/v1/lectures?per_page=1000&page=1&filter%5Bcategory_id%5D=' + categoryId, {
+						const response = await axios.get(base.API_URL + '/lectures?per_page=1000&page=1&filter%5Bcategory_id%5D=' + categoryId, {
 							headers: {
 								Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 							}
@@ -618,7 +739,7 @@ export const contentModule = {
 						commit('setCurrentCategoryElementsError', false);
 					}, 50 )
 				}
-					
+
 				} catch(e){
 					commit('setStatusLoading', false);
 					commit('setCurrentSubCategoryElementsError', true);
@@ -633,7 +754,7 @@ export const contentModule = {
 					commit('setStatusLoading', true);
 					commit('setCurrentSubCategory', '');
 					setTimeout( async () => {
-						const response = await axios.get('https://api.roddom15.ru/v1/category/' + slug, {
+						const response = await axios.get(base.API_URL + '/category/' + slug, {
 							headers: {
 								Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 							}
@@ -641,7 +762,7 @@ export const contentModule = {
 						commit('setCurrentSubCategory', response.data.category);
 						commit('setCurrentSubCategoryElements', '');
 						setTimeout( async () => {
-							const responseElems = await axios.get('https://api.roddom15.ru/v1/lectures?per_page=1000&page=1&filter%5Bcategory_id%5D=' + response.data.category.id, {
+							const responseElems = await axios.get(base.API_URL + '/lectures?per_page=1000&page=1&filter%5Bcategory_id%5D=' + response.data.category.id, {
 								headers: {
 									Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 								}
@@ -650,7 +771,7 @@ export const contentModule = {
 
 							commit('setStatusLoading', false);
 							commit('setCurrentCategoryElementsError', false);
-							
+
 						}, 50 )
 					}, 50 )
 				}
@@ -668,7 +789,7 @@ export const contentModule = {
 					commit('setStatusLoading', true);
 					commit('setEmptyCurrentLecture');
 					setTimeout( async () => {
-						const response = await axios.get('https://api.roddom15.ru/v1/lecture/' + lectureId, {
+						const response = await axios.get(base.API_URL + '/lecture/' + lectureId, {
 							headers: {
 								Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 							}
@@ -693,7 +814,7 @@ export const contentModule = {
 				commit('setStatusLoading', true);
 				commit('setSaved', emptyData);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.roddom15.ru/v1/lectures?per_page=' + count + '&page=1&filter%5Bsaved%5D=1', {
+					const response = await axios.get(base.API_URL + '/lectures?per_page=' + count + '&page=1&filter%5Bsaved%5D=1', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -711,7 +832,7 @@ export const contentModule = {
 						commit('setStatusLoading', false);
 					}
 				}, 50 )
-				 
+
 			} catch(e){
 				setTimeout( () => {
 					commit('setStatusLoading', false);
@@ -730,7 +851,7 @@ export const contentModule = {
 				commit('setStatusLoading', true);
 				commit('setWatched', emptyData);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.roddom15.ru/v1/lectures?per_page=' + count + '&page=1&filter%5Blist-watched%5D=1', {
+					const response = await axios.get(base.API_URL + '/lectures?per_page=' + count + '&page=1&filter%5Blist-watched%5D=1', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -747,7 +868,7 @@ export const contentModule = {
 						commit('setStatusLoading', false);
 					}
 				}, 50 )
-				 
+
 			} catch(e){
 				setTimeout( () => {
 					commit('setStatusLoading', false);
@@ -766,7 +887,7 @@ export const contentModule = {
 				commit('setStatusLoading', true);
 				commit('setPurchased', emptyData);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.roddom15.ru/v1/lectures?per_page=' + count + '&page=1&filter%5Bpurchased%5D=1', {
+					const response = await axios.get(base.API_URL + '/lectures?per_page=' + count + '&page=1&filter%5Bpurchased%5D=1', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -783,7 +904,7 @@ export const contentModule = {
 						commit('setStatusLoading', false);
 					}
 				}, 50 )
-				 
+
 			} catch(e){
 				setTimeout( () => {
 					commit('setStatusLoading', false);
@@ -803,12 +924,12 @@ export const contentModule = {
 					commit('setStatusLoading', true);
 					commit('setNotViewed', emptyData);
 					setTimeout( async () => {
-						const response = await axios.get('https://api.roddom15.ru/v1/lectures?per_page=' + count + '&page=1&filter%5Bsaved%5D=1&filter%5Bnot_watched%5D=1', {
+						const response = await axios.get(base.API_URL + '/lectures?per_page=' + count + '&page=1&filter%5Bsaved%5D=1&filter%5Bnot_watched%5D=1', {
 							headers: {
 								Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 							}
 						}).catch(function (error) { if (error.response.status !== 404){  commit('setNotViewed', 'e')  } });
-						
+
 						if(response){
 							if(response.data.data){
 								commit('setNotViewed', response.data.data);
@@ -840,7 +961,7 @@ export const contentModule = {
 				commit('setStatusLoading', true);
 				commit('setPromopack', emptyData);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.roddom15.ru/v1/promopack?per_page=' + count + '&page=1', {
+					const response = await axios.get(base.API_URL + '/promopack?per_page=' + count + '&page=1', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -857,7 +978,7 @@ export const contentModule = {
 						commit('setStatusLoading', false);
 					}
 				}, 50 )
-				
+
 			} catch(e){
 				setTimeout( () => {
 					commit('setStatusLoading', false);
@@ -867,6 +988,149 @@ export const contentModule = {
 				setTimeout( () => {
 					commit('setStatusLoading', false);
 					commit('setPromopackError', false);
+				}, 50);
+			}
+		},
+
+
+
+		async fetchSearchTotal({state, rootState, commit}, category){
+			try{
+				// if(rootState.currUser.user.saved_lectures_count > 0 && rootState.currUser.user.watched_lectures_count > 0){}
+					const emptyData = '';
+					if(!category){
+						var searchRequest = base.API_URL + '/lectures?per_page=100000&page=1&include=category&sort=-created_at';
+					}else{
+						const filterCategory = Number(category);
+						var searchRequest = base.API_URL + '/lectures?per_page=100000&page=1&filter%5Bcategory_id%5D=' + filterCategory + '&include=category&sort=-created_at';
+					}
+					commit('setStatusLoading', true);
+					commit('setSearchTotal', emptyData);
+					setTimeout( async () => {
+						const response = await axios.get(searchRequest, {
+							headers: {
+								Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+							}
+						}).catch(function (error) { if (error.response.status !== 404){  commit('setSearchTotal', 'e')  } });
+
+						if(response){
+							if(response.data.data){
+								commit('setSearchTotal', response.data.data.length);
+								commit('setStatusLoading', false);
+							}else{
+								commit('setStatusLoading', false);
+							}
+						}else{
+							commit('setSearchTotal', 0);
+							commit('setStatusLoading', false);
+						}
+					}, 50 )
+				// }
+			} catch(e){
+				setTimeout( () => {
+					commit('setStatusLoading', false);
+				}, 50);
+			} finally {
+				setTimeout( () => {
+					commit('setStatusLoading', false);
+				}, 50);
+			}
+		},
+
+		async fetchSearch({state, rootState, commit}, confs){
+			try{
+				// if(rootState.currUser.user.saved_lectures_count > 0 && rootState.currUser.user.watched_lectures_count > 0){}
+				const emptyData = '';
+				if(!confs.page){
+					var page = 1;
+				}else{
+					var page = confs.page;
+				}
+				if(!confs.category){
+					var searchRequest = base.API_URL + '/lectures?per_page=12&page=' + page + '&include=category&sort=-created_at';
+				}else{
+					const filterCategory = Number(confs.category);
+					var searchRequest = base.API_URL + '/lectures?per_page=12&page=' + page + '&filter%5Bcategory_id%5D=' + filterCategory + '&include=category&sort=-created_at';
+				}
+				commit('setStatusLoading', true);
+				commit('setSearch', emptyData);
+				setTimeout( async () => {
+					const response = await axios.get(searchRequest, {
+						headers: {
+							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+						}
+					}).catch(function (error) { if (error.response.status !== 404){  commit('setSearch', 'e')  } });
+
+					if(response){
+						if(response.data.data){
+							commit('setSearch', response.data.data);
+							commit('setStatusLoading', false);
+						}else{
+							commit('setStatusLoading', false);
+						}
+					}else{
+						commit('setSearch', []);
+						commit('setStatusLoading', false);
+					}
+				}, 50 )
+				// }
+			} catch(e){
+				setTimeout( () => {
+					commit('setStatusLoading', false);
+				}, 50);
+			} finally {
+				setTimeout( () => {
+					commit('setStatusLoading', false);
+				}, 50);
+			}
+		},
+
+
+		async fetchSearchMore({state, rootState, commit}, confs){
+			try{
+				// if(rootState.currUser.user.saved_lectures_count > 0 && rootState.currUser.user.watched_lectures_count > 0){}
+					// const emptyData = '';
+					if(!confs.page){
+						var page = 1;
+					}else{
+						var page = confs.page;
+					}
+					if(!confs.category){
+						var searchRequest = base.API_URL + '/lectures?per_page=12&page=' + page + '&include=category&sort=-created_at';
+					}else{
+						const filterCategory = Number(confs.category);
+						var searchRequest = base.API_URL + '/lectures?per_page=12&page=' + page + '&filter%5Bcategory_id%5D=' + filterCategory + '&include=category&sort=-created_at';
+					}
+					commit('setAjaxStatus', true);
+					// commit('setSearchMore', emptyData);
+					setTimeout( async () => {
+						const response = await axios.get(searchRequest, {
+							headers: {
+								Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
+							}
+						}).catch(function (error) { if (error.response.status !== 404){  commit('setSearchMore', 'e')  } });
+
+						if(response){
+							// console.log(response.data.data);
+							if(response.data.data){
+								commit('setSearchMore', response.data.data);
+								commit('setAjaxStatus', false);
+							}else{
+								commit('setAjaxStatus', false);
+							}
+						}else{
+							commit('setSearchMore', []);
+							commit('setAjaxStatus', false);
+						}
+					}, 50 )
+				// }
+			} catch(e){
+				setTimeout( () => {
+					// commit('setStatusLoading', false);
+				}, 50);
+			} finally {
+				setTimeout( () => {
+					// commit('setStatusLoading', false);
 				}, 50);
 			}
 		},

@@ -3,26 +3,26 @@
 	<div class="the_element marginB12" @mousedown="handleMouseDown" @click="handleClick">
 		<div class="the_element_box">
 			<!-- <img src="./../assets/images/element.jpg" alt="element"> -->
-			<img v-if="filterTeacher.photo" :src="filterTeacher.photo ? 'https://api.roddom15.ru/storage/' + filterTeacher.photo : ''" alt="element">
+			<img v-if="filterTeacher.photo" :src="filterTeacher.photo ? filterTeacher.photo : ''" alt="element">
 		</div>
 		<!-- <h5 class="new_title">{{ teacher.name }}</h5> -->
-		<div class="teacher_title fontFamilyB fontSize14" style="font-size:13px !important;">{{ filterTeacher.name }}</div> 
+		<div class="teacher_title fontFamilyB fontSize14" style="font-size:13px !important;">{{ filterTeacher.name }}</div>
 		<!-- <span class="the_title fontFamilyB">{{ teacher.title }}</span> -->
 		<!-- <span class="the_title fontSize14 fontFamilyEB">Короткий заголовок у элемента</span> -->
 	</div>
-	
-	
+
+
 </template>
 
 
 <script>
 import {mapMutations, mapActions} from 'vuex';
-import router from "@/router/router"; 
+import router from "@/router/router";
 
 export default({
 
-	name: 'TeacherElement', 
- 
+	name: 'TeacherElement',
+
 	props: {
 		teacher: {
 			type: Object,
@@ -49,7 +49,7 @@ export default({
 		}),
 
 		routeToElement(){
-			router.push('/lectors/' + this.teacher.id); 
+			router.push('/lectors/' + this.teacher.id);
 		},
 
 		setTeacher(){
@@ -120,12 +120,12 @@ export default({
 		background-size: 35%;
 		margin-left: auto;
 		margin-right: auto;
-	
+
 		width: 65%;
 		min-width: 65%;
 		padding-top: 65%;
 		margin-bottom: 8px;
-					
+
 		img{
 			position: absolute;
 			left: 0;

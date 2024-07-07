@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'https://api.roddom15.ru/v1/user/';
+//const API_URL = 'https://api.roddom1.vip/v1/user/';
+const API_URL = 'http://roddom.test/v1/user/';
 
 class AuthService {
   login(user) {
@@ -14,10 +15,10 @@ class AuthService {
 				// 	Authorization: `Bearer 1|S5UQcrN2vnXSUfc8KoNh5xgEeipB2gyobh5Ms7IO`,
 				// },
       },
-			
-			
+
+
 			// {headers: { 'Authorization' : 'Bearer '+ api_token}}
-			
+
 			)
       .then(response => {
 				// console.log('Проверка №103');

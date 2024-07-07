@@ -82,7 +82,7 @@ export default {
 		loadStaticInfo(){
 			try{
 				setTimeout( async () => {
-					const responseInfos = await axios.get('https://api.roddom15.ru/v1/app/info', {
+					const responseInfos = await axios.get('https://api.roddom1.vip/v1/app/info', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}

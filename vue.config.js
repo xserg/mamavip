@@ -3,6 +3,7 @@ module.exports = defineConfig({
   transpileDependencies: true,
 	devServer: {
 		// https: true,
-		proxy: 'https://api.roddom15.ru/',
+		//proxy: 'https://api.roddom1.vip/',
+    proxy: 'http://roddom.test/',
 	}
 })

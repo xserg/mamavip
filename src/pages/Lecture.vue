@@ -51,23 +51,23 @@
 				<h1 class="theTitle alignCenter" v-if="getCurrentLecture.content_type.type == 'kinescope' || getCurrentLecture.content_type.title == 'kinescope' ">Лекция</h1>
 				<h1 class="theTitle alignCenter" v-if="getCurrentLecture.content_type.type == 'embed' || getCurrentLecture.content_type.title == 'embed' ">Лекция</h1>
 				<h1 class="theTitle alignCenter" v-if="getCurrentLecture.content_type.type == 'pdf' || getCurrentLecture.content_type.title == 'pdf '">Материал</h1>
-				
+
 				<div class="buttons_wrap theButton rightButton flexWrap" v-if="!loadingStatus && getCurrentLecture.id">
 					<button v-if="getCurrUser.user.name !== null" class="theButton rightButton buttonTransparent buttonWatched fontFamilyB" :class="{active: theWatched }" @click="addToWatched"></button>
 					<button v-if="getCurrUser.user.name !== null" class="theButton rightButton buttonTransparent buttonFav fontFamilyB" :class="{active: theFav }" @click="addToFav"></button>
 				</div>
 				<div class="buttons_wrap theButton rightButton flexWrap" v-else></div>
-				
+
 			</div>
 
-			<div class="contentSubWrap" v-if="!loadingStatus && getCurrentLecture.id"> 
+			<div class="contentSubWrap" v-if="!loadingStatus && getCurrentLecture.id">
 				<div class="contentCheck" v-if="getCurrUser.user.name !== null">
-					
+
 					<div class="kinescope_wrap" v-if="getCurrentLecture.content_type.type == 'kinescope' || getCurrentLecture.content_type.title == 'kinescope'">
 						<div class="topWrap content_box info_box marginB12"> <!-- :class="{active: this.startLecture }" -->
 							<!-- <div class="video_iframe_kinescope">
-								<iframe 
-									:src="currentLectureLink" 
+								<iframe
+									:src="currentLectureLink"
 									frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
 								>
 								</iframe>
@@ -75,11 +75,11 @@
 							<div class="video_wrap" :class="{active: this.startLecture }" v-if="!getCurrentLecture.is_free || getCurrentLecture.purchase_info.is_purchased || !getAvailableTimer || getTodayLecture == getCurrentLecture.id">
 								<div class="video_starter" @click="startWatchLecture" v-if="getCurrentLecture.is_free && !getAvailableTimer || getCurrentLecture.purchase_info.is_purchased || getTodayLecture == getCurrentLecture.id"></div>
 								<!-- <div class="video_starter" @click="startWatchLecture"></div> -->
-								<img class="video_preview" v-if="getCurrentLecture.preview_picture" :src="getCurrentLecture.preview_picture ? 'https://api.roddom15.ru/storage/' + getCurrentLecture.preview_picture : ''" alt="preview" />
+								<img class="video_preview" v-if="getCurrentLecture.preview_picture" :src="getCurrentLecture.preview_picture ? getCurrentLecture.preview_picture : ''" alt="preview" />
 								<span class="video_nopreview" v-else alt="preview" />
 								<div class="video_iframe">
-									<iframe 
-										:src="currentLectureLink" 
+									<iframe
+										:src="currentLectureLink"
 										frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
 									>
 									</iframe>
@@ -103,8 +103,8 @@
 								<span class="the_status rating" v-else>{{ '-' }}</span> -->
 								<span class="the_title fontSize20 fontFamilyEB">{{ getCurrentLecture.title }}</span>
 							</div>
-						
-							
+
+
 							<!-- Условия для кнопок покупки BEGIN -->
 							<!-- Если карточка куплена -->
 							<div v-if="getCurrentLecture.purchase_info.is_purchased">
@@ -159,20 +159,20 @@
 						</div>
 					</div>
 
-					
+
 					<div class="pdf_wrap" v-if="getCurrentLecture.content_type.type == 'pdf' || getCurrentLecture.content_type.title == 'pdf'">
 						<div class="topWrap content_box info_box marginB12">
 
 							<div class="video_wrap" :class="{active: this.startLecture }" v-if="getCurrentLecture.is_free || getCurrentLecture.purchase_info.is_purchased || !getAvailableTimer || getTodayLecture == getCurrentLecture.id">
 								<div class="pdf_downloader" @click="startWatchLecture" v-if="getCurrentLecture.is_free && !getAvailableTimer || getCurrentLecture.purchase_info.is_purchased || getTodayLecture == getCurrentLecture.id"></div>
 								<!-- <div class="video_starter" @click="startWatchLecture"></div> -->
-								<img class="video_preview" v-if="getCurrentLecture.preview_picture" :src="getCurrentLecture.preview_picture ? 'https://api.roddom15.ru/storage/' + getCurrentLecture.preview_picture : ''" alt="preview" />
+								<img class="video_preview" v-if="getCurrentLecture.preview_picture" :src="getCurrentLecture.preview_picture ? getCurrentLecture.preview_picture : ''" alt="preview" />
 								<span class="video_nopreview" v-else alt="preview" />
 								<div class="video_iframe">
-									<iframe 
-										:src="currentLectureLink" 
-										frameborder="0" 
-										allow="autoplay; fullscreen; picture-in-picture; encrypted-media;" 
+									<iframe
+										:src="currentLectureLink"
+										frameborder="0"
+										allow="autoplay; fullscreen; picture-in-picture; encrypted-media;"
 										allowfullscreen>
 									</iframe>
 								</div>
@@ -257,7 +257,7 @@
 							<div class="video_wrap" :class="{active: this.startLecture }" v-if="getCurrentLecture.is_free || getCurrentLecture.purchase_info.is_purchased || !getAvailableTimer || getTodayLecture == getCurrentLecture.id ">
 								<div class="video_starter" @click="startWatchLecture" v-if="getCurrentLecture.is_free && !getAvailableTimer || getCurrentLecture.purchase_info.is_purchased || getTodayLecture == getCurrentLecture.id"></div>
 								<!-- <div class="video_starter" @click="startWatchLecture"></div> -->
-								<img class="video_preview" v-if="getCurrentLecture.preview_picture" :src="getCurrentLecture.preview_picture ? 'https://api.roddom15.ru/storage/' + getCurrentLecture.preview_picture : ''" alt="preview" />
+								<img class="video_preview" v-if="getCurrentLecture.preview_picture" :src="getCurrentLecture.preview_picture ? getCurrentLecture.preview_picture : ''" alt="preview" />
 								<span class="video_nopreview" v-else alt="preview" />
 								<div class="video_iframe">
 									<div class="iframe_box" v-html="currentLectureEmbedLink"></div>
@@ -351,7 +351,7 @@
 						<div class="userinfo_box" v-if="getCurrentLecture.lector">
 							<a class="userinfo_card" @click=" this.fetchCurrentLector(getCurrentLecture.lector.id), $router.push('/lectors/' + getCurrentLecture.lector.id ), setRouterAnimate">
 								<div class="card_photo_wrap" v-if="getCurrentLecture.lector.photo" :class="{filled: getCurrentLecture.lector.photo}">
-									<img :src="getCurrentLecture.lector.photo ? 'https://api.roddom15.ru/storage/' + getCurrentLecture.lector.photo : ''" alt="lector_photo">
+									<img :src="getCurrentLecture.lector.photo ? getCurrentLecture.lector.photo : ''" alt="lector_photo">
 								</div>
 								<div class="card_info_wrap">
 									<!-- <span class="card_name">Заполните профиль</span> -->
@@ -359,7 +359,7 @@
 									<span class="card_status fontSize14">Лектор</span>
 									<span class="card_button theButton buttonTransparent buttonOptimal"></span>
 								</div>
-								
+
 							</a>
 						</div>
 					</div>
@@ -368,7 +368,7 @@
 					<div class="midWrap content_box elements_box marginB12" v-if="currentSubCategoryListFilter.length && !currLoadingStatus && !loadingStatus && currentSubCategory.title && this.getInfos.data">
 						<span class="the_subtitle fontSize14">{{ this.getInfos.data.app_info[0].more_in_the_collection }}</span>
 						<a @click="$router.push('/catalog/' + this.currentSubCategory.parent_slug + '/' + this.currentSubCategory.slug), setRouterAnimate()" class="the_title fontSize20 fontFamilyEB">{{ currentSubCategory.title }}</a>
-						<elements-slider 
+						<elements-slider
 							v-if="currentSubCategoryListFilter.length > 0"
 							:posts="currentSubCategoryListFilter"
 						/>
@@ -377,7 +377,7 @@
 					<div class="midWrap feedback_box content_box elements_box marginB12" v-if="!currLoadingStatus && !loadingStatus">
 						<span class="the_subtitle fontSize14">Напиши автору лекции</span>
 						<span class="the_title fontSize20 fontFamilyEB">Обратная связь</span>
-						
+
 						<Form @submit="sendFeedback" v-slot="{ errors }" class="formWrap" v-if="!formWasSent">
 							<label class="inputWrap" :class="{notValid: errors.mess }">
 								<div class="inputBox">
@@ -395,7 +395,7 @@
 						<div class="sentSuccess" v-else>{{this.getInfos.data.app_info[0].thanks_for_feedback}}</div>
 
 					</div>
-					
+
 
 					<div class="bottomWrap moreinfo_box content_box">
 						<p>Представленные материалы не являются лечением или руководством к действию. Перед любыми действиями требуется консультация специалиста. Просматривая материалы вы подтверждаете факт ознакомления с <router-link class="the_link" to="/policy" @click="setRouterAnimate">обязательным соглашением</router-link></p>
@@ -408,7 +408,7 @@
 							<span class="the_desc fontSize14">Попробуйте обновить страницу или поискать в другом месте</span>
 							<span class="theButton buttonTertiary buttonOptimal">Обновить</span>
 						</div>
-					</div> 
+					</div>
 
 					<div class="bottomWrap error_wrap">
 						<div class="error_subwrap flexWrap">
@@ -419,7 +419,7 @@
 							<span class="theButton buttonTertiary buttonOptimal">Обновить</span>
 						</div>
 					</div> -->
-				
+
 				</div>
 
 				<div class="contentSubWrap contentCompleteProfile" v-else>
@@ -433,7 +433,7 @@
 
 			</div>
 
-		
+
 			<div class="contentSubWrap" v-else>
 				<div class="midWrap content_box info_box roller_box">
 					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
@@ -441,10 +441,10 @@
 			</div>
 
 
-			
+
 
 			<!-- {{ timerCounter.minutes }}: {{ timerCounter.seconds }}
-			
+
 			{{ test }}
 
 			<br><br>
@@ -456,16 +456,16 @@
 		<!-- {{ getAvailableTimer.minutes }}:{{ getAvailableTimer.seconds }}
 
 		{{ getAvailableTimer.isExpired }} -->
-			
+
 		</div>
 	</div>
 
-	
+
 </template>
 
 
-<script> 
-// import KinescopePlayer from '@kinescope/vue-kinescope-player'; 
+<script>
+// import KinescopePlayer from '@kinescope/vue-kinescope-player';
 import { defineComponent, watchEffect, onMounted, ref } from "vue";
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import axios from 'axios';
@@ -473,19 +473,19 @@ import ElementsSlider from '@/components/ElementsSlider';
 // import { useTimer, useStopwatch, useTime } from 'vue-timer-hook';
 
 import {mapState, mapGetters, mapMutations, mapActions} from 'vuex';
-
+import base from "@/base";
 
 export default defineComponent({
 
-	
-	name: 'Lecture', 
+
+	name: 'Lecture',
 
 	components: {
 		Form,
-    Field, 
+    Field,
     ErrorMessage,
 		ElementsSlider,
-	}, 
+	},
 
 	data(){
 		return{
@@ -517,7 +517,7 @@ export default defineComponent({
 			setAvailableTimer: 'setAvailableTimer',
 			setTodayLecture: 'content/setTodayLecture',
     }),
-		
+
 		...mapActions({
 			fetchUserData: 'fetchUserData',
 			fetchCurrentLecture: 'content/fetchCurrentLecture',
@@ -547,7 +547,7 @@ export default defineComponent({
 				}
 				try{
 					setTimeout( async () => {
-						const response = await axios.post(' https://api.roddom15.ru/v1/lecture/' + this.getCurrentLecture.id + '/rate', filterRating, {
+						const response = await axios.post(base.API_URL + '/lecture/' + this.getCurrentLecture.id + '/rate', filterRating, {
 							headers: {
 								Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							}
@@ -556,7 +556,7 @@ export default defineComponent({
 							// console.log(response);
 							this.thePopup = false;
 							this.notificationMess = this.getInfos.data.app_info[0].thanks_for_rate;
-							
+
 							setTimeout(() => {
 							this.showNotification = true;
 							}, 400);
@@ -577,9 +577,9 @@ export default defineComponent({
 					}, 50 );
 
 
-					
-				} 
-				catch(e){} 
+
+				}
+				catch(e){}
 				finally {}
 
 			}
@@ -595,7 +595,7 @@ export default defineComponent({
 			// console.log(fiterValues);
 			try{
 				setTimeout( async () => {
-					const response = await axios.post(' https://api.roddom15.ru/v1/lecture/' + this.getCurrentLecture.id + '/feedback', fiterValues, {
+					const response = await axios.post(base.API_URL + '/lecture/' + this.getCurrentLecture.id + '/feedback', fiterValues, {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}
@@ -625,12 +625,12 @@ export default defineComponent({
 				}, 50 );
 
 
-				
-			} 
-			catch(e){} 
+
+			}
+			catch(e){}
 			finally {}
 		},
-		
+
 		goBack(){
 			// window.history.go(-1);
 			this.$router.go(-1);
@@ -641,15 +641,15 @@ export default defineComponent({
 				if(this.$router.currentRoute.value.params.id){
 					this.fetchCurrentLecture(this.$router.currentRoute.value.params.id);
 				}
-				
+
 				// console.log(this.$router.currentRoute.value.params.id);
 			}, 50);
 
-			
+
 			// const oldPath = this.$route.params.id;
 			// this.$router.go(-1);
 			// console.log(oldPath);
-			
+
 			// if(this.$route.params.id){
 			// 	this.fetchCurrentLecture(this.$route.params.id);
 			// 	this.$router.push('/videos/' + this.$route.params.id);
@@ -704,23 +704,23 @@ export default defineComponent({
 			// this.$refs.kinescope.player.play();
 			// console.log('Запрос на просмотр видео запущен');
 			// console.log(this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token);
-			
+
 			try{
 				setTimeout( async () => {
 
-					const response = await axios.post('https://api.roddom15.ru/v1/lecture/' + this.getCurrentLecture.id + '/watch', {}, {
+					const response = await axios.post(base.API_URL + '/lecture/' + this.getCurrentLecture.id + '/watch', {}, {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}
 					}).catch(function (error) { if (error.response){} });
 
-					// const headers = { 
+					// const headers = {
 					// 	"Authorization": this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 					// 	'Content-Type': 'application/json',
 					// 	'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
 					// 	'Access-Control-Allow-Origin': '*',
 					// };
-					// const response = await axios.post('https://api.roddom15.ru/v1/lecture/' + this.getCurrentLecture.id + '/watch', {}, { headers }
+					// const response = await axios.post('https://api.roddom1.vip/v1/lecture/' + this.getCurrentLecture.id + '/watch', {}, { headers }
 					// );
 
 					// console.log(response);
@@ -730,11 +730,11 @@ export default defineComponent({
 							this.currentLectureLink = 'https://kinescope.io/embed/' + response.data.data['content'];
 							this.setTodayLecture(this.getCurrentLecture.id);
 						}else if(this.getCurrentLecture.content_type.type == 'pdf' || this.getCurrentLecture.content_type.title == 'pdf'){
-							// const pdflink = 'https://roddom15.ru/' + response.data.data['content'];
+							// const pdflink = 'https://roddom1.vip/' + response.data.data['content'];
 							// this.$router.push(pdflink);
 							const pdflink = response.data.data['content'];
 							const anchor = document.createElement('a');
-							anchor.href = 'https://api.roddom15.ru/storage/' + pdflink;
+							anchor.href = 'https://api.roddom1.vip/storage/' + pdflink;
 							// console.log(pdflink);
 							anchor.target="_self";
 							anchor.click();
@@ -744,7 +744,7 @@ export default defineComponent({
 							this.currentLectureEmbedLink = response.data.data['content'];
 							this.setTodayLecture(this.getCurrentLecture.id);
 						}
-						
+
 					}else{
 						setTimeout(() => {
 							this.notificationMess = 'Во время загрузки видео произошла ошибка';
@@ -755,7 +755,7 @@ export default defineComponent({
 						}, 3000);
 						// console.log('Ошибка запроса');
 					}
-					
+
 					// this.setCurUserContent(response.data);
 				}, 50 );
 			} catch(e){
@@ -771,19 +771,19 @@ export default defineComponent({
 				// Удаляем из избранного
 				try{
 					setTimeout( () => {
-						const headers = { 
+						const headers = {
 							"Authorization": this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							'Content-Type': 'application/json',
 							'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
 							'Access-Control-Allow-Origin': '*',
 						};
-						const response = axios.delete('https://api.roddom15.ru/v1/lecture/' + this.getCurrentLecture.id + '/save', { headers });
+						const response = axios.delete(base.API_URL + '/lecture/' + this.getCurrentLecture.id + '/save', { headers });
 
 						// console.log(response);
 
 						this.theFav = false;
 						this.notificationMess = this.getInfos.data.app_info[0].removed_from_saved;
-						
+
 					}, 500 );
 				} catch(e){
 					this.notificationMess = 'Произошла ошибка во время удаления.';
@@ -800,19 +800,19 @@ export default defineComponent({
 				// Добавляем в избранное
 				try{
 					setTimeout( () => {
-						const headers = { 
+						const headers = {
 							"Authorization": this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							'Content-Type': 'application/json',
 							'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
 							'Access-Control-Allow-Origin': '*',
 						};
-						const response = axios.put('https://api.roddom15.ru/v1/lecture/' + this.getCurrentLecture.id + '/save', {}, { headers });
+						const response = axios.put(base.API_URL + '/lecture/' + this.getCurrentLecture.id + '/save', {}, { headers });
 
 						// console.log(response);
 
 						this.theFav = true;
 						this.notificationMess = this.getInfos.data.app_info[0].added_to_saved;
-						
+
 					}, 500 );
 				} catch(e){
 					this.notificationMess = 'Произошла ошибка во время сохранения.';
@@ -850,19 +850,19 @@ export default defineComponent({
 				// Удаляем из просмотренного
 				try{
 					setTimeout( () => {
-						const headers = { 
+						const headers = {
 							"Authorization": this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							'Content-Type': 'application/json',
 							'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
 							'Access-Control-Allow-Origin': '*',
 						};
-						const response = axios.delete('https://api.roddom15.ru/v1/lecture/' + this.getCurrentLecture.id + '/list-watch', { headers });
+						const response = axios.delete(base.API_URL + '/lecture/' + this.getCurrentLecture.id + '/list-watch', { headers });
 
 						// console.log(response);
 
 						this.theWatched = false;
 						this.notificationMess = this.getInfos.data.app_info[0].removed_from_watched;
-						
+
 					}, 500 );
 				} catch(e){
 					this.notificationMess = 'Произошла ошибка во время удаления.';
@@ -879,20 +879,20 @@ export default defineComponent({
 				// Добавляем в просмотренное
 				try{
 					setTimeout( () => {
-						const headers = { 
+						const headers = {
 							"Authorization": this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							'Content-Type': 'application/json',
 							'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
 							'Access-Control-Allow-Origin': '*',
 						};
-						const response = axios.put('https://api.roddom15.ru/v1/lecture/' + this.getCurrentLecture.id + '/list-watch', {}, { headers });
+						const response = axios.put(base.API_URL + '/lecture/' + this.getCurrentLecture.id + '/list-watch', {}, { headers });
 
 						// console.log(response);
 
 						this.theWatched = true;
 						this.notificationMess = this.getInfos.data.app_info[0].added_to_watched;
-						
-						
+
+
 					}, 500 );
 				} catch(e){
 					this.notificationMess = 'Произошла ошибка во время сохранения.';
@@ -916,10 +916,10 @@ export default defineComponent({
 		// },
 
 
-		
 
 
-		
+
+
 
 		hideMessages(){
 			this.showNotification = false;
@@ -980,19 +980,19 @@ export default defineComponent({
 		}),
 
 	},
- 
 
-	mounted() { 
+
+	mounted() {
 
 		this.fetchUserData();
 		this.setLoadingStatus(true);
 		if(this.getCurrentLecture.rates){
 			this.preRating(this.getCurrentLecture.rates.rate_user);
 		}
-		
+
 		// if(){}
 		this.fetchCurrentLecture(this.$route.params.id);
-		
+
 		// this.fetchCurrentCategoryElements(this.getCurrentLecture.parent_category_slug);
 		this.fetchCurrentSubCategory(this.getCurrentLecture.category_slug);
 		this.fetchCurrentSubCategoryElements(this.getCurrentLecture.category_id);
@@ -1027,22 +1027,22 @@ export default defineComponent({
 			handler(newVal){
 
 				// this.fetchCurrentLecture(this.$route.params.id);
-				
+
 				this.setLoadingStatus(true);
-				
+
 				this.fetchCurrentCategoryElements(this.getCurrentLecture.parent_category_slug);
 				this.fetchCurrentSubCategory(this.getCurrentLecture.category_slug);
 				this.fetchCurrentSubCategoryElements(this.getCurrentLecture.category_id);
 
 				// this.checkLectureAccess(this.getCurrentLecture.id);
-				
+
 				this.checkTheFav();
 				this.checkTheWatched();
-				
+
 				if(this.getCurrentLecture.rates){
 					this.preRating(this.getCurrentLecture.rates.rate_user);
 				}
-				
+
 
 			},
 			deep: true
@@ -1057,7 +1057,7 @@ export default defineComponent({
 			deep: true
 		},
 
-		
+
 	},
 
 
@@ -1144,7 +1144,7 @@ export default defineComponent({
 			}
 		}
 
-		
+
 		.topLine{
 			.buttons_wrap{
 				justify-content: flex-end;
@@ -1391,8 +1391,8 @@ export default defineComponent({
 							visibility: visible;
 						}
 					}
-					
-					
+
+
 				}
 				.top_titles{
 					position: relative;
@@ -1502,7 +1502,7 @@ export default defineComponent({
 					}
 				}
 			}
-			
+
 			.desc_box{
 				padding: 16px;
 				color: #23292DB2;
@@ -1608,7 +1608,7 @@ export default defineComponent({
 								background-color: transparent;
 							}
 						}
-						
+
 					}
 				}
 			}

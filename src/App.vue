@@ -5,19 +5,23 @@
 	</div>
 	<!-- v-touch-swipe.mouse.right="$router.go(-1)" -->
 	<div v-if="getCurrUser.access_token" class="appContainer">
-
-		<span v-if="!getCurrUser.user.is_notification_read && notificationData.data[0].date" class="myOverlay" :class="{active: !notificationStatus}" @click="turnOffNotification"></span>
-		<div v-if="!getCurrUser.user.is_notification_read && notificationData.data[0].date" class="myPopup" :class="{active: !notificationStatus}">
-			<span class="close_button" style="cursor:pointer;" @click="turnOffNotification"></span>
-			<div class="the_content_wrap">
-				<div class="the_content" v-html="notificationData.data[0].text" />
-				<span class="the_date" style="display:block;font-size:13px;color:#707171b2;">{{ notificationData.data[0].date.getDate() }}.{{ notificationData.data[0].date.getMonth() + 1 }}.{{ notificationData.data[0].date.getFullYear() }}</span>  
+		<div v-if="!getCurrUser.user.is_notification_read && notificationData.data[0]">
+			<span v-if="notificationData.data[0].date" class="myOverlay" :class="{active: !notificationStatus}" @click="turnOffNotification"></span>
+			<div v-if="notificationData.data[0].date" class="myPopup" :class="{active: !notificationStatus}">
+				<span class="close_button" style="cursor:pointer;" @click="turnOffNotification"></span>
+				<div class="the_content_wrap">
+					<span v-if="notificationData.data[0].date !== ''" class="the_date" style="display:block;font-size:13px;color:#707171b2;">{{ notificationData.data[0].date.getDate() }}.{{ notificationData.data[0].date.getMonth() + 1 < 10 ? '0' + Number(notificationData.data[0].date.getMonth() + 1) : notificationData.data[0].date.getMonth() + 1 }}.{{ notificationData.data[0].date.getFullYear() }}</span>
+					<div class="the_content" v-html="notificationData.data[0].text" />
+				</div>
+				<div class="buttons_wrap">
+					<span class="theButton buttonPrimary buttonOptimal" @click="turnOffNotification">OK</span>
+				</div>
 			</div>
 		</div>
-		
+
 		<router-view v-slot="{ Component }">
 			<!-- mode="out-in" -->
-			<transition 
+			<transition
 				:name="curRouterAnimate"
 				mode="out-in"
 			>
@@ -27,13 +31,13 @@
 		<bottom-line></bottom-line>
 		<div class="empty_layout" v-if="getCurrUser.access_token"></div>
 	</div>
-	
+
 </template>
 
 
 <script>
 
-// Импортирование компонентов  
+// Импортирование компонентов
 // import 'animate.css'
 import axios from 'axios';
 
@@ -42,7 +46,7 @@ import Registr from '@/pages/Registr';
 
 import { mapState, mapGetters, mapMutations, mapActions} from 'vuex';
 
-
+import base from "@/base";
 
 export default {
 	// Определяем компоненты
@@ -55,6 +59,7 @@ export default {
 			notificationData: {
 				data: [
 					{
+						date: '',
 						text: '',
 						id: 1,
 					},]
@@ -80,7 +85,7 @@ export default {
 		loadNotifications(){
 			try{
 				setTimeout( async () => {
-					const response = await axios.get('https://api.roddom15.ru/v1/notifications', {
+					const response = await axios.get(base.API_URL + '/notifications', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							'Content-Type': 'application/json',
@@ -91,9 +96,15 @@ export default {
 					// console.log(response);
 					if(response){
 						this.notificationData = response.data;
-						this.notificationData.data[0].date = new Date(response.data.data[0].date);
+
+						// console.log('Date: ' + this.notificationData.data[0].date);
+						if(this.notificationData.data[0]){
+							if(this.notificationData.data[0].date){
+								this.notificationData.data[0].date = new Date(response.data.data[0].date);
+							}
+						}
 					}
-					
+
 				}, 500 );
 
 			} catch(e){
@@ -105,7 +116,7 @@ export default {
 			this.notificationStatus = true;
 			try{
 				setTimeout( async () => {
-					const response = await axios.put('https://api.roddom15.ru/v1/notifications/read', {}, {
+					const response = await axios.put(base.API_URL + '/notifications/read', {}, {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							'Content-Type': 'application/json',
@@ -117,7 +128,7 @@ export default {
 					// if(response){
 					// 	console.log(response);
 					// }
-					
+
 				}, 500 );
 
 			} catch(e){
@@ -162,10 +173,28 @@ export default {
 
 		getCurrUser: {
 			handler(newVal){
-				this.switchNotificationStatus(newVal.user.is_notification_read);
+				if(this.getCurrUser.user){
+					if(!this.getCurrNotificationStatus){
+						this.loadNotifications();
+						this.switchNotificationStatus(false);
+					}
+				}
 			},
 			deep: true
-		}
+		},
+
+		// getCurrNotificationStatus: {
+		// 	handler(newVal){
+		// 		// this.switchNotificationStatus(newVal);
+		// 		console.log(newVal);
+		// 		// if(this.getCurrUser.user){
+		// 		// 	if(!this.getCurrNotificationStatus){
+		// 		// 		// this.loadNotifications();
+		// 		// 		// this.switchNotificationStatus(this.getCurrUser.user.is_notification_read);
+		// 		// 	}
+		// 		// }
+		// 	}, deep: true
+		// }
 
 	},
 
@@ -173,24 +202,25 @@ export default {
 		this.$store.commit('initialiseVuex')
 		// this.$store.commit('initialiseVuexContent');
 		// this.$store.dispatch("content/initialiseVuexContent");
-	}, 
+	},
 
 	mounted(){
 
 		if(this.getCurrUser.user){
 			this.fetchUserData();
 		};
-	
+
 		setTimeout( async () => {
 			if(this.getCurrUser.user){
 				if(!this.getCurrNotificationStatus){
 					this.loadNotifications();
-					this.switchNotificationStatus(this.getCurrUser.user.is_notification_read);
+					this.switchNotificationStatus(false);
 				}
 			}
 		}, 800 );
-		
+
 	},
+
 
 
 }
@@ -288,6 +318,7 @@ export default {
 	}
 
 	.myPopup{
+		background-color: #FFF;
 		position: absolute;
 		left: 50%;
 		top: 50%;
@@ -296,13 +327,22 @@ export default {
 		opacity: 0;
 		transform: translate(-50%, -48%);
 		display: flex;
+		flex-direction: column;
 		width: 100%;
 		max-width: 480px;
 		padding-left: 10px;
-		padding-right: 10px;
+		padding-right: 0px;
 		max-height: 90vh;
 		overflow-y: scroll;
 		transition: all .26s ease;
+		::-webkit-scrollbar-thumb{}
+		&::-webkit-scrollbar-track{
+			background-color: #FFF;
+		}
+		&::selection{
+			background-color: #FFF;
+			color: #FD7C84;
+		}
 		&.active{
 			visibility: visible;
 			opacity: 1;
@@ -311,7 +351,7 @@ export default {
 		.close_button{
 			display: block;
 			position: absolute;
-			right: 20px;
+			right: 10px;
 			top: 10px;
 			width: 30px;
 			min-width: 30px;
@@ -328,7 +368,15 @@ export default {
 			height: 100%;
 			padding: 25px 20px;
 			padding-right: 15%;
+
 		}
+		.buttons_wrap{
+			padding-bottom: 25px;
+			.theButton{
+				min-width: 220px;
+			}
+		}
+
 		.the_content{
 			h1,h2,h3,h4,h5,h6{
 				margin-bottom: 6px;
@@ -340,7 +388,10 @@ export default {
 		}
 	}
 
-
+	.mainContainer.fixed{
+		overflow: scroll;
+		overflow-x: hidden;
+	}
 	.authContainer{
 		height: 100%;
 		z-index: 10;
@@ -399,6 +450,13 @@ nav {
 	display: inline;
 }
 
+.mainContainer .contentWrap .the_notification .the_content{
+	font-size: 13px;
+}
+.mainContainer .contentWrap .the_notification .the_content p img{
+	display: block;
+	margin-bottom: 8px;
+}
 
 /* ------ @Media ------- */
 

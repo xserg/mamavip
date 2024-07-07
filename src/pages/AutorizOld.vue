@@ -366,12 +366,12 @@ export default defineComponent({
 			// this.fetchAuth(user);
 			try{
 				setTimeout( async () => {
-					const response = await axios.post('https://api.roddom15.ru/v1/user/login', user).catch(function (error) { if (error.response){} });
+					const response = await axios.post('https://api.roddom1.vip/v1/user/login', user).catch(function (error) { if (error.response){} });
 					if(response){
 						// console.log('Типо прошло');
 						this.setAuthIn(response.data);
 						setTimeout( async () => {
-						const responseInfos = await axios.get('https://api.roddom15.ru/v1/app/info', {
+						const responseInfos = await axios.get('https://api.roddom1.vip/v1/app/info', {
 								headers: {
 									Authorization: response.data.token_type + ' ' + response.data.access_token,
 								}
@@ -396,7 +396,7 @@ export default defineComponent({
 				
 
 
-				// const responseInfos = axios.get('https://api.roddom15.ru/v1/app/info', {
+				// const responseInfos = axios.get('https://api.roddom1.vip/v1/app/info', {
 				// 	headers: {
 				// 		Authorization: user.token_type + ' ' + user.access_token,
 				// 	}
@@ -450,7 +450,7 @@ export default defineComponent({
 			try{
 				setTimeout( async () => {
 					// console.log('Запрос на КОД');
-					const response = await axios.post('https://api.roddom15.ru/v1/password/forgot', this.curResetValues).catch(function (error) { if (error.response){} });
+					const response = await axios.post('https://api.roddom1.vip/v1/password/forgot', this.curResetValues).catch(function (error) { if (error.response){} });
 					// console.log(response);
 					if(response){
 						setTimeout(() => {
@@ -492,7 +492,7 @@ export default defineComponent({
 					setTimeout( async () => {
 						// console.log('Повторный запрос на КОД');
 						const response = 
-							await axios.post('https://api.roddom15.ru/v1/password/forgot', this.curResetValues).catch(function (error) { if (error.response){} });
+							await axios.post('https://api.roddom1.vip/v1/password/forgot', this.curResetValues).catch(function (error) { if (error.response){} });
 						// console.log(response);
 						if(response){
 							setTimeout(() => {
@@ -544,7 +544,7 @@ export default defineComponent({
 					this.curResetCode = values.code;
 					// console.log('Отправка кода на сброс пароля');
 					const response = 
-						await axios.post('https://api.roddom15.ru/v1/password/check', values).catch(function (error) { if (error.response){} });
+						await axios.post('https://api.roddom1.vip/v1/password/check', values).catch(function (error) { if (error.response){} });
 					// console.log(response);
 					if(response){
 						this.$refs.forgotCodeInput.reset();
@@ -582,7 +582,7 @@ export default defineComponent({
 					// console.log(params);
 
 					const response = 
-						await axios.post('https://api.roddom15.ru/v1/password/reset', params).catch(function (error) { if (error.response){} });
+						await axios.post('https://api.roddom1.vip/v1/password/reset', params).catch(function (error) { if (error.response){} });
 					// console.log(response);
 					if(response){
 						this.curStep = 'auth_login';

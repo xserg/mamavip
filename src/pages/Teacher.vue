@@ -38,7 +38,7 @@
 			</div>
 
 			<div class="topLine flexWrap">
-				
+
 				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack"></a>
 				<!-- <a @click="$router.push('/lectors/'), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack"></a> -->
 				<h1 class="theTitle alignCenter">Лектор</h1>
@@ -53,17 +53,17 @@
 				</div>
 				<!-- @before-change="lockHeight()"
 				@after-change="unlockHeight(), getCurSlide($refs.sertificateSlider.getCurrentSlide())"  -->
-				<agile 
-					ref="sertificateSlider" 
-					@after-change="getCurSlide($refs.sertificateSlider.getCurrentSlide())" 
-					:options="sliderOptions2" 
-					:infinite="getCurrentLector.diplomas.length > 2 ? true : false" 
-					:speed="400" 
-					:throttleDelay="100" 
-					:swipeDistance="10" 
-					:timing="'ease-in-out'" 
+				<agile
+					ref="sertificateSlider"
+					@after-change="getCurSlide($refs.sertificateSlider.getCurrentSlide())"
+					:options="sliderOptions2"
+					:infinite="getCurrentLector.diplomas.length > 2 ? true : false"
+					:speed="400"
+					:throttleDelay="100"
+					:swipeDistance="10"
+					:timing="'ease-in-out'"
 					:as-nav-for="asNavFor2" class="theSlider slider_wrap">
-					<div class="the_slide" 
+					<div class="the_slide"
 						v-for="(post, index) in getCurrentLector.diplomas"
 						:post="post"
 						:key="index"
@@ -71,12 +71,12 @@
 					>
 					<!-- @mousedown="mousedown($event)"
 					@mouseup="mouseup($event)" -->
-					<!-- @mousedown="handleMouseDownY" 
+					<!-- @mousedown="handleMouseDownY"
 						@click="handleClickY($event)" -->
 					<!-- @click="handleClickY($event)" -->
 						<div class="the_slide_box"
-						> 
-							<img :src="post.preview_picture ? 'https://api.roddom15.ru/storage/' + post.preview_picture : ''" alt="element">
+						>
+							<img :src="post.preview_picture ? post.preview_picture : ''" alt="element">
 						</div>
 					</div>
 				</agile>
@@ -87,7 +87,7 @@
 			<div class="contentSubWrap" v-if="!loadingStatus && getCurrentLector.id && !currLoadingStatus && this.getInfos">
 
 				<div class="photo_wrap topWrap marginB12">
-					<img v-if="getCurrentLector.photo" class="the_photo blockWrap the_photo_has" :src="getCurrentLector.photo ? 'https://api.roddom15.ru/storage/' + getCurrentLector.photo : ''" >
+					<img v-if="getCurrentLector.photo" class="the_photo blockWrap the_photo_has" :src="getCurrentLector.photo ? getCurrentLector.photo : ''" >
 					<span v-else class="the_photo theButton buttonTransparent blockWrap"></span>
 
 					<!-- Средняя общая оценка: <span class="the_status rating" :class="{active: getCurrentLector.rates.rate_user !== null}" v-if="getCurrentLector.rates.rate_avg !== null ">{{ Number(getCurrentLector.rates.rate_avg/2).toFixed(1) + '/' + 10/2  }}</span> -->
@@ -96,10 +96,10 @@
 
 					<span class="the_title blockWrap fontFamilyB">{{ getCurrentLector.name }}</span>
 					<p class="the_desc fontSize12 marginB12">{{ getCurrentLector.position }} • стаж: {{ lectorYears }} лет</p>
-				
+
 					<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" v-if="localRating >= 1" @click="showRPopup">Сменить оценку</span>
 					<span class="theButton buttonSecondary buttonOptimal marginAuto setRating" v-else @click="showRPopup">Поставить оценку</span>
-				</div> 
+				</div>
 
 				<div class="midWrap desc_box content_box marginB12">
 					<span class="the_title blockWrap fontFamilyEB fontSize20">{{this.getInfos.data.app_info[0].about_lector_title}}</span>
@@ -111,31 +111,31 @@
 					<span class="the_title fontFamilyEB fontSize20 blockWrap marginB12">{{this.getInfos.data.app_info[0].diplomas_title}}</span>
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
 					<div class="element_box">
-						
-						<agile 
+
+						<agile
 							@before-change="lockHeight()"
-							@after-change=" unlockHeight(), getCurSlide($refs.sertificateSlider.getCurrentSlide())" 
-							ref="sertificatesSlider" 
+							@after-change=" unlockHeight(), getCurSlide($refs.sertificateSlider.getCurrentSlide())"
+							ref="sertificatesSlider"
 							:options="sliderOptions1"
-							:infinite="getCurrentLector.diplomas.length > 2 ? true : false" 
-							:speed="400" 
-							:throttleDelay="100" 
-							:swipeDistance="10" 
-							:timing="'ease-in-out'" 
-							:as-nav-for="asNavFor1" 
+							:infinite="getCurrentLector.diplomas.length > 2 ? true : false"
+							:speed="400"
+							:throttleDelay="100"
+							:swipeDistance="10"
+							:timing="'ease-in-out'"
+							:as-nav-for="asNavFor1"
 							class="theSlider"
 							:class="{active: listLoaded}"
 						>
-							<div class="the_element" 
+							<div class="the_element"
 								v-for="(post, index) in getCurrentLector.diplomas"
 								:post="post"
 								:key="index"
 								:id="'serfs_slide_' + post.id"
-								@mousedown="handleMouseDown($event)" 
+								@mousedown="handleMouseDown($event)"
 								@click="handleClick(index, $event)"
 							>
-								<div class="the_element_box"> 
-									<img :src="post.preview_picture ? 'https://api.roddom15.ru/storage/' + post.preview_picture : ''" alt="element">
+								<div class="the_element_box">
+									<img :src="post.preview_picture ? post.preview_picture : ''" alt="element">
 								</div>
 							</div>
 						</agile>
@@ -146,7 +146,7 @@
 				<div class="recommended_box videos_box bottomWrap">
 
 					<span class="the_title fontFamilyEB fontSize20 blockWrap">{{this.getInfos.data.app_info[0].lectors_videos}}</span>
-					<elements-list 
+					<elements-list
 						class="contentSubWrap"
 						v-if="getCurrentLectorElements.data"
 						:posts="getCurrentLectorElements.data"
@@ -159,7 +159,7 @@
 
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Не пропустите новые лекции!</span> -->
 					<!-- <div class="element_box">
-						<element 
+						<element
 						:post="recommendationElement"
 						:key="recommendationElement.id"
 						/>
@@ -175,11 +175,11 @@
 			<!-- </div> -->
 
 			<!-- <bottom-line></bottom-line> -->
-			
+
 		</div>
 
 
-		
+
 
 
 
@@ -202,8 +202,8 @@ export default {
   name: 'Profile',
 
 
-	data(){ 
-		return{ 
+	data(){
+		return{
 
 			showNotification: false,
 			notificationMess: '',
@@ -224,7 +224,7 @@ export default {
 
 			currSlide: 0,
 			totalSlide: 0,
-			
+
 			lectorElements: [],
 
 			asNavFor1: [],
@@ -241,7 +241,7 @@ export default {
 						settings: {
 
 								slidesToShow: 2.25
-								
+
 						}
 					},
 					{
@@ -300,7 +300,7 @@ export default {
 
 
 	methods: {
- 
+
 		...mapMutations({
 			lockHeight: 'lockHeight',
 			unlockHeight: 'unlockHeight',
@@ -331,7 +331,7 @@ export default {
 				}
 				try{
 					setTimeout( async () => {
-						const response = await axios.post('https://api.roddom15.ru/v1/lector/' + this.getCurrentLector.id + '/rate', filterRating, {
+						const response = await axios.post('https://api.roddom1.vip/v1/lector/' + this.getCurrentLector.id + '/rate', filterRating, {
 							headers: {
 								Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							}
@@ -360,9 +360,9 @@ export default {
 					}, 50 );
 
 
-					
-				} 
-				catch(e){} 
+
+				}
+				catch(e){}
 				finally {}
 
 			}
@@ -417,7 +417,7 @@ export default {
     },
 
 		handleClick(index, event){
-			
+
 			// console.log(event.screenX);
     	const delta = Math.abs(event.screenX - this.startX);
 			if (delta > 10) {
@@ -436,7 +436,7 @@ export default {
 			this.loadingStatus = bool;
 		},
 
-	
+
 
 		refreshLectorElements(){
 			// this.currentLectorElements.data.multiget(0,1,2,3,4,5)
@@ -450,7 +450,7 @@ export default {
 			// setTimeout( async () => {
 			// 	this.listLoaded = true;
 			// }, 900);
-			
+
 		},
 
 
@@ -475,7 +475,7 @@ export default {
 
 
 	mounted () {
-		
+
 		this.fetchCurrentLector(this.$route.params.id);
 
 		this.setLoadingStatus(true);
@@ -694,7 +694,7 @@ export default {
 			padding: 16px 0px;
 			padding: 0;
 			background-color: #F3F5F6;
-			
+
 			.theSlider{
 				// height: 245px;
 				transition: all .45s cubic-bezier(1, -0.15, 0.63, 0.99);
@@ -787,19 +787,19 @@ export default {
 						margin-top: 24px;
 					}
 				}
-				
+
 				.contentSubWrap{
 					background-color: #FFF;
 					width: calc(100);
     			padding: 16px 0px 16px;
 				}
 			}
-			
+
 			.photo_wrap{
 				background-color: #FFF;
 				padding: 16px;
 				padding-top: 8px;
-				
+
 				.the_photo{
 					cursor: pointer;
 					margin: 0 auto;
@@ -818,7 +818,7 @@ export default {
 						margin-bottom: 12px;
 					}
 				}
-				.the_title{ 
+				.the_title{
 					margin: 0 auto;
 					margin-bottom: 4px;
 					text-align: center;
@@ -880,7 +880,7 @@ export default {
 					margin-bottom: 4px;
 				}
 				.desc_subbox{
-					height: auto; 
+					height: auto;
 					// max-height: 54px;
 					overflow: hidden;
 					// transition: opacity .8s ease, max-height .8s cubic-bezier(.08,1.1,.7,.98);
@@ -958,7 +958,7 @@ export default {
 @media screen and (max-width: 600px) {
 
 	.mainContainer{
-		.contentWrap{ 
+		.contentWrap{
 		}
 	}
 

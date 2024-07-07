@@ -2,24 +2,25 @@
 
 	<div class="mainContainer catalogSubCategory">
 
-		
+
 
 
 		<div class="contentWrap" v-if="currentSubCategory.title && !currLoadingStatus">
 
 			<div class="topLine flexWrap">
-				
+
 				<span class="theButton leftButton buttonTransparent buttonBack" @click="$router.go(-1), setRouterAnimate()"></span>
 				<!-- <span class="theButton leftButton buttonTransparent buttonBack" @click="$router.push('/catalog/' + this.currentSubCategory.parent_slug), setRouterAnimate()"></span> -->
-				 
+
 				<h1 class="theTitle alignCenter">{{ this.currentSubCategory.title }}</h1>
-				<span class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</span>
+				<!-- <span class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</span> -->
+				<router-link to="/search" @click="setRouterAnimate" class="theButton rightButton buttonTransparent fontFamilyB buttonSearch"></router-link>
 			</div>
 
 			<div class="contentSubWrap" >
 				<div class="topWrap content_box info_box marginB12">
 					<div class="img_wrap">
-						<img class="the_img" v-if="this.currentSubCategory.preview_picture" :src="this.currentSubCategory.preview_picture  ? 'https://api.roddom15.ru/storage/' + this.currentSubCategory.preview_picture : ''" alt="subcategory_image" />
+						<img class="the_img" v-if="this.currentSubCategory.preview_picture" :src="this.currentSubCategory.preview_picture  ? this.currentSubCategory.preview_picture : ''" alt="subcategory_image" />
 						<span class="empty_icon"></span>
 					</div>
 					<span class="the_title fontSize20 fontFamilyEB">{{ this.currentSubCategory.title }}</span>
@@ -30,19 +31,19 @@
 					<span class="theButton buttonPrimary buttonOptimal marginAuto marginB12" v-if="currentSubCategoryList.data && this.currentSubCategory.prices[0].price_for_category == null && this.currentSubCategory.prices[1].price_for_category !== null" @click="$router.push('/category_prices/'), setRouterAnimate()">Купить от {{ this.currentSubCategory.prices[1].price_for_category }}₽</span>
 					<span class="theButton buttonPrimary buttonOptimal marginAuto marginB12" v-if="currentSubCategoryList.data && this.currentSubCategory.prices[0].price_for_category == null && this.currentSubCategory.prices[1].price_for_category == null && this.currentSubCategory.prices[2].price_for_category !== null" @click="$router.push('/category_prices/'), setRouterAnimate()">Купить от {{ this.currentSubCategory.prices[2].price_for_category }}₽</span> -->
 
-					<span v-if="currentSubCategory.parent_id !== 38" class="theButton buttonPrimary buttonOptimal marginAuto marginB12" @click="$router.push('/subcategory_prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].buy_subcategory }}</span>
-
+					<div v-if="Number(currentSubCategory.prices[0].price_for_category) == 0 && Number(currentSubCategory.prices[1].price_for_category) == 0 && Number(currentSubCategory.prices[2].price_for_category) == 0"></div>
+					<div v-else><span v-if="currentSubCategory.parent_id !== 38" class="theButton buttonPrimary buttonOptimal marginAuto marginB12" @click="$router.push('/subcategory_prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].buy_subcategory }}</span></div>
 				</div>
 
 				<div v-if="currentSubCategoryList.data">
 
 					<div class="midWrap content_box elements_box marginB12" style="margin-bottom:12px;" v-if="currentSubCategoryList.data">
 						<span class="the_title fontSize20 fontFamilyEB">Лекции</span>
-						<span class="the_subtitle fontSize14">Всего: {{ this.currentSubCategoryList.data.length ? this.currentSubCategoryList.data.length : '-' }} • Просмотрено: {{viewedLectures}}</span>
-						<elements-list 
+						<span class="the_subtitle fontSize14">Всего: {{ this.currentSubCategoryList.data.length ? this.currentSubCategoryList.data.length : '-' }} • Просмотрено: {{getViewedLectures}}</span>
+						<elements-list
 							v-if="currentSubCategoryList.data.length > 0"
 							class="elements_list"
-							:posts="currentSubCategoryList.data" 
+							:posts="currentSubCategoryList.data"
 						/>
 					</div>
 
@@ -63,7 +64,7 @@
 						<!-- ЛЕКТОРЫ END -->
 					</div>
 				</div>
-				
+
 
 				<div v-else class="bottomWrap empty_wrap">
 					<div class="empty_subwrap flexWrap">
@@ -98,13 +99,13 @@
 				</div>
 			</div> -->
 
-			
 
 
-			
+
+
 
 			<!-- <bottom-line></bottom-line> -->
-			
+
 		</div>
 
 		<div class="contentWrap" v-else>
@@ -118,8 +119,8 @@
 
 
 	</div>
-	
-	
+
+
 </template>
 
 
@@ -134,13 +135,13 @@ import {mapState, mapGetters, mapMutations, mapActions} from 'vuex';
 
 export default({
 
-	name: 'SubCategory', 
+	name: 'SubCategory',
 
 	components: {
 		ElementsList,
 		TeacherSlider,
 		TeacherElement,
-	}, 
+	},
 
 	props: {
 		category: {
@@ -151,7 +152,7 @@ export default({
 
 	data(){
 		return{
-			viewedLectures: 0,
+			// viewedLectures: 0,
 			// post: {},
 		}
 	},
@@ -159,25 +160,26 @@ export default({
 	methods:{
     ...mapMutations({
       setRouterAnimate: 'setRouterAnimate',
+			setViewedLectures: 'content/setViewedLectures',
     }),
 		...mapActions({
 			fetchCurrentSubCategoryAndElements: 'content/fetchCurrentSubCategoryAndElements',
 			fetchCatLectors: 'content/fetchCatLectors',
-    }), 
-		
-		
+    }),
 
-		setViewedLectures(){
-			if(this.currentSubCategoryList.data){
-				const viewedLecturesArray = this.currentSubCategoryList.data.filter(p => p.list_watched == 1);
-				if(viewedLecturesArray.length){
-					this.viewedLectures = viewedLecturesArray.length
-				}else{
-					this.viewedLectures = 0;
-				}
-			}
-			// this.currentSubCategoryList.data.length
-		}
+
+
+		// setViewedLectures(){
+		// 	if(this.currentSubCategoryList.data){
+		// 		const viewedLecturesArray = this.currentSubCategoryList.data.filter(p => p.list_watched == 1);
+		// 		if(viewedLecturesArray.length){
+		// 			this.viewedLectures = viewedLecturesArray.length
+		// 		}else{
+		// 			this.viewedLectures = 0;
+		// 		}
+		// 	}
+		// 	// this.currentSubCategoryList.data.length
+		// }
 	},
 
 
@@ -191,21 +193,27 @@ export default({
 			currentSubCategory: 'content/currentSubCategory',
 			currentSubCategoryList: 'content/currentSubCategoryList',
 			catTeachersList: 'content/catTeachersList',
+			getViewedLectures: 'content/getViewedLectures',
 		}),
 	},
- 
+
 
 	mounted(){
 		// console.log(this.$route.params);
 		this.fetchCurrentSubCategoryAndElements(this.$route.params.slug);
-		this.setViewedLectures();
+		this.setViewedLectures(this.currentSubCategoryList.data);
 		this.fetchCatLectors(this.currentSubCategory.slug);
 	},
 
 	watch:{
+		currentSubCategoryList:{
+			handler(newVal){
+				this.setViewedLectures(this.currentSubCategoryList.data);
+			}, deep: true,
+		},
 		getCurrentLecture:{
 			handler(newVal){
-				this.setViewedLectures();
+				this.setViewedLectures(this.currentSubCategoryList.data);
 			}
 		},
 		currentSubCategory:{
@@ -369,7 +377,7 @@ export default({
 						display: block;
 						width: 32px;
 						height: 32px;
-						
+
 					}
 					img{
 						width: 100%;

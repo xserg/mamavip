@@ -17,7 +17,7 @@
 					<span class="the_status" v-if="this.threadMesses.data.status == 'open'">Открыта</span>
 					<span class="the_status closed" v-if="this.threadMesses.data.status == 'closed'">Закрыта</span>
 					<span class="the_subtitle fontSize20 fontFamilyEB">Заявка №{{ this.threadMesses.data.id }}</span>
-					<span class="the_created">Создана {{ this.threadMesses.data.created_at }}</span>
+					<span class="the_created">Создана {{ this.threadMesses.data.created_at.getDate() }}.{{ this.threadMesses.data.created_at.getMonth() + 1 < 10 ? '0' + Number(this.threadMesses.data.created_at.getMonth() + 1) : this.threadMesses.data.created_at.getMonth() + 1}}.{{ this.threadMesses.data.created_at.getFullYear() }}</span>
 					
 					<span class="white_us_empty" v-if="!this.threadMesses.data.messages[0]">Отправьте нам сообщение и мы вскоре ответим в этом обращении.</span>
 
@@ -33,9 +33,9 @@
 							>
 								<div class="content" v-html="message.message"/>
 								<div class="bottom_line">
-									<span class="time">{{ message.created_at }}</span>
-									<span class="person person_mamy">{{message.author.name}}</span>
-									<span class="person person_user">Вы</span>
+									<!-- <span class="person person_mamy">{{message.author.name}}</span>
+									<span class="person person_user">Вы</span> -->
+									<span class="time"> {{ message.created_at.getDate() }}.{{ message.created_at.getMonth() + 1 < 10 ? '0' + Number(message.created_at.getMonth() + 1) : message.created_at.getMonth() + 1}}.{{ message.created_at.getFullYear() }} <b></b>{{ message.created_at.getHours() + 1 < 10 ? '0' + Number(message.created_at.getHours() + 1) : message.created_at.getHours() + 1}}:{{ message.created_at.getMinutes() + 1 < 10 ? '0' + Number(message.created_at.getMinutes() + 1) : message.created_at.getMinutes() + 1}}</span>
 								</div>
 							</div>
 						</div>
@@ -103,7 +103,7 @@ export default {
 				const currThreadId = this.$router.currentRoute.value.params.id;
 				setTimeout( async () => {
 					const response = 
-					await axios.get('https://api.roddom15.ru/v1/threads/' + currThreadId, {
+					await axios.get('https://api.roddom1.vip/v1/threads/' + currThreadId, {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							'Content-Type': 'application/json',
@@ -114,7 +114,19 @@ export default {
 						return error.response;
 					} });
 					if(response){
-						this.threadMesses = response.data;
+
+						
+
+						if(response.data){
+							response.data.data.created_at = new Date(response.data.data.created_at);
+							response.data.data.messages.forEach(function(data, ind) {
+								response.data.data.messages[ind].created_at = new Date(data.created_at);
+							});
+							this.threadMesses = response.data;
+						}else{
+							this.threadMesses = response.data;
+						}
+
 					}else{
 						console.log('Во время загрузки обращения произошла ошибка:');
 						console.log(response);
@@ -133,7 +145,7 @@ export default {
 					const currThreadId = this.$router.currentRoute.value.params.id;
 					setTimeout( async () => {
 						const response = 
-						await axios.put('https://api.roddom15.ru/v1/threads/' + currThreadId, {message: newThreadMess}, {
+						await axios.put('https://api.roddom1.vip/v1/threads/' + currThreadId, {message: newThreadMess}, {
 							headers: {
 								Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 								'Content-Type': 'application/json',
@@ -144,12 +156,21 @@ export default {
 							return error.response;
 						} });
 						if(response){
-							console.log('Новое сообщение успешно отправлено');
-							console.log(response);
-							this.threadMesses.data.messages = response.data.data;
+							// console.log('Новое сообщение успешно отправлено');
+							// console.log(response);
+
+							if(response.data){
+								response.data.data.forEach(function(data, ind) {
+									response.data.data[ind].created_at = new Date(data.created_at);
+								});
+								this.threadMesses.data.messages = response.data.data;
+							}else{
+								this.threadMesses.data.messages = response.data.data;
+							}
+
 						}else{
-							console.log('Во время отправки сообщения произошла ошибка:');
-							console.log(response);
+							// console.log('Во время отправки сообщения произошла ошибка:');
+							// console.log(response);
 						}
 					}, 800);
 					
@@ -166,7 +187,7 @@ export default {
 				const currThreadId = this.$router.currentRoute.value.params.id;
 				setTimeout( async () => {
 					const response = 
-					await axios.delete('https://api.roddom15.ru/v1/threads/' + currThreadId, {
+					await axios.delete('https://api.roddom1.vip/v1/threads/' + currThreadId, {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							'Content-Type': 'application/json',
@@ -232,6 +253,7 @@ export default {
 			padding: 16px 0px;
 			padding: 0;
 			background-color: #F3F5F6;
+			margin-bottom: 50px;
 			// background-color: #fff;
 			.title_wrap{
 				background-color: #FFF;
@@ -375,10 +397,15 @@ export default {
 							.time{
 								font-size: 11px;
 								color: #23292D;
-								margin-right: 6px;
+								// margin-left: 10px;
 								display: block;
+								b{
+									display: inline-block;
+									width: 4px;
+								}
 							}
 							.person{
+								font-style: italic;
 								font-size: 11px;
 								color: #23292D;
 								display: block;

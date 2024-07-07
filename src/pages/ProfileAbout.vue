@@ -26,9 +26,10 @@
 			<div class="contentSubWrap popupWrap" v-if="popupInfo && !getLoadingStatus && this.getInfos.data">
 				<div class="infoWrap">
 					<!-- <h2>{{ this.getCurrentFaq.title }}</h2> -->
-					<!-- <img :src="this.getInfos.data.app_info[0].app_show_qr_link ? 'https://api.roddom15.ru/storage/' + this.getInfos.data.app_info[0].app_show_qr_link : '' "/> -->
-					<div class="qr_wrap" v-html="this.getCurrUser.user.ref.ref_link_qr"/>
-					<span class="share_qr" @click="shareQR()">Поделиться</span>
+					<!-- <img :src="this.getCurrUser.user.ref.ref_link_qr_png ? 'data:image/png;base64,' + this.getCurrUser.user.ref.ref_link_qr_png : '' "/> -->
+					<div ref='qrcode' class="qr_wrap" v-html="this.getCurrUser.user.ref.ref_link_qr"/>
+					<!-- <span class="share_qr qr_share_button" @click="navigatorShareQR()" v-if="navigatorShareSupported" >navigator.share поделиться</span> -->
+					<span class="share_qr" @click="shareQR">Скачать QR-код</span>
 				</div>
 			</div>
 
@@ -73,6 +74,7 @@
 
 <script>
 // @ is an alias to /src
+
 import {mapGetters, mapMutations, mapActions} from 'vuex';
 
 export default {
@@ -80,6 +82,7 @@ export default {
 
 	data(){
 		return{
+			navigatorShareSupported: false,
 			message: '',
 			popupInfo: false,
 			showNotification: false,
@@ -99,33 +102,32 @@ export default {
 		}),
 
 
-		shareQR() {
-      // iife here
-			const response = fetch('https://api.roddom15.ru/storage/' + this.getInfos.data.app_info[0].app_show_qr_link);
-			const blob = response.blob();
-			const filesArray = [
-				new File(
-					[blob],
-					'qr.jpg',
-					{
-						type: "image/jpeg",
-						lastModified: new Date().getTime()
-					}
-			)
-			];
-			const shareData = {
-				files: filesArray,
-			};
-			navigator.share(shareData);
 
+		navigatorShareCheck() {
+			if (navigator.share) {
+					this.navigatorShareSupported = true;
+			}
+		},
+		
+
+		navigatorShareQR(){},
+
+
+		shareQR() {
+			const imageUrl = 'data:image/png;base64,' + this.getCurrUser.user.ref.ref_link_qr_png;
+			const downloadLink = document.createElement('a');
+			downloadLink.href = imageUrl;
+			downloadLink.download = 'qrcode.png';
+			downloadLink.textContent = 'Поделиться';
+			downloadLink.click();
     },
 
 		copyLink(){
 			if (navigator.share) {
 				navigator.share({
-					title: 'roddom15.ru',
+					title: 'roddom1.vip',
 					text: 'Школа "Мам и Пап"',
-					url: 'https://roddom15.ru/',
+					url: 'https://roddom1.vip/',
 				});
 				setTimeout(() => {
 					this.showNotification = true;
@@ -155,15 +157,15 @@ export default {
 			if (navigator.share) {
 				if(this.getCurrUser.user.name){
 					navigator.share({
-						title: 'roddom15.ru',
+						title: 'roddom1.vip',
 						text: this.splitedInviteDesc[0] + this.getCurrUser.user.name + this.splitedInviteDesc[1], 
-						url: 'https://roddom15.ru/register?ref=' + this.getCurrUser.user.ref.token,
+						url: 'https://roddom1.vip/register?ref=' + this.getCurrUser.user.ref.token,
 					});
 				}else{
 					navigator.share({
-						title: 'roddom15.ru',
+						title: 'roddom1.vip',
 						text: this.splitedInviteDesc[0] + this.getCurrUser.user.email + this.splitedInviteDesc[1], 
-						url: 'https://roddom15.ru/register?ref=' + this.getCurrUser.user.ref.token,
+						url: 'https://roddom1.vip/register?ref=' + this.getCurrUser.user.ref.token,
 					});
 				}
 				setTimeout(() => {
@@ -175,10 +177,10 @@ export default {
 				}, 3000);
 			}else{
 				if(this.getCurrUser.user.name){
-					var copyText = this.splitedInviteDesc[0] + this.getCurrUser.user.name + this.splitedInviteDesc[1] + ' ' + 'https://roddom15.ru/register?ref=' + this.getCurrUser.user.ref.token;
+					var copyText = this.splitedInviteDesc[0] + this.getCurrUser.user.name + this.splitedInviteDesc[1] + ' ' + 'https://roddom1.vip/register?ref=' + this.getCurrUser.user.ref.token;
 					navigator.clipboard.writeText(copyText);
 				}else{
-					var copyText = this.splitedInviteDesc[0] + this.getCurrUser.user.email + this.splitedInviteDesc[1] + ' ' + 'https://roddom15.ru/register?ref=' + this.getCurrUser.user.ref.token;
+					var copyText = this.splitedInviteDesc[0] + this.getCurrUser.user.email + this.splitedInviteDesc[1] + ' ' + 'https://roddom1.vip/register?ref=' + this.getCurrUser.user.ref.token;
 					navigator.clipboard.writeText(copyText);
 				}
 				setTimeout(() => {
@@ -194,7 +196,7 @@ export default {
 		loadStaticInfo(){
 			try{
 				setTimeout( async () => {
-					const responseInfos = await axios.get('https://api.roddom15.ru/v1/app/info', {
+					const responseInfos = await axios.get('https://api.roddom1.vip/v1/app/info', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}
@@ -233,6 +235,7 @@ export default {
 		if(this.getInfos.data){
 			this.splitInviteDesc(this.getInfos.data.app_info[0].user_invites_you_to_join);
 		}
+		this.navigatorShareCheck();
 	},
 
 	watch:{
@@ -286,13 +289,14 @@ export default {
 			img{
 				display: block;
 				width: 100%;
-				max-width: 320px;
+				max-width: 250px;
 				margin: 16px auto;
 
 			}
 			.qr_wrap{
-				width: 250px;
-				height: 250px;
+				padding: 20px;
+				width: 290px;
+				height: 290px;
 				margin-left: auto;
 				margin-right: auto;
 				margin-top: 30px;
@@ -323,7 +327,7 @@ export default {
 					position: relative;
 					background-repeat: no-repeat;
 					background-size: contain;
-					background-image: url('./../assets/icons/share-icon.svg');
+					background-image: url('./../assets/icons/download.svg');
 				}
 			}
 		}

@@ -84,7 +84,7 @@ export default {
 
 
 	mounted(){
-		this.fetchSaved(1000);
+		this.fetchSaved(10000);
 	},
 
 }

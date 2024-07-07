@@ -5,7 +5,7 @@
 			<div class="topLine flexWrap">
 				<span class="theButton leftButton buttonTransparent ghostWrap">Назад</span>
 				<h1 class="theTitle alignCenter">Главное</h1>
-				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
+				<router-link to="/search" @click="setRouterAnimate" class="theButton rightButton buttonTransparent fontFamilyB buttonSearch"></router-link>
 			</div>
 
 			<div class="contentSubWrap" v-if="this.getInfos.data && this.getCurrUser">
@@ -16,11 +16,11 @@
 					<div class="userinfo_box">
 						<router-link class="userinfo_card" to="/profile/edit" @click="setRouterAnimate">
 							<div v-if="this.getCurrUser.user.photo_small" class="card_photo_wrap">
-								<img :src="this.getCurrUser.user.photo_small ? 'https://api.roddom15.ru/storage/' + this.getCurrUser.user.photo_small : ''" alt="profile_image">
+								<img :src="this.getCurrUser.user.photo_small ? this.getCurrUser.user.photo_small : ''" alt="profile_image">
 							</div>
 							<span v-else class="card_photo_wrap"></span>
 							<div class="card_info_wrap">
-								<span class="card_name" v-if="this.getCurrUser.user.name">Привет, {{ this.getCurrUser.user.name }}!</span>
+								<span class="card_name" v-if="this.getCurrUser.user.name">Привет, {{ this.getCurrUser.user.name }} 2!</span>
 								<div class="card_name" v-else>
 									<span class="the_value">Заполните профиль</span>
 									<span class="card_button theButton buttonTransparent buttonOptimal"></span>
@@ -30,20 +30,20 @@
 								<span class="card_status fontSize14" v-if="this.getCurrUser.user.name && this.getCurrUser.user.is_mother == 0 && pregnancyWeeks < 39">Ваш срок — примерно {{ pregnancyWeeks }} недель(-и)</span>
 								<span class="card_status fontSize14" v-if="this.getCurrUser.user.is_mother == 0 && pregnancyWeeks >= 39">Вас уже можно поздравить?</span>
 								<span class="card_status fontSize14" v-if="this.getCurrUser.user.is_mother == 1">{{ babyAge }}</span>
-								
+
 							</div>
-							
+
 						</router-link>
 					</div>
 				</div>
 				<!-- ПРОФИЛЬ END -->
 
-				
+
 
 				<!-- РЕКОМЕНДУЕМ -->
 
 				<div v-if="currLoadingStatus || !getCurrUser.user" class="recommended_box midWrap marginB12 roller_box">
-					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+					<div v-if="currLoadingStatus" class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 				</div>
 
 				<div v-if="getRecommended" class="recommended_box midWrap marginB12" :class="{recommended_box: getCurrUser.user.next_free_lecture_available == null || getAvailableTimer.isExpired, notavailable_box: getCurrUser.user.next_free_lecture_available !== null || !getAvailableTimer.isExpired, error_box: getRecommended === 'e' }">
@@ -51,11 +51,11 @@
 						<span class="the_title fontFamilyEB fontSize20 blockWrap">{{ this.getInfos.data.app_info[0].recommended_title }}</span>
 						<span class="the_subtitle marginB12 fontSize14 blockWrap">{{ this.getInfos.data.app_info[0].recommended_subtitle }}</span>
 						<div class="element_box" v-if="getRecommended && getRecommended !== 'e' ">
-							<element 
+							<element
 							v-if="getRecommended"
 							:post="getRecommended"
 							/>
-						</div> 
+						</div>
 						<div v-else class="roller_box">
 							<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 						</div>
@@ -65,7 +65,7 @@
 						<span class="mess_title fontFamilyEB">{{ getInfos.data.app_info[0].view_schedule }}</span>
 						<span class="mess_desc">{{ getInfos.data.app_info[0].watched_already }}<br>{{ getInfos.data.app_info[0].next_free_lecture_available_at }}<br>{{ getAvailableTimer.hours }} ч. {{ getAvailableTimer.minutes }} мин. {{ getAvailableTimer.seconds }} сек.</span>
 					</div>
-					
+
 					<div class="element_box" v-if="getRecommended === 'e'">
 						<img class="the_img" src="./../assets/images/noResponse.png">
 						<span class="info_title fontFamilyB">Данные не загрузились</span>
@@ -92,12 +92,12 @@
 				</div>
 
 				<div class="videos_box midWrap marginB12" v-if="getPromopack.data" :class="{error_box: getPromopack === 'e'}">
-					
+
 					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/promopack" @click="setRouterAnimate">Акции</router-link>
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
-					
+
 					<div class="element_box" v-if="getPromopack.data && getPromopack.data.length">
-						<elements-slider  
+						<elements-slider
 							:posts="getPromopack.data"
 						/>
 					</div>
@@ -117,13 +117,21 @@
 				<!-- ПРОМОПАК END -->
 
 
+				<!-- ПОИСК -->
+				<!-- <div class="search_box midWrap marginB12">
+					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/search" @click="setRouterAnimate">Поиск</router-link>
+
+				</div> -->
+				<!-- ПОИСК -->
+
+
 				<!-- КАТАЛОГ -->
 				<div class="midWrap marginB12" :class="{catalog_box: !catalogError, error_box: catalogError }" v-if="!catalogError">
 					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/catalog" @click="setRouterAnimate">{{ this.getInfos.data.app_info[0].lectures_catalog_title }}</router-link>
 					<span class="the_subtitle marginB12 fontSize14 blockWrap">{{ this.getInfos.data.app_info[0].lectures_catalog_subtitle }}</span>
-					
+
 					<div class="element_box" v-if="!catalogError">
-						<calalog-slider 
+						<calalog-slider
 							v-if="catalogList.data"
 							:posts="catalogList.data"
 						/>
@@ -148,7 +156,7 @@
 					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" to="/lectors" @click="setRouterAnimate">{{ this.getInfos.data.app_info[0].out_lectors_title }}</router-link>
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
 					<div class="element_box">
-						<!-- <element 
+						<!-- <element
 						:post="recommendationElement"
 						:key="recommendationElement.id"
 						/> -->
@@ -171,11 +179,11 @@
 					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" v-if="getNotViewed.length !== 0"  to="/forview" @click="setRouterAnimate">{{ this.getInfos.data.app_info[0].not_viewed_yet_title }}</router-link>
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
 					<div class="element_box" v-if="getNotViewed !== 'e' || getNotViewed.length !== 0">
-						<!-- <element 
+						<!-- <element
 						:post="recommendationElement"
 						:key="recommendationElement.id"
 						/> -->
-						<elements-slider 
+						<elements-slider
 							:posts="getNotViewed"
 						/>
 					</div>
@@ -186,13 +194,13 @@
 						<span class="theButton buttonTertiary buttonOptimal">Обновить</span>
 					</div>
 				</div>
-				
+
 				<!-- НЕ ПРОСМОТРЕННЫЕ END -->
 
 
 				<!-- <bottom-line></bottom-line> -->
 			</div>
-			
+
 		</div>
 	</div>
 </template>
@@ -260,6 +268,7 @@ export default {
 			fetchPromopack: 'content/fetchPromopack',
 			fetchRecommended: 'content/fetchRecommended',
 			fetchNotViewed: 'content/fetchNotViewed',
+			// fetchSaved: 'content/fetchSaved',
     }),
 
 		switchloadingStatus(bool){
@@ -328,10 +337,12 @@ export default {
 		this.fetchPromopack(6);
 
 		this.fetchCatalog();
-		
+
     this.fetchLectors();
-		
+
 		this.fetchNotViewed(6);
+
+		// this.fetchSaved(6);
 
   },
 
@@ -364,7 +375,7 @@ export default {
 			padding: 16px 0px;
 			padding: 0;
 			background-color: #F3F5F6;
-			
+
 			.userinfo_wrap{
 				background-color: #FFF;
 				padding: 16px;
@@ -434,7 +445,7 @@ export default {
 								background-color: transparent;
 							}
 						}
-						
+
 					}
 				}
 			}

@@ -1,11 +1,11 @@
 <template>
 
 	<div class="img_wrapper">
-		
+
 		<span class="the_photo theButton buttonTransparent blockWrap changePhotoButton " :class="{hiddenWrap: hasPhoto, transparent: localPhoto}" @click=" this.$refs.inputField.click()"></span>
 		<img class="the_photo blockWrap the_photo_has" :src="localPhoto" v-if="localPhoto">
 	</div>
-	
+
 	<span class="the_title blockWrap fontFamilyB" :class="{hiddenWrap: !hasPhoto && !localPhoto}">Фото загружено</span>
 	<p class="the_desc fontSize12 marginB12" v-if="!errors.length" :class="{hiddenWrap: !hasPhoto && !localPhoto}">Прекрасно выглядите!</p>
 
@@ -71,6 +71,8 @@
 <script>
 import axios from 'axios';
 import {mapGetters, mapActions, mapMutations} from 'vuex';
+import base from "@/base";
+
 export default {
 
 	props: {
@@ -88,7 +90,7 @@ export default {
 
 	data () {
     return {
-			
+
 			// локальное активное фото
 			localPhoto: false,
 
@@ -103,9 +105,9 @@ export default {
 
 			errors: [],
 			file: {},
-			
+
       fileSelected: false,
-			
+
       showFileSelect: false,
       isLoading: false,
       uploadReady: true,
@@ -152,7 +154,7 @@ export default {
 				if(newPhoto.includes('data:image')){
 					this.localPhoto = newPhoto;
 				}else{
-					this.localPhoto = 'https://api.roddom15.ru/storage/' + newPhoto + '?' + Date.now();
+					this.localPhoto = newPhoto + '?' + Date.now();
 				}
 			}
 		},
@@ -164,7 +166,7 @@ export default {
 			this.setPhotoEditChanges(true);
 			this.cachePhoto = '';
 			this.localPhoto = false;
-			
+
       this.uploadReady = false;
       this.$nextTick(() => {
         this.uploadReady = true;
@@ -188,12 +190,12 @@ export default {
 				setTimeout( async () => {
 
 					const thePhoto = this.cachePhoto;
-				
+
 					const formdata = new FormData();
 					formdata.append("photo", thePhoto, 'photo.jpg');
 					formdata.append('_method', 'PUT');
 
-					const response = await axios.post('https://api.roddom15.ru/v1/user/photo', formdata, {
+					const response = await axios.post(base.API_URL + '/user/photo', formdata, {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							'Content-Type': 'multipart/form-data',
@@ -208,7 +210,7 @@ export default {
 					this.resetFileInput();
      			this.$emit("file-uploaded", this.file);
 
-					
+
 					this.setLocalPhoto(freshPhoto);
 
 					this.fetchUserData();
@@ -220,7 +222,7 @@ export default {
 			}else{
 				setTimeout( async () => {
 
-					const response = await axios.delete('https://api.roddom15.ru/v1/user/photo', {
+					const response = await axios.delete(base.API_URL + '/user/photo', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							'Content-Type': 'multipart/form-data',
@@ -230,16 +232,16 @@ export default {
 					});
 
 					// console.log(response);
-					
-					
+
+
 
 					// const thePhoto = '';
-				
+
 					// const formdata = new FormData();
 					// formdata.append("photo", thePhoto);
 					// formdata.append('_method', 'PUT');
 
-					// const response = await axios.post('https://api.roddom15.ru/v1/user/photo', formdata, {
+					// const response = await axios.post('https://api.roddom1.vip/v1/user/photo', formdata, {
 					// 	headers: {
 					// 		Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 					// 		'Content-Type': 'multipart/form-data',
@@ -282,7 +284,7 @@ export default {
     },
     isFileTypeValid(fileExtention) {
 
-			
+
 			const accepts = this.accept.split(",");
 			const extention = fileExtention;
 			// accepts.includes(extention)
@@ -351,10 +353,10 @@ export default {
 								if(reader.result.includes('data:image')){
 									this.localPhoto = reader.result;
 								}else{
-									this.localPhoto = 'https://api.roddom15.ru/storage/' + reader.result + '?' + Date.now();
+									this.localPhoto = reader.result + '?' + Date.now();
 								}
 							}
-							
+
 							// console.log(this.file);
 					}, false);
 					reader.readAsDataURL(file);
@@ -365,9 +367,9 @@ export default {
     },
 
 
-		
 
-		
+
+
   },
 
 	computed:{

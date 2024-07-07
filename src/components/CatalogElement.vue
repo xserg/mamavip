@@ -1,27 +1,27 @@
 <template>
 
-	<div class="the_element catalog_element marginB12" @mousedown="handleMouseDown" @click="handleClick">  
+	<div class="the_element catalog_element marginB12" @mousedown="handleMouseDown" @click="handleClick">
 		<!-- @mousedown="handleMouseDown(event)" -->
 		<div class="the_element_box">
 			<!-- <img src="./../assets/images/element.jpg" alt="element"> -->
-			<img v-if="filterCatalogElement.preview_picture" :src="filterCatalogElement.preview_picture ? 'https://api.roddom15.ru/storage/' + filterCatalogElement.preview_picture : ''" alt="element">
+			<img v-if="filterCatalogElement.preview_picture" :src="filterCatalogElement.preview_picture ? filterCatalogElement.preview_picture : ''" alt="element">
 			<span class="post_noimg" v-else ></span>
 		</div>
-		<div class="the_title fontSize16 fontFamilyEB" style="font-size:15px !important;">{{ filterCatalogElement.title }}</div> 
+		<div class="the_title fontSize16 fontFamilyEB" style="font-size:15px !important;">{{ filterCatalogElement.title }}</div>
 		<!-- <span class="the_title fontSize14 fontFamilyEB">Короткий заголовок у элемента</span> -->
 	</div>
-	
-	
+
+
 </template>
 
 
 <script>
 import {mapState, mapMutations, mapActions} from 'vuex';
-import router from "@/router/router"; 
+import router from "@/router/router";
 
 export default({
 
-	name: 'CatalogElement', 
+	name: 'CatalogElement',
 
 	props: {
 		post: {
@@ -54,7 +54,7 @@ export default({
 		},
 
 		routeToElement(){
-			router.push('/catalog/' + this.post.slug);  
+			router.push('/catalog/' + this.post.slug);
 		},
 
 		handleMouseDown(event){
@@ -81,7 +81,7 @@ export default({
 			this.startX = 0;
 
 		},
-		
+
 
 	},
 

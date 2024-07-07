@@ -5,23 +5,25 @@
 			<div class="topLine flexWrap">
 				<a @click="$router.push('/'), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Каталог лекций</h1>
-				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
+				<!-- <button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button> -->
+				<router-link to="/search" @click="setRouterAnimate" class="theButton rightButton buttonTransparent fontFamilyB buttonSearch"></router-link>
 			</div>
 
 			<div class="contentSubWrap">
-				<catalog-element 
+				<catalog-element
 					v-for="post in catalogList.data"
 					:post="post"
 					:key="post.id"
 				/>
-				
+
 			</div>
-			<div class="contentSubWrap content_box info_box marginB12">
-				<span class="theButton buttonPrimary buttonOptimal marginAuto marginB12" @click="$router.push('/catalog_prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].buy_all }}</span>
+			<div v-if="getCatalogPrices[0] && getCatalogPrices[1] && getCatalogPrices[2]" class="contentSubWrap content_box info_box marginB12">
+				<div v-if="getCatalogPrices[0].price_for_catalog == 0 && getCatalogPrices[1].price_for_catalog == 0 && getCatalogPrices[0].price_for_catalog == 0"></div>
+				<span v-else class="theButton buttonPrimary buttonOptimal marginAuto marginB12" @click="$router.push('/catalog_prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].buy_all }}</span>
 			</div>
 
 			<!-- <bottom-line></bottom-line> -->
-			
+
 		</div>
 	</div>
 </template>
@@ -30,9 +32,12 @@
 // @ is an alias to /src
 // import DefaultLikes from '@/components/DefaultLikes.vue'
 // import TeacherElement from '@/components/TeacherElement';
+import axios from 'axios';
 import CatalogElement from '@/components/CatalogElement';
 
 import {mapState, mapGetters, mapMutations, mapActions} from 'vuex';
+
+import base from "@/base";
 
 export default {
   name: 'Catalog',
@@ -57,6 +62,7 @@ export default {
 			setLogPage: 'setLogPage',
 			setAuthOut: 'setAuthOut',
 			setRouterAnimate: 'setRouterAnimate',
+			setCatalogPrices: 'setCatalogPrices',
 			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
 		}),
 		...mapActions({
@@ -67,6 +73,29 @@ export default {
 			console.log('Скопировано');
 		},
 
+
+		loadCatalogPrices(){
+			try{
+				setTimeout( async () => {
+					const responseCatalogPrices = await axios.get(base.API_URL + '/lecture/all/prices', {
+						headers: {
+							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
+						}
+					}).catch(function (error) { if (error.response.status !== 404){  this.setCatalogPrices('e') } });
+
+					if(responseCatalogPrices && responseCatalogPrices.data){
+							this.setCatalogPrices(responseCatalogPrices.data);
+					}else{
+						const emptyArray = [];
+						this.setCatalogPrices(emptyArray);
+					}
+
+				}, 50 );
+			}
+			catch(e){}
+			finally {}
+		},
+
 	},
 
 
@@ -74,8 +103,10 @@ export default {
 		...mapState({
 		}),
 		...mapGetters({
+			getCurrUser: 'getCurrUser',
 			getInfos: 'getInfos',
 			// recommendationElement: 'content/recommendationElement',
+			getCatalogPrices: 'getCatalogPrices',
 			catalogList: 'content/catalogList',
 			// teachersList: 'content/teachersList',
 			// notViewList: 'content/notViewList',
@@ -84,6 +115,7 @@ export default {
 
 	mounted() {
     this.fetchCatalog();
+		this.loadCatalogPrices();
   },
 }
 </script>
@@ -114,7 +146,7 @@ export default {
 				width: 100%;
 			}
 		}
-		
+
 	}
 }
 

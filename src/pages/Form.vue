@@ -207,7 +207,7 @@ export default {
 		getFormData(){
 			try{
 				setTimeout( async () => {
-					const response = await axios.get('https://api.roddom15.ru/v1/pregnancy-plan-form', {
+					const response = await axios.get('https://api.roddom1.vip/v1/pregnancy-plan-form', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}
@@ -311,7 +311,7 @@ export default {
 						'Access-Control-Allow-Origin': '*',
 					};
 					
-					const response = await axios.post('https://api.roddom15.ru/v1/pregnancy-plan-form', { data: formBody }, { headers })
+					const response = await axios.post('https://api.roddom1.vip/v1/pregnancy-plan-form', { data: formBody }, { headers })
 					.catch(function (error) { if (error.response.status !== 404){  console.log(error.response) } });
 					
 					if(response){

@@ -14,7 +14,7 @@
 				<a @click="switchPopupInfo(false)" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">{{ this.getInfos.data.app_info[0].app_show_qr_title }}</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
-			</div> 
+			</div>
 
 			<div class="topLine flexWrap">
 				<a @click="$router.go(-1), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
@@ -26,23 +26,23 @@
 			<div class="contentSubWrap popupWrap" v-if="popupInfo && !getLoadingStatus && this.getInfos.data">
 				<div class="infoWrap">
 					<!-- <h2>{{ this.getCurrentFaq.title }}</h2> -->
-					<!-- <img :src="this.getInfos.data.app_info[0].app_show_qr_link ? 'https://api.roddom15.ru/storage/' + this.getInfos.data.app_info[0].app_show_qr_link : '' "/> -->
+					<!-- <img :src="this.getInfos.data.app_info[0].app_show_qr_link ? 'https://api.roddom1.vip/storage/' + this.getInfos.data.app_info[0].app_show_qr_link : '' "/> -->
 					<div class="qr_wrap" v-html="this.getCurrUser.user.ref.ref_link_qr"/>
-					<span class="share_qr">Поделиться</span>
+					<span class="share_qr" @click="shareQR">Скачать QR-код</span>
 				</div>
 			</div>
 
 
-			<div v-if="getLoadingStatus" class="contentSubWrap">	
+			<div v-if="getLoadingStatus" class="contentSubWrap">
 				<div class="info_wrap roller_box">
 					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 				</div>
-			</div>	
+			</div>
 
 			<div class="contentSubWrap" v-if="!getLoadingStatus && this.getInfos.data">
 				<div class="title_wrap topWrap marginB12 flexWrap">
 					<div class="img_wrap">
-						<img class="the_img" v-if="this.getInfos.data.app_info[0].ref_system_preview_picture" :src="this.getInfos.data.app_info[0].ref_system_preview_picture  ? 'https://api.roddom15.ru/storage/' + this.getInfos.data.app_info[0].ref_system_preview_picture : ''" alt="subcategory_image" />
+						<img class="the_img" v-if="this.getInfos.data.app_info[0].ref_system_preview_picture" :src="this.getInfos.data.app_info[0].ref_system_preview_picture  ? this.getInfos.data.app_info[0].ref_system_preview_picture : ''" alt="subcategory_image" />
 					</div>
 					<!-- <span class="the_title fontSize20 fontFamilyEB">{{ this.getInfos.data.app_info[0].app_title }}</span> -->
 					<span class="the_subtitle fontSize20 fontFamilyEB">{{ this.getInfos.data.app_info[0].ref_system_title }}</span>
@@ -55,7 +55,7 @@
 				<div class="info_wrap links_wrap marginB12 midWrap">
 					<div class="link_wrap" @click="copyReferal">
 						<span class="the_title fontSize14">Ссылка на партнерскую программу</span>
-						<span class="the_value fontFamilyEB">https://roddom15.ru/</span>
+						<span class="the_value fontFamilyEB">https://roddom1.vip/</span>
 					</div>
 					<div class="link_wrap the_qr" @click="switchPopupInfo(true)">
 						<span class="the_title fontSize14">QR-код на партнерскую программу</span>
@@ -63,25 +63,25 @@
 					</div>
 				</div>
 
-				
+
 				<div class="info_wrap referal_wrap bottomWrap">
 
 					<span class="the_title the_main blockWrap currBalance fontSize16 fontFamilyEB">Детали</span>
 
 					<div class="the_title blockWrap currBalance">Ваш баланс: <span class="fontFamilyB">{{ getCurrUser.user.ref.points_available }} бебикоинов</span></div>
 					<div class="the_title blockWrap currReferal">Приглашено пользователей: <span class="fontFamilyB">{{ getCurrUser.user.ref.referrals_count }}</span></div>
-					<div class="the_title blockWrap currSubReferal marginB20" style="margin-bottom:30px;">Всего приглашено по программе: <span class="fontFamilyB">{{ getCurrUser.user.ref.referrals_of_referrals_count }}</span></div>
+					<div class="the_title blockWrap currSubReferal marginB20" v-if="getCurrUser.user.ref.referrals_of_referrals_count" style="margin-bottom:30px;">Всего приглашено по программе: <span class="fontFamilyB">{{ getCurrUser.user.ref.referrals_of_referrals_count }}</span></div>
 
 					<!-- <span class="theButton buttonPrimary buttonOptimal fontSize14" @click="copyReferal">Скопировать партнерскую ссылку</span> -->
 					<!-- <div class="link_wrap" @click="copyReferal"></div> -->
 				</div>
 
 
-				
+
 			</div>
 
 			<!-- <bottom-line></bottom-line> -->
-			
+
 		</div>
 	</div>
 </template>
@@ -126,15 +126,15 @@ export default {
 			if (navigator.share) {
 				if(this.getCurrUser.user.name){
 					navigator.share({
-						title: 'roddom15.ru',
-						text: this.splitedInviteDesc[0] + this.getCurrUser.user.name + this.splitedInviteDesc[1], 
-						url: 'https://roddom15.ru/register?ref=' + this.getCurrUser.user.ref.token,
+						title: 'roddom1.vip',
+						text: this.splitedInviteDesc[0] + this.getCurrUser.user.name + this.splitedInviteDesc[1],
+						url: 'https://roddom1.vip/register?ref=' + this.getCurrUser.user.ref.token,
 					});
 				}else{
 					navigator.share({
-						title: 'roddom15.ru',
-						text: this.splitedInviteDesc[0] + this.getCurrUser.user.email + this.splitedInviteDesc[1], 
-						url: 'https://roddom15.ru/register?ref=' + this.getCurrUser.user.ref.token,
+						title: 'roddom1.vip',
+						text: this.splitedInviteDesc[0] + this.getCurrUser.user.email + this.splitedInviteDesc[1],
+						url: 'https://roddom1.vip/register?ref=' + this.getCurrUser.user.ref.token,
 					});
 				}
 				setTimeout(() => {
@@ -146,10 +146,10 @@ export default {
 				}, 3000);
 			}else{
 				if(this.getCurrUser.user.name){
-					var copyText = this.splitedInviteDesc[0] + this.getCurrUser.user.name + this.splitedInviteDesc[1] + ' ' + 'https://roddom15.ru/register?ref=' + this.getCurrUser.user.ref.token;
+					var copyText = this.splitedInviteDesc[0] + this.getCurrUser.user.name + this.splitedInviteDesc[1] + ' ' + 'https://roddom1.vip/register?ref=' + this.getCurrUser.user.ref.token;
 					navigator.clipboard.writeText(copyText);
 				}else{
-					var copyText = this.splitedInviteDesc[0] + this.getCurrUser.user.email + this.splitedInviteDesc[1] + ' ' + 'https://roddom15.ru/register?ref=' + this.getCurrUser.user.ref.token;
+					var copyText = this.splitedInviteDesc[0] + this.getCurrUser.user.email + this.splitedInviteDesc[1] + ' ' + 'https://roddom1.vip/register?ref=' + this.getCurrUser.user.ref.token;
 					navigator.clipboard.writeText(copyText);
 				}
 				setTimeout(() => {
@@ -170,7 +170,7 @@ export default {
 		loadStaticInfo(){
 			try{
 				setTimeout( async () => {
-					const responseInfos = await axios.get('https://api.roddom15.ru/v1/app/info', {
+					const responseInfos = await axios.get('https://api.roddom1.vip/v1/app/info', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}
@@ -178,9 +178,23 @@ export default {
 					this.setInfos(responseInfos.data);
 				}, 50 );
 			}
-			catch(e){} 
+			catch(e){}
 			finally {}
 		},
+
+
+		shareQR() {
+
+			const imageUrl = 'data:image/png;base64,' + this.getCurrUser.user.ref.ref_link_qr_png;
+
+			const downloadLink = document.createElement('a');
+			downloadLink.href = imageUrl;
+			downloadLink.download = 'qrcode.png';
+			downloadLink.textContent = 'Поделиться';
+			downloadLink.click();
+
+		},
+
 
 		// checkDevice(){
 		// 	const os = navigator.platform;
@@ -198,7 +212,7 @@ export default {
 		// 	// const userAgent = navigator.userAgent ;
 		// 	// console.log('userAgent ' + userAgent);
 
-			
+
 		// },
 
 	},
@@ -252,7 +266,7 @@ export default {
 			width: 100%;
 			z-index: 105;
 			position: absolute;
-			left: 0; 
+			left: 0;
 			top: 45px;
 			// height: calc(100% - 45px);
 			padding: 8px 16px;
@@ -265,8 +279,9 @@ export default {
 				margin: 16px auto;
 			}
 			.qr_wrap{
-				width: 250px;
-				height: 250px;
+				padding: 20px;
+				width: 290px;
+				height: 290px;
 				margin-left: auto;
 				margin-right: auto;
 				margin-top: 30px;
@@ -297,7 +312,7 @@ export default {
 					position: relative;
 					background-repeat: no-repeat;
 					background-size: contain;
-					background-image: url('./../assets/icons/share-icon.svg');
+					background-image: url('./../assets/icons/download.svg');
 				}
 			}
 		}
@@ -339,7 +354,7 @@ export default {
 						display: block;
 						width: 32px;
 						height: 32px;
-						
+
 					}
 					img{
 						width: 100%;
