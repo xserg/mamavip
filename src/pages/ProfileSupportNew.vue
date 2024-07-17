@@ -8,31 +8,31 @@
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			<div v-if="getLoadingStatus" class="contentSubWrap">	
+			<div v-if="getLoadingStatus" class="contentSubWrap">
 				<div class="info_wrap roller_box">
 					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 				</div>
-			</div>	
- 
+			</div>
+
 			<div class="contentSubWrap" v-if="!getLoadingStatus && this.getInfos.data">
 				<!-- <div class="title_wrap topWrap marginB12 flexWrap">
 				</div> -->
 				<div class="chat_wrap">
 					<span class="the_status new">Заявка</span>
 					<span class="the_subtitle fontSize20 fontFamilyEB marginB20">Новое обращение</span>
-					
+
 					<span class="white_us_empty">Отправьте нам сообщение и мы вскоре ответим в этом обращении.</span>
 
 					<div class="new_message_form">
 						<textarea class="new_message_form_textarea" v-model="messValue" placeholder="Сообщение"></textarea>
 						<button class="new_message_form_submit theButton buttonSecondary" @click="createTread">Отправить</button>
 					</div>
-				</div> 
-				
+				</div>
+
 			</div>
 
 			<!-- <bottom-line></bottom-line> -->
-			
+
 		</div>
 	</div>
 </template>
@@ -41,6 +41,7 @@
 // @ is an alias to /src
 import axios from 'axios';
 import {mapGetters, mapMutations, mapActions} from 'vuex';
+import base from "@/base";
 
 export default {
   name: 'ProfileSupportRequest',
@@ -72,8 +73,8 @@ export default {
 			if(this.messValue !== ""){
 				try{
 					setTimeout( async () => {
-						const response = 
-						await axios.post('https://api.roddom1.vip/v1/threads', {}, {
+						const response =
+						await axios.post(base.API_URL + '/threads', {}, {
 							headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}}).catch(function (error) { if (error.response){
@@ -84,8 +85,8 @@ export default {
 							const newThreadMess = this.messValue;
 							// this.messValue = '';
 							setTimeout( async () => {
-								const messresponse = 
-								await axios.put('https://api.roddom1.vip/v1/threads/' + response.data.id, {message: newThreadMess}, {
+								const messresponse =
+								await axios.put(base.API_URL + '/threads/' + response.data.id, {message: newThreadMess}, {
 									headers: {
 										Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 										'Content-Type': 'application/json',
@@ -114,7 +115,7 @@ export default {
 							// }, 3000);
 						}
 					}, 50 );
-					
+
 				} catch(e){
 				} finally {}
 			}else{
@@ -158,7 +159,7 @@ export default {
 		.notificationWrap{
 			bottom: 60px;
 		}
-		
+
 		.contentSubWrap{
 			width: 100%;
 			padding: 16px 0px;
@@ -225,7 +226,7 @@ export default {
 				background-color: #fff;
 				padding: 16px;
 				color: #23292DB2;
-				
+
 				.white_us_empty{
 					margin-top: 10px;
 					margin-bottom: 10px;
@@ -329,7 +330,7 @@ export default {
 					}
 				}
 				.new_message_form{
-					
+
 				}
 				.new_message_form_textarea{
 					padding: 16px;

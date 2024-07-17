@@ -235,20 +235,6 @@ export default {
 
 
 
-					// const thePhoto = '';
-
-					// const formdata = new FormData();
-					// formdata.append("photo", thePhoto);
-					// formdata.append('_method', 'PUT');
-
-					// const response = await axios.post('https://api.roddom1.vip/v1/user/photo', formdata, {
-					// 	headers: {
-					// 		Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
-					// 		'Content-Type': 'multipart/form-data',
-					// 		'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
-					// 		'Access-Control-Allow-Origin': '*',
-					// 	}
-					// });
 
 					this.resetFileInput();
      			this.$emit("file-uploaded", this.file);

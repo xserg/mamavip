@@ -14,24 +14,24 @@
 				<a @click="switchPopupInfo(false, '')" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Оплата</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
-			</div> 
+			</div>
 
 			<div class="contentSubWrap popupWrap" :class="{active_popup: popupInfo}" v-show="popupInfo">
 				<div class="infoWrap ">
 					<span class="blockWrap marginB12"></span>
 					<h2 class="alignCenter" style="margin-bottom:4px;">Выберите способ оплаты</h2>
 					<img class="the_img" src="./../assets/images/emptyState.png" alt="bg">
-				
+
 					<!-- <h4 class="alignCenter" style="margin-top:20px;margin-bottom:20px;font-size:15px;"></h4> -->
 					<span class="blockWrap theButton buttonPrimary buttonOptimal marginAuto" style="margin-top:20px;margin-bottom:16px;" @click="buyLecture(this.forBuy)">Оплата сразу</span>
 					<span class="tinkoffButton blockWrap theButton buttonSecondary buttonOptimal marginAuto" :class="{disabled: this.forBuyPrice < this.getInfos.data.app_info[0].credit_minimal_sum }" @click="buyTinkoff(this.forBuy)">Оплата в рассрочку</span>
 					<span class="tinkoff_info buttonOptimal marginAuto alignCenter" style="font-size:13px;margin-top:12px;color:#2C3F51;" v-if="this.forBuyPrice < this.getInfos.data.app_info[0].credit_minimal_sum">Рассрочка доступна при оформлении заказа от {{this.getInfos.data.app_info[0].credit_minimal_sum}} рублей.</span>
-					
+
 					<div class="special_option marginAuto">
 						<span class="the_desc alignCenter">{{ this.getInfos.data.app_info[0].category_special_price_text }}</span>
 						<span class="theButton buttonSecondary" @click="buyLectureCategory(), setRouterAnimate()">Купить весь курс</span>
 					</div>
-				
+
 				</div>
 			</div>
 
@@ -46,7 +46,7 @@
 
 					<div class="content_box info_box marginB12">
 						<div class="video_wrap">
-							<img class="video_preview" v-if="getCurrentLecture.preview_picture && getCurrentLecture.preview_picture !== ''" :src="getCurrentLecture.preview_picture ? 'https://api.roddom1.vip/storage/' + getCurrentLecture.preview_picture : ''" alt="preview" />
+							<img class="video_preview" v-if="getCurrentLecture.preview_picture && getCurrentLecture.preview_picture !== ''" :src="getCurrentLecture.preview_picture ? getCurrentLecture.preview_picture : ''" alt="preview" />
 						</div>
 					</div>
 
@@ -57,18 +57,18 @@
 					<span v-if="getCurrentLecture.prices.price_by_promo[0]" @click="buyLecture(this.getInfos.data.app_periods[0])" class="theButton buttonPrimary buttonOptimal marginAuto">Купить {{getInfos.data.app_info[0].tarif_title_1}}: {{ Math.round(getCurrentLecture.prices.price_by_promo[0].price_for_promo_lecture) }}₽</span> -->
 					<!-- <span v-if="!getCurrentLecture.prices.price_by_promo && getCurrentLecture.prices.price_by_category && !getCurrentLecture.prices.price_by_promo[0]" @click="buyLecture(this.getInfos.data.app_periods[0])" class="theButton buttonPrimary buttonOptimal marginAuto">Купить {{getInfos.data.app_info[0].tarif_title_1}}: {{ Math.round(getCurrentLecture.prices.price_by_category[0].price_for_lecture) }}₽</span>
 					<span v-if="getCurrentLecture.prices.price_by_promo[0]" @click="buyLecture(this.getInfos.data.app_periods[0])" class="theButton buttonPrimary buttonOptimal marginAuto">Купить {{getInfos.data.app_info[0].tarif_title_1}}: {{ Math.round(getCurrentLecture.prices.price_by_promo[0].price_for_promo_lecture) }}₽</span> -->
-					
+
 					<span v-if="getCurrentLecture.prices[0].custom_price_for_one_lecture == null" @click="switchPopupInfo(true, this.getInfos.data.app_periods[0], Math.round(getCurrentLecture.prices[0].common_price_for_one_lecture), 0)" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_1}}: {{ Math.round(getCurrentLecture.prices[0].common_price_for_one_lecture) }}₽</span>
 					<span v-else @click="switchPopupInfo(true, this.getInfos.data.app_periods[0], Math.round(getCurrentLecture.prices[0].custom_price_for_one_lecture), 0)" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_1}}: {{ Math.round(getCurrentLecture.prices[0].custom_price_for_one_lecture) }}₽</span>
 					<p style="text-align:center;font-size:13px;margin-top:6px;display: block;max-width:380px;margin-left:auto;margin-right:auto;color:#575757">{{ splitedButtonDesc[0] }}<strong>{{getInfos.data.app_periods[0]}}</strong>{{ splitedButtonDesc[1] }}{{ splitedButtonDesc[2] }}{{ splitedButtonDesc[3] }}{{ splitedButtonDesc[4] }} <span v-if="getCurrentLecture.is_promo">Ваша экономия составит {{ getCurrentLecture.prices[0].common_price_for_one_lecture - getCurrentLecture.prices[0].custom_price_for_one_lecture }} рублей</span></p>
 					<br>
 					<div></div>
-					
+
 					<span v-if="getCurrentLecture.prices[1].custom_price_for_one_lecture == null" @click="switchPopupInfo(true, this.getInfos.data.app_periods[1], Math.round(getCurrentLecture.prices[1].common_price_for_one_lecture), 1)" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_2}}: {{ Math.round(getCurrentLecture.prices[1].common_price_for_one_lecture) }}₽</span>
 					<span v-else @click="switchPopupInfo(true, this.getInfos.data.app_periods[1], Math.round(getCurrentLecture.prices[1].custom_price_for_one_lecture), 1)" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить {{getInfos.data.app_info[0].tarif_title_2}}: -->{{ Math.round(getCurrentLecture.prices[1].custom_price_for_one_lecture) }}₽</span>
 					<p style="text-align:center;font-size:13px;margin-top:6px;display: block;max-width:380px;margin-left:auto;margin-right:auto;color:#575757">{{ splitedButtonDesc[0] }}<strong>{{getInfos.data.app_periods[1]}}</strong>{{ splitedButtonDesc[1] }}{{ splitedButtonDesc[2] }}{{ splitedButtonDesc[3] }}{{ splitedButtonDesc[4] }} <span v-if="getCurrentLecture.is_promo">Ваша экономия составит {{ getCurrentLecture.prices[1].common_price_for_one_lecture - getCurrentLecture.prices[1].custom_price_for_one_lecture }} рублей</span></p>
 					<br>
-					
+
 					<span v-if="getCurrentLecture.prices[2].custom_price_for_one_lecture == null" @click="switchPopupInfo(true, this.getInfos.data.app_periods[2], Math.round(getCurrentLecture.prices[2].common_price_for_one_lecture), 2)" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_3}}: {{ Math.round(getCurrentLecture.prices[2].common_price_for_one_lecture) }}₽</span>
 					<span v-else @click="switchPopupInfo(true, this.getInfos.data.app_periods[2], Math.round(getCurrentLecture.prices[2].custom_price_for_one_lecture), 2)" class="theButton buttonSecondary buttonOptimal marginAuto"><!--Купить -->{{getInfos.data.app_info[0].tarif_title_3}}: {{ Math.round(getCurrentLecture.prices[2].custom_price_for_one_lecture) }}₽</span>
 					<p style="text-align:center;font-size:13px;margin-top:6px;display: block;max-width:380px;margin-left:auto;margin-right:auto;color:#575757">{{ splitedButtonDesc[0] }}<strong>{{getInfos.data.app_periods[2]}}</strong>{{ splitedButtonDesc[1] }}{{ splitedButtonDesc[2] }}{{ splitedButtonDesc[3] }}{{ splitedButtonDesc[4] }} <span v-if="getCurrentLecture.is_promo">Ваша экономия составит {{ getCurrentLecture.prices[2].common_price_for_one_lecture - getCurrentLecture.prices[2].custom_price_for_one_lecture }} рублей</span></p>
@@ -89,7 +89,7 @@
 			</div>
 
 
-			
+
 
 
 
@@ -103,7 +103,7 @@
 			</div>
 
 			<!-- <bottom-line></bottom-line> -->
-			
+
 		</div>
 
 
@@ -117,6 +117,7 @@
 import tinkoff from '@tcb-web/create-credit';
 import axios from 'axios';
 import {mapState, mapMutations, mapGetters, mapActions} from 'vuex';
+import base from "@/base";
 
 export default {
   name: 'Prices',
@@ -169,16 +170,16 @@ export default {
 			if(this.forBuyPrice >= this.getInfos.data.app_info[0].credit_minimal_sum){
 				try{
 					setTimeout( async () => {
-						const headers = { 
+						const headers = {
 							'Authorization': this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							'Content-Type': 'application/json',
 							'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
 							'Access-Control-Allow-Origin': '*',
 						};
-						var response = await axios.post('https://api.roddom1.vip/v1/lecture/' + this.getCurrentLecture.id + '/buy/' + period + '/order', {}, { headers }).catch(function (error) { if (error.response.status !== 404){ console.log(error.response) } });
+						var response = await axios.post(base.API_URL + '/lecture/' + this.getCurrentLecture.id + '/buy/' + period + '/order', {}, { headers }).catch(function (error) { if (error.response.status !== 404){ console.log(error.response) } });
 						// console.log('2');
-						
-						
+
+
 						if(response){
 							// console.log('Успешная отработка:');
 							// Приобретается материал по теме «Грудное вскармливание», сроком доступа на X дня(ей), Количество материалов X, Стоимость XXXXX рублей, Дополнительная скидка от приложения – ХХХХ рублей, Итого – ХХХХ рублей.
@@ -206,7 +207,7 @@ export default {
 								sum: final_price
 							});
 						}else{
-						
+
 						// if(response){
 						// 	// console.log('Успешная отработка:');
 						// 	const title = 'Доступ к материалу "' + this.getCurrentLecture.title + '" | На срок: ' + this.forBuy + ' дня(ей)';
@@ -232,27 +233,27 @@ export default {
 		},
 
 
-		
+
 
 		// tinkoff.methods.on(tinkoff.constants.SUCCESS, onMessage)
-		
+
 
 
 		buyLecture(time){
 			try{
 				setTimeout( async () => {
-					const headers = { 
+					const headers = {
 						'Authorization': this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						'Content-Type': 'application/json',
 						'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
 						'Access-Control-Allow-Origin': '*',
 					};
 					if(this.useBabyconins && Number(this.getCurrUser.user.ref.points_available)> 0){
-						var response = await axios.post('https://api.roddom1.vip/v1/lecture/' + this.getCurrentLecture.id + '/buy/' + time, {ref_points: Number(this.getCurrUser.user.ref.points_available)}, { headers });
+						var response = await axios.post(base.API_URL + '/lecture/' + this.getCurrentLecture.id + '/buy/' + time, {ref_points: Number(this.getCurrUser.user.ref.points_available)}, { headers });
 					}else{
-						var response = await axios.post('https://api.roddom1.vip/v1/lecture/' + this.getCurrentLecture.id + '/buy/' + time, {}, { headers });
+						var response = await axios.post(base.API_URL + '/lecture/' + this.getCurrentLecture.id + '/buy/' + time, {}, { headers });
 					}
-					
+
 					if(response){
 						window.open(response.data.link,"_self");
 						// this.activeLink = response.data.link;
@@ -261,7 +262,7 @@ export default {
 						// }, 500);
 						// 	// console.log(this.activeLink);
 					}
-					
+
 				}, 500 );
 			} catch(e){
 				console.log(e);
@@ -271,7 +272,7 @@ export default {
 		loadStaticInfo(){
       try{
         setTimeout( async () => {
-          const responseInfos = await axios.get('https://api.roddom1.vip/v1/app/info', {
+          const responseInfos = await axios.get(base.API_URL + '/app/info', {
             headers: {
               Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
             }
@@ -279,7 +280,7 @@ export default {
           this.setInfos(responseInfos.data);
         }, 50 );
       }
-      catch(e){} 
+      catch(e){}
       finally {}
     },
 
@@ -354,7 +355,7 @@ export default {
 			width: 100%;
 			z-index: 105;
 			position: absolute;
-			left: 0; 
+			left: 0;
 			top: 45px;
 			background-color: #F3F5F6;
 			background-color: #FFF;
@@ -383,7 +384,7 @@ export default {
     		max-width: 395px;
 				display: flex;
 				flex-direction: column;
-				
+
 				.the_desc{
 					display: block;
 					height: max-content;
@@ -515,7 +516,7 @@ export default {
 					}
 				}
 			}
-			
+
 		}
 	}
 }

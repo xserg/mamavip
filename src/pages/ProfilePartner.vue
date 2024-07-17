@@ -26,7 +26,6 @@
 			<div class="contentSubWrap popupWrap" v-if="popupInfo && !getLoadingStatus && this.getInfos.data">
 				<div class="infoWrap">
 					<!-- <h2>{{ this.getCurrentFaq.title }}</h2> -->
-					<!-- <img :src="this.getInfos.data.app_info[0].app_show_qr_link ? 'https://api.roddom1.vip/storage/' + this.getInfos.data.app_info[0].app_show_qr_link : '' "/> -->
 					<div class="qr_wrap" v-html="this.getCurrUser.user.ref.ref_link_qr"/>
 					<span class="share_qr" @click="shareQR">Скачать QR-код</span>
 				</div>
@@ -170,7 +169,7 @@ export default {
 		loadStaticInfo(){
 			try{
 				setTimeout( async () => {
-					const responseInfos = await axios.get('https://api.roddom1.vip/v1/app/info', {
+					const responseInfos = await axios.get(base.API_URL + '/app/info', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}

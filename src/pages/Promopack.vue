@@ -24,7 +24,7 @@
 				</div>
 			</div>
 
-			<elements-list 
+			<elements-list
 				class="contentSubWrap"
 				v-if="this.getPromopack && this.getPromopack !== 'e' && this.getPromopack !== undefined && this.getPromopack !== ''"
 				:posts="this.getPromopack.data"
@@ -58,6 +58,7 @@ import axios from 'axios';
 import ElementsList from '@/components/ElementsList';
 
 import {mapState, mapMutations, mapGetters, mapActions} from 'vuex';
+import base from "@/base";
 
 export default {
   name: 'PromoPack',
@@ -82,7 +83,7 @@ export default {
 		loadStaticInfo(){
 			try{
 				setTimeout( async () => {
-					const responseInfos = await axios.get('https://api.roddom1.vip/v1/app/info', {
+					const responseInfos = await axios.get(base.API_URL + '/app/info', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}
@@ -90,7 +91,7 @@ export default {
 					this.setInfos(responseInfos.data);
 				}, 50 );
 			}
-			catch(e){} 
+			catch(e){}
 			finally {}
 		}
 
@@ -98,7 +99,7 @@ export default {
 
   components: {
 		ElementsList,
-  }, 
+  },
 
 
 	computed:{
@@ -140,11 +141,11 @@ export default {
 					margin-top: 20px;
 				}
 			}
-			
+
 			p{
 				line-height: 150%;
 			}
-			
+
 		}
 
 		&.centered{

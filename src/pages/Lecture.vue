@@ -714,16 +714,7 @@ export default defineComponent({
 						}
 					}).catch(function (error) { if (error.response){} });
 
-					// const headers = {
-					// 	"Authorization": this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
-					// 	'Content-Type': 'application/json',
-					// 	'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
-					// 	'Access-Control-Allow-Origin': '*',
-					// };
-					// const response = await axios.post('https://api.roddom1.vip/v1/lecture/' + this.getCurrentLecture.id + '/watch', {}, { headers }
-					// );
 
-					// console.log(response);
 					if(response){
 						this.startLecture = true;
 						if(this.getCurrentLecture.content_type.type == 'kinescope' || this.getCurrentLecture.content_type.title == 'kinescope'){
@@ -734,7 +725,7 @@ export default defineComponent({
 							// this.$router.push(pdflink);
 							const pdflink = response.data.data['content'];
 							const anchor = document.createElement('a');
-							anchor.href = 'https://api.roddom1.vip/storage/' + pdflink;
+							anchor.href = pdflink;
 							// console.log(pdflink);
 							anchor.target="_self";
 							anchor.click();

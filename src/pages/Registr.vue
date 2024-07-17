@@ -399,13 +399,11 @@ export default defineComponent({
 			try{
 				setTimeout( async () => {
 					if(this.currReferal){
-						// console.log('Реферальная ссылка: ' + 'https://api.roddom1.vip/v1/user/register?ref=' + this.currReferal);
 						var response =
 						await axios.post(base.API_URL + '/user/register?ref=' + this.currReferal, this.formValues).catch(function (error) { if (error.response){
 							return error.response;
 						} });
 					}else{
-						// console.log('Обычная ссылка: ' + 'https://api.roddom1.vip/v1/user/register');
 						var response =
 						await axios.post(base.API_URL + '/user/register', this.formValues).catch(function (error) { if (error.response){
 							return error.response;
@@ -549,16 +547,7 @@ export default defineComponent({
 				console.log(e);
 			} finally {
 			}
-			// try{
-			// 	setTimeout( async () => {
-			// 		const response = await axios.post('https://api.roddom1.vip/v1/user/register', this.formValues);
-			// 		this.curStep += 1;
-			// 		this.finishReg = false;
-			// 	}, 500 );
-			// } catch(e){
-			// 	console.log(e);
-			// } finally {
-			// }
+
 		},
 
 

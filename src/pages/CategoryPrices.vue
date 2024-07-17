@@ -14,24 +14,24 @@
 				<a @click="switchPopupInfo(false, '')" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">Оплата</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
-			</div> 
+			</div>
 
 			<div class="contentSubWrap popupWrap" :class="{active_popup: popupInfo}" v-show="popupInfo">
 				<div class="infoWrap ">
 					<span class="blockWrap marginB12"></span>
 					<h2 class="alignCenter" style="margin-bottom:4px;">Выберите способ оплаты</h2>
 					<img class="the_img" src="./../assets/images/emptyState.png" alt="bg">
-				
+
 					<!-- <h4 class="alignCenter" style="margin-top:20px;margin-bottom:20px;font-size:15px;"></h4> -->
 					<span class="blockWrap theButton buttonPrimary buttonOptimal marginAuto" style="margin-top:20px;margin-bottom:16px;" @click="buyCategory(this.forBuy)">Оплата сразу</span>
 					<span class="tinkoffButton blockWrap theButton buttonSecondary buttonOptimal marginAuto" :class="{disabled: this.forBuyPrice < this.getInfos.data.app_info[0].credit_minimal_sum }" @click="buyTinkoff(this.forBuy)">Оплата в рассрочку</span>
 					<span class="tinkoff_info alignCenter buttonOptimal marginAuto" style="font-size:13px;margin-top:12px;color:#2C3F51;" v-if="this.forBuyPrice < this.getInfos.data.app_info[0].credit_minimal_sum">Рассрочка доступна при оформлении заказа от {{ this.getInfos.data.app_info[0].credit_minimal_sum }} рублей.</span>
-					
+
 					<div class="special_option marginAuto">
 						<span class="the_desc alignCenter">{{ this.getInfos.data.app_info[0].category_special_price_text }}</span>
 						<span class="theButton buttonSecondary" @click="buyCatalog(), setRouterAnimate()">Купить весь курс</span>
 					</div>
-					
+
 				</div>
 			</div>
 
@@ -43,7 +43,7 @@
 
 					<div class="content_box info_box marginB12">
 						<div class="video_wrap">
-							<img class="video_preview" v-if="currentCategory.preview_picture" :src="currentCategory.preview_picture ? 'https://api.roddom1.vip/storage/' + currentCategory.preview_picture : ''" alt="category_image">
+							<img class="video_preview" v-if="currentCategory.preview_picture" :src="currentCategory.preview_picture ? currentCategory.preview_picture : ''" alt="category_image">
 							<!-- <img class="video_preview" v-if="currentCategory.preview_picture && currentCategory.preview_picture !== ''" :src="currentCategory.preview_picture ? 'https://roddom1.vip/storage/' + currentCategory.preview_picture : ''" alt="preview" /> -->
 						</div>
 					</div>
@@ -84,9 +84,9 @@
 						<div class="checkbox_wrap"><!-- <input type="checkbox" name="yes_babycoins" class="checkbox" checked> --></div>
 						<div class="the_title">На балансе <span style="font-weight:600;">{{ getCurrUser.user.ref.points_available }} бебикоинов</span>, использовать имеющиеся при оплате материалов. Доступно только при покупке материалов с оплатой сразу.</div>
 					</div>
-					
+
 				</div>
-				
+
 			</div>
 
 			<div class="contentSubWrap contentCompleteProfile" v-else>
@@ -98,10 +98,10 @@
 				</div>
 			</div>
 
-			
+
 
 			<!-- <bottom-line></bottom-line> -->
-			
+
 		</div>
 
 
@@ -114,6 +114,7 @@
 import axios from 'axios';
 import tinkoff from '@tcb-web/create-credit';
 import {mapState, mapMutations, mapGetters} from 'vuex';
+import base from "@/base";
 
 export default {
   name: 'CategoryPrices',
@@ -160,14 +161,14 @@ export default {
 			if(this.forBuyPrice >= this.getInfos.data.app_info[0].credit_minimal_sum){
 				try{
 					setTimeout( async () => {
-						const headers = { 
+						const headers = {
 							'Authorization': this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							'Content-Type': 'application/json',
 							'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
 							'Access-Control-Allow-Origin': '*',
 						};
-						var response = await axios.post('https://api.roddom1.vip/v1/category/' + this.currentCategory.id + '/buy/' + period + '/order', {}, { headers }).catch(function (error) { if (error.response.status !== 404){ console.log(error.response); } });
-						
+						var response = await axios.post(base.API_URL + '/category/' + this.currentCategory.id + '/buy/' + period + '/order', {}, { headers }).catch(function (error) { if (error.response.status !== 404){ console.log(error.response); } });
+
 						if(response){
 							// console.log('Успешная отработка:');
 							// Приобретается материал по теме «Грудное вскармливание», сроком доступа на X дня(ей), Количество материалов X, Стоимость XXXXX рублей, Дополнительная скидка от приложения – ХХХХ рублей, Итого – ХХХХ рублей.
@@ -179,13 +180,13 @@ export default {
 								var economy_price = Math.round(this.currentCategory.prices[this.forBuyType].price_for_category - this.currentCategory.prices[this.forBuyType].price_for_category_promo);
 								var default_price = Number(this.forBuyPrice + economy_price);
 								var final_price = Number(this.forBuyPrice + 0);
-								
+
 								var tinkoff_title = 'Приобретается материал по теме "' + this.currentCategory.title + '", сроком доступа на ' + this.forBuy + ' дня(ей), Количество материалов ' + items_count + ', Стоимость ' + default_price + ' рублей, Дополнительная скидка от приложения – ' + economy_price + ' рублей, Итого – ' + final_price + ' рублей.';
 							}else{
 								var final_price = Number(this.forBuyPrice + 0);
 								var tinkoff_title = 'Приобретается материал по теме "' + this.currentCategory.title + '", сроком доступа на ' + this.forBuy + ' дня(ей), Количество материалов ' + items_count + ', Итого – ' + final_price + ' рублей.';
 							}
-							
+
 							tinkoff.create({
 								orderNumber: response.data[0],
 								shopId: '99e38bba-6f25-4f10-b62a-4f05e32383b7',
@@ -210,7 +211,7 @@ export default {
 			buyCategory(time){
 				try{
 					setTimeout( async () => {
-						const headers = { 
+						const headers = {
 							'Authorization': this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							'Content-Type': 'application/json',
 							'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
@@ -218,11 +219,11 @@ export default {
 						};
 
 						if(this.useBabyconins && Number(this.getCurrUser.user.ref.points_available) > 0){
-							var response = await axios.post('https://api.roddom1.vip/v1/category/' + this.currentCategory.id + '/buy/' + time, {ref_points: Number(this.getCurrUser.user.ref.points_available)}, { headers });
+							var response = await axios.post(base.API_URL + '/category/' + this.currentCategory.id + '/buy/' + time, {ref_points: Number(this.getCurrUser.user.ref.points_available)}, { headers });
 						}else{
-							var response = await axios.post('https://api.roddom1.vip/v1/category/' + this.currentCategory.id + '/buy/' + time, {}, { headers });
+							var response = await axios.post(base.API_URL + '/category/' + this.currentCategory.id + '/buy/' + time, {}, { headers });
 						}
-						
+
 						window.open(response.data.link,"_self");
 					}, 500 );
 				} catch(e){
@@ -233,7 +234,7 @@ export default {
 		loadStaticInfo(){
 			try{
 				setTimeout( async () => {
-					const responseInfos = await axios.get('https://api.roddom1.vip/v1/app/info', {
+					const responseInfos = await axios.get(base.API_URL + '/app/info', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}
@@ -241,7 +242,7 @@ export default {
 					this.setInfos(responseInfos.data);
 				}, 50 );
 			}
-			catch(e){} 
+			catch(e){}
 			finally {}
 		},
 
@@ -267,7 +268,7 @@ export default {
 
 	},
 
-	
+
 
 
 	computed:{
@@ -324,7 +325,7 @@ export default {
 			width: 100%;
 			z-index: 105;
 			position: absolute;
-			left: 0; 
+			left: 0;
 			top: 45px;
 			background-color: #F3F5F6;
 			background-color: #FFF;
@@ -353,7 +354,7 @@ export default {
     		max-width: 395px;
 				display: flex;
 				flex-direction: column;
-				
+
 				.the_desc{
 					display: block;
 					height: max-content;
@@ -484,7 +485,7 @@ export default {
 					}
 				}
 			}
-			
+
 		}
 	}
 }

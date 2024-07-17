@@ -197,6 +197,7 @@ import ElementsList from '@/components/ElementsList';
 // import PopupSlider from '@/components/PopupSlider';
 
 import {mapState, mapMutations, mapGetters, mapActions} from 'vuex';
+import base from "@/base";
 
 export default {
   name: 'Profile',
@@ -331,7 +332,7 @@ export default {
 				}
 				try{
 					setTimeout( async () => {
-						const response = await axios.post('https://api.roddom1.vip/v1/lector/' + this.getCurrentLector.id + '/rate', filterRating, {
+						const response = await axios.post(base.API_URL + '/lector/' + this.getCurrentLector.id + '/rate', filterRating, {
 							headers: {
 								Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							}

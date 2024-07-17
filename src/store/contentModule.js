@@ -435,7 +435,7 @@ export const contentModule = {
 			try{
 				commit('setStatusLoading', true);
 				setTimeout( async () => {
-					const response = await axios.get('https://api.roddom1.vip/v1/threads', {
+					const response = await axios.get(base.API_URL + '/threads', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -469,7 +469,6 @@ export const contentModule = {
 				commit('setLectureAccess', '');
 				setTimeout( async () => {
 					const response = await axios.post(base.API_URL + '/lecture/1/watch', {}, {
-					// const response = await axios.post('https://api.roddom1.vip/v1/lecture/' + lectureId + '/watch', {}, {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}
@@ -490,7 +489,6 @@ export const contentModule = {
 				commit('setStatusLoading', true);
 				setTimeout( async () => {
 					const response = await axios.get(base.API_URL + '/lectors?per_page=100', {
-					// const response = await axios.get('https://api.roddom1.vip/v1/lectors', {
 						headers: {
 							Authorization: rootState.currUser.token_type + ' ' + rootState.currUser.access_token,
 						}

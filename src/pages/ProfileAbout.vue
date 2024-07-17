@@ -21,7 +21,7 @@
 				<a @click="switchPopupInfo(false)" class="theButton leftButton buttonTransparent buttonBack" />
 				<h1 class="theTitle alignCenter">{{ this.getInfos.data.app_info[0].app_show_qr_title }}</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
-			</div> 
+			</div>
 
 			<div class="contentSubWrap popupWrap" v-if="popupInfo && !getLoadingStatus && this.getInfos.data">
 				<div class="infoWrap">
@@ -34,11 +34,11 @@
 			</div>
 
 
-			<div v-if="getLoadingStatus" class="contentSubWrap">	
+			<div v-if="getLoadingStatus" class="contentSubWrap">
 				<div class="info_wrap roller_box">
 					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 				</div>
-			</div>	
+			</div>
 
 			<div class="contentSubWrap" v-if="!getLoadingStatus && this.getInfos.data">
 				<div class="title_wrap topWrap marginB12 flexWrap">
@@ -67,7 +67,7 @@
 			</div>
 
 			<!-- <bottom-line></bottom-line> -->
-			
+
 		</div>
 	</div>
 </template>
@@ -76,6 +76,7 @@
 // @ is an alias to /src
 
 import {mapGetters, mapMutations, mapActions} from 'vuex';
+import base from "@/base";
 
 export default {
   name: 'ProfileAbout',
@@ -108,7 +109,7 @@ export default {
 					this.navigatorShareSupported = true;
 			}
 		},
-		
+
 
 		navigatorShareQR(){},
 
@@ -158,13 +159,13 @@ export default {
 				if(this.getCurrUser.user.name){
 					navigator.share({
 						title: 'roddom1.vip',
-						text: this.splitedInviteDesc[0] + this.getCurrUser.user.name + this.splitedInviteDesc[1], 
+						text: this.splitedInviteDesc[0] + this.getCurrUser.user.name + this.splitedInviteDesc[1],
 						url: 'https://roddom1.vip/register?ref=' + this.getCurrUser.user.ref.token,
 					});
 				}else{
 					navigator.share({
 						title: 'roddom1.vip',
-						text: this.splitedInviteDesc[0] + this.getCurrUser.user.email + this.splitedInviteDesc[1], 
+						text: this.splitedInviteDesc[0] + this.getCurrUser.user.email + this.splitedInviteDesc[1],
 						url: 'https://roddom1.vip/register?ref=' + this.getCurrUser.user.ref.token,
 					});
 				}
@@ -196,7 +197,7 @@ export default {
 		loadStaticInfo(){
 			try{
 				setTimeout( async () => {
-					const responseInfos = await axios.get('https://api.roddom1.vip/v1/app/info', {
+					const responseInfos = await axios.get(base.API_URL + '/app/info', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}
@@ -204,7 +205,7 @@ export default {
 					this.setInfos(responseInfos.data);
 				}, 50 );
 			}
-			catch(e){} 
+			catch(e){}
 			finally {}
 		},
 
@@ -280,7 +281,7 @@ export default {
 			width: 100%;
 			z-index: 105;
 			position: absolute;
-			left: 0; 
+			left: 0;
 			top: 45px;
 			// height: calc(100% - 45px);
 			padding: 8px 16px;

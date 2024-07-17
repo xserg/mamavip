@@ -8,11 +8,11 @@
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			<div v-if="getLoadingStatus" class="contentSubWrap">	
+			<div v-if="getLoadingStatus" class="contentSubWrap">
 				<div class="info_wrap roller_box">
 					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 				</div>
-			</div>	
+			</div>
 
 			<div class="contentSubWrap" v-if="!getLoadingStatus && this.getInfos.data">
 				<div class="title_wrap topWrap marginB12 flexWrap">
@@ -21,7 +21,7 @@
 				</div>
 				<div v-if="this.notificationsData.data[0]">
 					<div class="info_wrap bottomWrap" v-if="this.notificationsData.data[0].date" >
-						<div 
+						<div
 							class="the_notification"
 							v-for="notification in this.notificationsData.data"
 							:key="notification.id"
@@ -36,7 +36,7 @@
 			</div>
 
 			<!-- <bottom-line></bottom-line> -->
-			
+
 		</div>
 	</div>
 </template>
@@ -46,6 +46,7 @@
 import axios from 'axios';
 import moment from 'vue-moment';
 import {mapGetters, mapMutations, mapActions} from 'vuex';
+import base from "@/base";
 
 export default {
   name: 'ProfileNotifications',
@@ -86,7 +87,7 @@ export default {
 		loadStaticInfo(){
 			try{
 				setTimeout( async () => {
-					const responseInfos = await axios.get('https://api.roddom1.vip/v1/app/info', {
+					const responseInfos = await axios.get(base.API_URL + '/app/info', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}
@@ -94,14 +95,14 @@ export default {
 					this.setInfos(responseInfos.data);
 				}, 50 );
 			}
-			catch(e){} 
+			catch(e){}
 			finally {}
 		},
 
 		getNotifications(){
 			try{
 				setTimeout( async () => {
-					const responseInfos = await axios.get('https://api.roddom1.vip/v1/notifications', {
+					const responseInfos = await axios.get(base.API_URL + '/notifications', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}
@@ -113,14 +114,14 @@ export default {
 									responseInfos.data.data[ind].date = new Date(data.date);
 							// 	}
 							// }
-							
+
 						});
 						this.notificationsData = responseInfos.data;
 					}
-					
+
 				}, 50 );
 			}
-			catch(e){} 
+			catch(e){}
 			finally {}
 		},
 
@@ -185,7 +186,7 @@ export default {
 		}
 		.the_notification{
 			margin-bottom: 22px;
-			
+
 			 .the_content{
 				margin-bottom: 4px;
 				color: #23292df0;
@@ -208,7 +209,7 @@ export default {
 			width: 100%;
 			z-index: 105;
 			position: absolute;
-			left: 0; 
+			left: 0;
 			top: 45px;
 			// height: calc(100% - 45px);
 			padding: 8px 16px;

@@ -440,7 +440,6 @@ export default defineComponent({
 			try{
 				setTimeout( async () => {
 					const response = await axios.post(
-						//'https://api.roddom1.vip/v1/user/login',
 						base.API_URL + '/user/login',
 						this.cacheUserData).catch(function (error) { if (error.response){} });
 					if(response){

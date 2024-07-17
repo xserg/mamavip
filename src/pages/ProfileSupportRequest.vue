@@ -8,8 +8,8 @@
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
 			</div>
 
-			
- 
+
+
 			<div class="contentSubWrap" v-if="!getLoadingStatus && this.getInfos.data && this.threadMesses.data">
 				<!-- <div class="title_wrap topWrap marginB12 flexWrap">
 				</div> -->
@@ -18,14 +18,14 @@
 					<span class="the_status closed" v-if="this.threadMesses.data.status == 'closed'">Закрыта</span>
 					<span class="the_subtitle fontSize20 fontFamilyEB">Заявка №{{ this.threadMesses.data.id }}</span>
 					<span class="the_created">Создана {{ this.threadMesses.data.created_at.getDate() }}.{{ this.threadMesses.data.created_at.getMonth() + 1 < 10 ? '0' + Number(this.threadMesses.data.created_at.getMonth() + 1) : this.threadMesses.data.created_at.getMonth() + 1}}.{{ this.threadMesses.data.created_at.getFullYear() }}</span>
-					
+
 					<span class="white_us_empty" v-if="!this.threadMesses.data.messages[0]">Отправьте нам сообщение и мы вскоре ответим в этом обращении.</span>
 
 					<div class="chat_subwrap" v-else>
 						<div class="chat_history">
-							
-							
-							<div 
+
+
+							<div
 								class="chat_msg"
 								v-for="message in this.threadMesses.data.messages"
 								:key="message.id"
@@ -46,22 +46,22 @@
 						<button class="new_message_form_submit theButton buttonSecondary" @click="sendThreadMess">Отправить</button>
 					</div>
 
-				</div> 
+				</div>
 
 				<div class="buttons_wrap bottomWrap" v-if="this.threadMesses.data.status == 'open'">
 					<button class="new_message_form_submit theButton buttonTransparent" @click="closeThread">Закрыть обращение</button>
 				</div>
-				
+
 			</div>
 
-			<div v-else class="contentSubWrap">	
+			<div v-else class="contentSubWrap">
 				<div class="info_wrap roller_box">
 					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 				</div>
-			</div>	
+			</div>
 
 			<!-- <bottom-line></bottom-line> -->
-			
+
 		</div>
 	</div>
 </template>
@@ -70,6 +70,7 @@
 // @ is an alias to /src
 import axios from 'axios';
 import {mapGetters, mapMutations, mapActions} from 'vuex';
+import base from "@/base";
 
 export default {
   name: 'ProfileSupportRequest',
@@ -102,8 +103,8 @@ export default {
 			try{
 				const currThreadId = this.$router.currentRoute.value.params.id;
 				setTimeout( async () => {
-					const response = 
-					await axios.get('https://api.roddom1.vip/v1/threads/' + currThreadId, {
+					const response =
+					await axios.get(base.API_URL + '/threads/' + currThreadId, {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							'Content-Type': 'application/json',
@@ -115,7 +116,7 @@ export default {
 					} });
 					if(response){
 
-						
+
 
 						if(response.data){
 							response.data.data.created_at = new Date(response.data.data.created_at);
@@ -144,8 +145,8 @@ export default {
 					this.messValue = '';
 					const currThreadId = this.$router.currentRoute.value.params.id;
 					setTimeout( async () => {
-						const response = 
-						await axios.put('https://api.roddom1.vip/v1/threads/' + currThreadId, {message: newThreadMess}, {
+						const response =
+						await axios.put(base.API_URL + '/threads/' + currThreadId, {message: newThreadMess}, {
 							headers: {
 								Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 								'Content-Type': 'application/json',
@@ -173,7 +174,7 @@ export default {
 							// console.log(response);
 						}
 					}, 800);
-					
+
 				} catch(e){
 				} finally {}
 			}else{
@@ -186,8 +187,8 @@ export default {
 			try{
 				const currThreadId = this.$router.currentRoute.value.params.id;
 				setTimeout( async () => {
-					const response = 
-					await axios.delete('https://api.roddom1.vip/v1/threads/' + currThreadId, {
+					const response =
+					await axios.delete(base.API_URL + '/threads/' + currThreadId, {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 							'Content-Type': 'application/json',
@@ -247,7 +248,7 @@ export default {
 		.notificationWrap{
 			bottom: 60px;
 		}
-		
+
 		.contentSubWrap{
 			width: 100%;
 			padding: 16px 0px;
@@ -322,7 +323,7 @@ export default {
 				background-color: #fff;
 				padding: 16px;
 				color: #23292DB2;
-				
+
 				.white_us_empty{
 					margin-top: 10px;
 					margin-bottom: 10px;
@@ -449,7 +450,7 @@ export default {
 					}
 				}
 				.new_message_form{
-					
+
 				}
 				.new_message_form_textarea{
 					padding: 16px;

@@ -11,11 +11,11 @@
 			</div>
 
 
-			<div v-if="getLoadingStatus || !this.getInfos.data" class="contentSubWrap rollerWrap">	
+			<div v-if="getLoadingStatus || !this.getInfos.data" class="contentSubWrap rollerWrap">
 				<div class="info_wrap roller_box">
 					<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 				</div>
-			</div>	
+			</div>
 
 			<div class="contentSubWrap" v-else>
 				<Form @submit="sendFormData" :validation-schema="schema">
@@ -32,14 +32,14 @@
 							</div>
 						</div>
 
-						<div class="formWrap formStep midWrap marginB12" 
+						<div class="formWrap formStep midWrap marginB12"
 							v-for='formStep in formDataFilter.data'
-							:key='formStep.title' 
+							:key='formStep.title'
 							:class="['step_' + formStep.index, {step_active: formStep.index == formCurStep}]"
 						>
 							<span class="step_title fontSize20 fontFamilyEB">{{ formStep.title }}</span>
 							<div class="inputWrap input_wrap" v-for="input in formStep.form" :key="input.index">
-								
+
 								<div class="input_subwrap" v-if="input.type == 'question-type-one-text-field'">
 									<label><span class="label">{{ input.data.text }}</span>
 										<span class="desc" v-if="input.data.description">{{ input.data.description }}</span>
@@ -123,8 +123,8 @@
 
 							</div>
 						</div>
-						
-						
+
+
 						<div class="formWrap formStep step_6" :class="{step_active: formTotalSteps < formCurStep}">
 							<span class="form_finish_title fontSize20 fontFamilyEB marginB12" v-if="formData.common_titles.successful_submit_title">{{ formData.common_titles.successful_submit_title }}</span>
 							<p class="form_finish_desc" v-if="formData.common_titles.successful_submit_description">{{ formData.common_titles.successful_submit_description }}</p>
@@ -146,7 +146,7 @@
 			</div>
 
 			<!-- <bottom-line></bottom-line> -->
-			
+
 		</div>
 
 
@@ -161,13 +161,14 @@ import {mapMutations, mapGetters, mapActions} from 'vuex';
 
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as yup from 'yup';
+import base from "@/base";
 
 export default {
   name: 'Forma',
 
 	components: {
 		Form,
-    Field, 
+    Field,
     ErrorMessage,
 	},
 
@@ -180,7 +181,7 @@ export default {
       schema,
 		};
 	},
-	
+
 
 	data(){
 		return{
@@ -207,22 +208,22 @@ export default {
 		getFormData(){
 			try{
 				setTimeout( async () => {
-					const response = await axios.get('https://api.roddom1.vip/v1/pregnancy-plan-form', {
+					const response = await axios.get(base.API_URL + '/pregnancy-plan-form', {
 						headers: {
 							Authorization: this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						}
 					}).catch(function (error) { if (error.response.status !== 404){  console.log(error.response) } });
-					
+
 					if(response.data){
 						this.formData = response.data;
 						this.setFilterFormData(response.data);
 						this.formCurStepTitle = response.data.data[0].title;
 						this.formLoadbarStep = 100 / (this.formTotalSteps - 1);
 					}
-					
+
 				}, 50 );
 			}
-			catch(e){} 
+			catch(e){}
 			finally {}
 		},
 
@@ -231,8 +232,8 @@ export default {
 			this.$refs.scrollContainer.scrollTop = 0;
 
 			var formBody = '';
-			formBody += '<span style="width:100%;display:block;font-size:17px;font-weight:600;color:#333;margin-bottom:22px;line-height:110%;text-align:left;">' + this.formData.common_titles.title + '</span>'; 
-				
+			formBody += '<span style="width:100%;display:block;font-size:17px;font-weight:600;color:#333;margin-bottom:22px;line-height:110%;text-align:left;">' + this.formData.common_titles.title + '</span>';
+
 			this.formDataFilter.data.forEach((step, step_index) => {
 				var formBodyTitle = '<span style="margin-left:12px;text-align:left;width:100%;display:block;margin-bottom:6px;color:#23292dd9;font-size:15px;">' + step.title + '</span>';
 				formBody += formBodyTitle;
@@ -241,7 +242,7 @@ export default {
 				formBody += formTbody;
 
 				step.form.forEach((option) => {
-					
+
 					if(option.type == 'question-type-checkbox'){
 						if(option.data.text && option.data.text !== undefined){ var field1 = option.data.text + ' '; }else{ var field1 = ''; };
 						var checkboxValues = '';
@@ -255,44 +256,44 @@ export default {
 								}
 							}
 						});
-						var formBodyOption = '<tr><th style="color:#23292dd9;min-height:35px;border-bottom:1px solid #ececec;font-size:14px;text-align:left;padding:8px 12px;font-weight:400;width:50%;min-width:50%;line-height:125%;">' 
-							+ field1 
-							+ '</th><th style="color:#23292dd9;min-height:35px;border-bottom:1px solid #ececec;font-size:14px;text-align:left;padding:8px 12px;font-weight:400;width:50%;min-width:50%;line-height:125%;border-left:1px solid #ececec;">' 
-							+ checkboxValues 
+						var formBodyOption = '<tr><th style="color:#23292dd9;min-height:35px;border-bottom:1px solid #ececec;font-size:14px;text-align:left;padding:8px 12px;font-weight:400;width:50%;min-width:50%;line-height:125%;">'
+							+ field1
+							+ '</th><th style="color:#23292dd9;min-height:35px;border-bottom:1px solid #ececec;font-size:14px;text-align:left;padding:8px 12px;font-weight:400;width:50%;min-width:50%;line-height:125%;border-left:1px solid #ececec;">'
+							+ checkboxValues
 							+ '</th></tr>';
 						formBody += formBodyOption;
 
 					}else if(option.type == 'question-type-two-text-field'){
 						// option question-type-two-text-field
 						if(option.data.text && option.data.text !== undefined){ var field1 = option.data.text + ' '; }else{ var field1 = ''; };
-						var formBodyOption = '<tr><th style="color:#23292dd9;min-height:35px;border-bottom:1px solid #ececec;font-size:14px;text-align:left;padding:8px 12px;font-weight:400;width:50%;min-width:50%;line-height:125%;">' 
-							+ field1 
-							+ '</th><th style="color:#23292dd9;min-height:35px;border-bottom:1px solid #ececec;font-size:14px;text-align:left;padding:8px 12px;font-weight:400;width:50%;min-width:50%;line-height:125%;border-left:1px solid #ececec;">' 
-							+ option.value_text_1 + ' ' + option.value_text_2 
+						var formBodyOption = '<tr><th style="color:#23292dd9;min-height:35px;border-bottom:1px solid #ececec;font-size:14px;text-align:left;padding:8px 12px;font-weight:400;width:50%;min-width:50%;line-height:125%;">'
+							+ field1
+							+ '</th><th style="color:#23292dd9;min-height:35px;border-bottom:1px solid #ececec;font-size:14px;text-align:left;padding:8px 12px;font-weight:400;width:50%;min-width:50%;line-height:125%;border-left:1px solid #ececec;">'
+							+ option.value_text_1 + ' ' + option.value_text_2
 							+ '</th></tr>';
 						formBody += formBodyOption;
 
 					}else if(option.type == 'question-type-three-text-field'){
 						// option question-type-two-text-field
 						if(option.data.text && option.data.text !== undefined){ var field1 = option.data.text + ' '; }else{ var field1 = ''; };
-						var formBodyOption = '<tr><th style="color:#23292dd9;min-height:35px;border-bottom:1px solid #ececec;font-size:14px;text-align:left;padding:8px 12px;font-weight:400;width:50%;min-width:50%;line-height:125%;">' 
-							+ field1 
-							+ '</th><th style="color:#23292dd9;min-height:35px;border-bottom:1px solid #ececec;font-size:14px;text-align:left;padding:8px 12px;font-weight:400;width:50%;min-width:50%;line-height:125%;border-left:1px solid #ececec;">' 
-							+ option.value_text_1 + ' ' + option.value_text_2 + ' ' + option.value_text_3 
+						var formBodyOption = '<tr><th style="color:#23292dd9;min-height:35px;border-bottom:1px solid #ececec;font-size:14px;text-align:left;padding:8px 12px;font-weight:400;width:50%;min-width:50%;line-height:125%;">'
+							+ field1
+							+ '</th><th style="color:#23292dd9;min-height:35px;border-bottom:1px solid #ececec;font-size:14px;text-align:left;padding:8px 12px;font-weight:400;width:50%;min-width:50%;line-height:125%;border-left:1px solid #ececec;">'
+							+ option.value_text_1 + ' ' + option.value_text_2 + ' ' + option.value_text_3
 							+ '</th></tr>';
 						formBody += formBodyOption;
 
-					}else if(option.type == 'textarea'){ /* option textarea */ }else{ 
+					}else if(option.type == 'textarea'){ /* option textarea */ }else{
 						// option one-field, number, date, radio
 						if(option.data.text && option.data.text !== undefined){ var field1 = option.data.text + ' '; }else{ var field1 = ''; };
-						var formBodyOption = '<tr><th style="color:#23292dd9;min-height:35px;border-bottom:1px solid #ececec;font-size:14px;text-align:left;padding:8px 12px;font-weight:400;width:50%;min-width:50%;line-height:125%;">' 
-							+ field1 
-							+ '</th><th style="color:#23292dd9;min-height:35px;border-bottom:1px solid #ececec;font-size:14px;text-align:left;padding:8px 12px;font-weight:400;width:50%;min-width:50%;line-height:125%;border-left:1px solid #ececec;">' 
-							+ option.value_text_1 
+						var formBodyOption = '<tr><th style="color:#23292dd9;min-height:35px;border-bottom:1px solid #ececec;font-size:14px;text-align:left;padding:8px 12px;font-weight:400;width:50%;min-width:50%;line-height:125%;">'
+							+ field1
+							+ '</th><th style="color:#23292dd9;min-height:35px;border-bottom:1px solid #ececec;font-size:14px;text-align:left;padding:8px 12px;font-weight:400;width:50%;min-width:50%;line-height:125%;border-left:1px solid #ececec;">'
+							+ option.value_text_1
 							+ '</th></tr>';
 						formBody += formBodyOption;
 					}
-					
+
 				});
 
 				formBody += '</table>';
@@ -300,27 +301,27 @@ export default {
 			});
 
 			// console.log(formBody);
-						
-			
+
+
 			try{
 				setTimeout( async () => {
-					const headers = { 
+					const headers = {
 						'Authorization': this.getCurrUser.token_type + ' ' + this.getCurrUser.access_token,
 						'Content-Type': 'application/json',
 						'Access-Control-Allow-Methods': 'DELETE, POST, GET, OPTIONS',
 						'Access-Control-Allow-Origin': '*',
 					};
-					
-					const response = await axios.post('https://api.roddom1.vip/v1/pregnancy-plan-form', { data: formBody }, { headers })
+
+					const response = await axios.post(base.API_URL + '/pregnancy-plan-form', { data: formBody }, { headers })
 					.catch(function (error) { if (error.response.status !== 404){  console.log(error.response) } });
-					
+
 					if(response){
 						console.log('Форма успешно отправлена');
 					}
 
 				}, 50 );
 			}
-			catch(e){} 
+			catch(e){}
 			finally {}
 
 		},
@@ -531,7 +532,7 @@ export default {
 							width: calc(100% + 0px);
 							margin-left: -0px;
 							margin-right: -0px;
-							
+
 							input{
 								width: calc(100% - 4px);
 								margin-left: 2px;
@@ -599,7 +600,7 @@ export default {
 							display: inline-block;
 							padding: 0;
 							min-width: 15px;
-							min-height: 15px; 
+							min-height: 15px;
 							border-radius: 4px;
 							background-color: #ffeaeb25;
 							border: 1px solid #f9b2b792;

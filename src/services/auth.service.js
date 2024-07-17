@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-//const API_URL = 'https://api.roddom1.vip/v1/user/';
 const API_URL = 'http://roddom.test/v1/user/';
 
 class AuthService {
