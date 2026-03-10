@@ -13,7 +13,7 @@
 
 				<!-- ПРОФИЛЬ -->
 				<div class="userinfo_wrap topWrap marginB12">
-					<div class="userinfo_box">
+					<div v-if="this.getCurrUser.access_token" class="userinfo_box">
 						<router-link class="userinfo_card" to="/profile/edit" @click="setRouterAnimate">
 							<div v-if="this.getCurrUser.user.photo_small" class="card_photo_wrap">
 								<img :src="this.getCurrUser.user.photo_small ? this.getCurrUser.user.photo_small : ''" alt="profile_image">
@@ -42,11 +42,11 @@
 
 				<!-- РЕКОМЕНДУЕМ -->
 
-				<div v-if="currLoadingStatus || !getCurrUser.user" class="recommended_box midWrap marginB12 roller_box">
+				<!--div v-if="currLoadingStatus || !getCurrUser.user" class="recommended_box midWrap marginB12 roller_box">
 					<div v-if="currLoadingStatus" class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-				</div>
+				</div-->
 
-				<div v-if="getRecommended" class="recommended_box midWrap marginB12" :class="{recommended_box: getCurrUser.user.next_free_lecture_available == null || getAvailableTimer.isExpired, notavailable_box: getCurrUser.user.next_free_lecture_available !== null || !getAvailableTimer.isExpired, error_box: getRecommended === 'e' }">
+				<div v-if="getCurrUser.user && getRecommended" class="recommended_box midWrap marginB12" :class="{recommended_box: getCurrUser.user.next_free_lecture_available == null || getAvailableTimer.isExpired, notavailable_box: getCurrUser.user.next_free_lecture_available !== null || !getAvailableTimer.isExpired, error_box: getRecommended === 'e' }">
 					<div v-if="!getAvailableTimer">
 						<span class="the_title fontFamilyEB fontSize20 blockWrap">{{ this.getInfos.data.app_info[0].recommended_title }}</span>
 						<span class="the_subtitle marginB12 fontSize14 blockWrap">{{ this.getInfos.data.app_info[0].recommended_subtitle }}</span>
@@ -74,22 +74,22 @@
 					</div>
 
 				</div>
-				<div v-else class="recommended_box midWrap marginB12 notavailable_box error_box">
+				<!--div v-else class="recommended_box midWrap marginB12 notavailable_box error_box">
 					<div class="message_wrap" v-if="getAvailableTimer">
 						<span class="mess_icon"></span>
 						<span class="mess_title fontFamilyEB">График просмотра</span>
 						<span class="mess_desc">Следующая лекция доступна через <br>{{ getAvailableTimer.hours }} ч. {{ getAvailableTimer.minutes }} мин. {{ getAvailableTimer.seconds }} сек.</span>
 					</div>
-				</div>
+				</div-->
 				<!-- РЕКОМЕНДУЕМ END -->
 
 
 				<!-- ПРОМОПАК -->
-				<div v-if="currLoadingStatus || !getCurrUser.user" class="videos_box midWrap marginB12">
+				<!--div v-if="currLoadingStatus || !getCurrUser.user" class="videos_box midWrap marginB12">
 					<div class="roller_box">
 						<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 					</div>
-				</div>
+				</div-->
 
 				<div class="videos_box midWrap marginB12" v-if="getPromopack.data" :class="{error_box: getPromopack === 'e'}">
 
@@ -161,20 +161,20 @@
 						:key="recommendationElement.id"
 						/> -->
 						<teacher-slider v-if="teachersList.data" :teachers="teachersList.data"/>
-						<div v-else class="roller_box">
+						<!--div v-else class="roller_box">
 							<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-						</div>
+						</div-->
 					</div>
 				</div>
 				<!-- ЛЕКТОРЫ END -->
 
 
 				<!-- НЕ ПРОСМОТРЕННЫЕ -->
-				<div v-if="currLoadingStatus || !getCurrUser.user" class="videos_box bottomWrap">
+				<!--div v-if="currLoadingStatus || !getCurrUser.user" class="videos_box bottomWrap">
 					<div class="roller_box">
 						<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 					</div>
-				</div>
+				</div-->
 				<div v-if="!currLoadingStatus && getNotViewed && getNotViewed !== undefined" class="videos_box bottomWrap" :class="{error_box: getNotViewed.length}">
 					<router-link class="the_title fontFamilyEB fontSize20 blockWrap" v-if="getNotViewed.length !== 0"  to="/forview" @click="setRouterAnimate">{{ this.getInfos.data.app_info[0].not_viewed_yet_title }}</router-link>
 					<!-- <span class="the_subtitle marginB12 fontSize14 blockWrap">Выберите тему, которая вас интересует</span> -->
@@ -276,7 +276,7 @@ export default {
 		},
 
 		setPregnancyWeeks(){
-			if(this.getCurrUser.user.pregnancy_start){
+			if(this.getCurrUser.user){
 				const currentDate = new Date();
 				const startDate = new Date(this.getCurrUser.user.pregnancy_start);
 				const days = Math.floor((currentDate - startDate) /
@@ -288,7 +288,7 @@ export default {
 		},
 
 		setBabyAge(){
-			if(this.getCurrUser.user.baby_born){
+			if(this.getCurrUser.user){
 				const currentDate = new Date();
 				const startDate = new Date(this.getCurrUser.user.baby_born);
 				const days = Math.floor((currentDate - startDate) /
@@ -334,11 +334,11 @@ export default {
 
 		this.fetchRecommended();
 
-		this.fetchPromopack(6);
+		//this.fetchPromopack(6);
 
 		this.fetchCatalog();
 
-    this.fetchLectors();
+    	this.fetchLectors();
 
 		this.fetchNotViewed(6);
 

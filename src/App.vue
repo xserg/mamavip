@@ -1,11 +1,6 @@
 <template>
-	<div v-if="!getCurrUser.access_token" class="authContainer">
-		<autoriz v-if="!newReg"></autoriz>
-		<registr v-if="newReg"></registr>
-	</div>
-	<!-- v-touch-swipe.mouse.right="$router.go(-1)" -->
-	<div v-if="getCurrUser.access_token" class="appContainer">
-		<div v-if="!getCurrUser.user.is_notification_read && notificationData.data[0]">
+	<div class="appContainer">
+		<div v-if="getCurrUser.access_token && !getCurrUser.user.is_notification_read && notificationData.data[0]">
 			<span v-if="notificationData.data[0].date" class="myOverlay" :class="{active: !notificationStatus}" @click="turnOffNotification"></span>
 			<div v-if="notificationData.data[0].date" class="myPopup" :class="{active: !notificationStatus}">
 				<span class="close_button" style="cursor:pointer;" @click="turnOffNotification"></span>
@@ -28,7 +23,7 @@
 				<component :is="Component"  />
 			</transition>
 		</router-view>
-		<bottom-line></bottom-line>
+		<bottom-line v-if="getCurrUser.access_token"></bottom-line>
 		<div class="empty_layout" v-if="getCurrUser.access_token"></div>
 	</div>
 
@@ -41,16 +36,13 @@
 // import 'animate.css'
 import axios from 'axios';
 
-import Autoriz from '@/pages/Autoriz';
-import Registr from '@/pages/Registr';
-
 import { mapState, mapGetters, mapMutations, mapActions} from 'vuex';
 
 import base from "@/base";
 
 export default {
 	// Определяем компоненты
-	components: { Autoriz, Registr, },
+	//components: { Autoriz, Registr, },
 
 	data(){
 		return{

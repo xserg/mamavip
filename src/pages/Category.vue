@@ -4,11 +4,11 @@
 
 		<div class="contentWrap">
 
-			<!-- <div class="topLine flexWrap">
+			<div class="topLine flexWrap">
 				<router-link class="theButton leftButton buttonTransparent buttonBack" to="/"></router-link>
-				<h1 class="theTitle alignCenter">Каталог лекций</h1>
+				<h1 class="theTitle alignCenter">Каталог лекций / {{ currentCategory.title }}</h1>
 				<button class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</button>
-			</div> -->
+			</div>
 
 
 			<div class="topLine flexWrap" v-if="popupInfo && !currLoadingStatus && currentCategoryList.data">
@@ -36,15 +36,17 @@
 
 				</div>
 				<div class="midWrap content_box info_box">
-					<span class="the_title fontSize20 fontFamilyEB">{{ currentCategory.title }}</span>
+					
 					<div class="the_subtitle fontSize14 marginB12" v-html="currentCategory.description" />
 					<div class="the_subtitle the_moreinfo fontSize14" :class="{active: this.moreInfo}" v-html="currentCategory.info" />
 					<!-- <span class="the_subtitle fontSize14">{{ currentCategory.description }}</span> -->
 					<!-- <span @click="switchPopupInfo(true)" class="the_moreicon">Подробнее</span> -->
+					
 					<span @click="this.switchMoreInfo()" class="the_moreicon"> {{ moreButton }}</span>
 					<!-- <span class="the_subtitle fontSize14">{{ currentCategory.info }}</span> -->
-					<div v-if="Number(currentCategory.prices[0].price_for_category) == 0 && Number(currentCategory.prices[1].price_for_category) == 0 && Number(currentCategory.prices[2].price_for_category) == 0"></div>
-					<div v-else><span v-if="currentCategory.id !== 38" class="theButton buttonPrimary buttonOptimal marginAuto marginB12" @click="$router.push('/category_prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].buy_category }}</span></div>
+
+					<!--div v-if="Number(currentCategory.prices[0].price_for_category) == 0 && Number(currentCategory.prices[1].price_for_category) == 0 && Number(currentCategory.prices[2].price_for_category) == 0"></div>
+					<div v-else><span v-if="currentCategory.id !== 38" class="theButton buttonPrimary buttonOptimal marginAuto marginB12" @click="$router.push('/category_prices/'), setRouterAnimate()">{{ getInfos.data.app_info[0].buy_category }}</span></div-->
 				</div>
 				<div class="bottomWrap content_box categories_box" >
 					<catalog-sub-element
@@ -296,10 +298,10 @@ export default({
 				}
 				.the_moreicon{
 					cursor: pointer;
-					display: block;
+					//display: block;
 					// width: 20px;
 					// height: 20px;
-					position: absolute;
+					//position: absolute;
 					right: 12px;
 					top: 12px;
 					font-weight: 600;

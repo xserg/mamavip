@@ -268,7 +268,6 @@ export default {
 	methods:{
 
 		...mapMutations({
-			setLogPage: 'setLogPage',
 			setAuthOut: 'setAuthOut',
 			setRouterAnimate: 'setRouterAnimate',
 			// hiddenPopup: state => state.hiddenPopup, // какой-то старый не рабочий вариант подключения мутаций из vuex
@@ -405,7 +404,7 @@ export default {
 					// console.log(response);
 
 					this.setAuthOut(),
-					this.setLogPage()
+					this.$router.push('/login')
 
 				}, 500 );
 			} catch(e){

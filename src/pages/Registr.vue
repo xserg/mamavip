@@ -23,7 +23,8 @@
 			<div class="contentWrap stepRegFirst" v-show="curStep == 1">
 
 				<div class="topLine flexWrap">
-					<span class="theButton leftButton buttonTransparent ghostWrap">Назад</span>
+
+					<span class="theButton leftButton buttonBack" @click="$router.go(-1), setRouterAnimate()"></span>		
 					<h1 class="theTitle alignCenter">Регистрация</h1>
 					<span class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Далее</span> <!-- @click="nextStepReg" -->
 				</div>
@@ -68,7 +69,7 @@
 							<button class="theButton buttonOptimal marginAuto buttonPrimary fontFamilyB marginB20" style="margin-bottom:32px;margin-top:20px">Далее</button>
 							<div class="infoWrap">
 								<span class="theTitle">Есть аккаунт?</span>
-								<span class="theButton buttonTransparent fontFamilyB marginB30 fontSize14" @click="this.setLogPage()">Войти</span>
+								<span class="theButton buttonTransparent fontFamilyB marginB30 fontSize14" @click="this.$router.push('/login')">Войти</span>
 								<p class="policy_text alignCenter fontSize12">Регистрируясь в приложении вы соглашаетесь с <a href="#" @click="readPolicy()">политикой обработки персональных данных</a></p>
 							</div>
 						<!-- </Form> -->
@@ -264,7 +265,6 @@ export default defineComponent({
 
 		// Мутации состояний из хранилища
 		...mapMutations({
-			setLogPage: 'setLogPage',
 			setAuthIn: 'setAuthIn',
 			setAuthOut: 'setAuthOut',
 			setRegPage: 'setRegPage',
@@ -297,7 +297,7 @@ export default defineComponent({
 		// Микс из мутации хранилища и локального метода
 		// confirmReg(){
 		// 	this.curStep = 1;
-		// 	this.setLogPage();
+
 		// },
 
 		// Локальный метод для показа пароля в форме

@@ -2,6 +2,7 @@
 
 	<div class="mainContainer blockWrap">
 		<div class="contentWrap authstep_login" v-show=" this.curStep == 'auth_login' ">
+
 			<Form @submit="handleLogin" v-slot="{ errors }" :validation-schema="schema">
 				<!-- onSubmit -->
 
@@ -22,7 +23,7 @@
 				</div>
 
 				<div class="topLine flexWrap">
-					<span class="theButton leftButton buttonTransparent ghostWrap">Назад</span>
+					<span class="theButton leftButton buttonBack" @click="$router.push('/'), setRouterAnimate()"></span>		
 					<h1 class="theTitle alignCenter">Вход</h1>
 					<span class="theButton rightButton buttonTransparent fontFamilyB ghostWrap">Войти</span>
 				</div>
@@ -54,7 +55,7 @@
 							<button class="theButton buttonOptimal marginAuto buttonPrimary fontFamilyB marginB20" style="margin-bottom:52px">Войти</button>
 							<span class="theButton buttonOptimal marginAuto buttonWhite fontFamilyB" @click="forgotStep">Забыли пароль?</span>
 							<span class="theTitle">Нет аккаунта?</span>
-							<span class="theButton buttonOptimal marginAuto buttonTransparent fontFamilyB fontSize14" @click="this.setRegPage()">Зарегистрироваться</span>
+							<span class="theButton buttonOptimal marginAuto buttonTransparent fontFamilyB fontSize14" @click="this.$router.push('/registry')">Зарегистрироваться</span>
 						</div>
 					</div>
 
@@ -291,7 +292,7 @@ import { useTimer, useStopwatch, useTime } from 'vue-timer-hook';
 import base from "@/base";
 
 export default defineComponent({
-	name: 'autoriz',
+	name: 'Autoriz',
 
 	components: {
 		// object, string, ref,
@@ -420,7 +421,6 @@ export default defineComponent({
 
 		...mapMutations({
 			setInfos: 'setInfos',
-			setLogPage: 'setLogPage',
 			setAuthIn: 'setAuthIn',
 			setAuthOut: 'setAuthOut',
 			setRegPage: 'setRegPage',
@@ -847,8 +847,11 @@ export default defineComponent({
 			if(refFilter && refFilter !== ''){
 				this.setRegPage();
 			}
-
-		},
+			//console.log(this.newReg);
+			if (this.newReg == true) {
+      			this.$router.push("/registry");
+    		}
+			},
 
 	},
 
