@@ -3,7 +3,8 @@
 		<div class="contentWrap">
 
 			<div class="topLine flexWrap">
-				<span class="theButton leftButton buttonTransparent ghostWrap">Назад</span>
+				<a @click="$router.push('/'), setRouterAnimate()" class="theButton leftButton buttonTransparent buttonBack" />
+				
 				<h1 class="theTitle alignCenter">Главное</h1>
 				<router-link to="/search" @click="setRouterAnimate" class="theButton rightButton buttonTransparent fontFamilyB buttonSearch"></router-link>
 			</div>

@@ -1,5 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { mapState, mapGetters, mapMutations, mapActions} from 'vuex';
+
 import Home from '@/pages/Home.vue'
+import Main from '@/pages/Main.vue'
+import Autoriz from '@/pages/Autoriz.vue'
+import Registr from '@/pages/Registr.vue'
 import Profile from '@/pages/Profile.vue'
 import Search from '@/pages/Search.vue'
 
@@ -39,6 +44,11 @@ import InAuth from '@/pages/InAuth.vue'
 const routes = [
   {
     path: '/',
+    name: 'main',
+    component: Main,
+  },
+  {
+    path: '/home',
     name: 'home',
     component: Home,
 		// meta: {
@@ -48,6 +58,17 @@ const routes = [
     //   },
     // },
   },
+  { 
+    path: '/login', 
+    name: 'login', 
+    component: Autoriz,
+    meta: { title: 'Вход' }
+  },
+  { 
+    path: '/registry', 
+    name: 'registration', 
+    component: Registr
+  },  
 	{
     path: '/search/',
     name: 'search',
@@ -96,7 +117,7 @@ const routes = [
 	{
     path: '/catalog/',
     name: 'catalog',
-    component: Catalog
+    component: Catalog,
   },
 	{
     path: '/register',
@@ -117,11 +138,13 @@ const routes = [
     path: '/videos/:id',
     name: 'lecture',
     component: Lecture,
+    meta: { requiresAuth: true } 
   },
 	{
     path: '/profile/',
     name: 'profile',
     component: Profile,
+    meta: { requiresAuth: true } 
   },
 	{
     path: '/profile/saved/',
@@ -241,5 +264,17 @@ const router = createRouter({
 //   from.meta?.scrollPos && (from.meta.scrollPos.top = window.scrollY)
 //   return next()
 // })
+
+router.beforeEach((to, from, next) => {
+  document.title = to.meta.title || 'Школа мам и пап "Нежность"'
+  let user = JSON.parse(localStorage.getItem('currUser'))
+  //let user = localStorage.getItem('user')
+  //console.log(user.access_token)
+  if (to.meta.requiresAuth && !user.access_token) {
+    next('/login')
+  } else {
+    next()
+  }
+})
 
 export default router
