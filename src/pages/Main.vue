@@ -8,7 +8,7 @@
 				<router-link to="/search" @click="setRouterAnimate" class="theButton rightButton buttonTransparent fontFamilyB buttonSearch"></router-link>
 			</div>
 
-			<div class="contentSubWrap" v-if="this.getInfos.data && this.getCurrUser">
+			<div class="contentSubWrap">
 
 				<!-- РЕКОМЕНДУЕМ -->
 
